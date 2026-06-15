@@ -1,0 +1,40 @@
+spring:
+  # Database Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ams
+    username: postgres
+    password: alaopost
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Security & Keycloak Configuration
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/ams
+            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: ams
+            client-secret: NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+
+# Flowable BPMN Engine Configuration
+flowable:
+  async-executor-activate: true
+  database-schema-update: true
