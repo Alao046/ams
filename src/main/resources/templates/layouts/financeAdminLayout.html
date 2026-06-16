@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <aside th:fragment="sidebar" class="w-sidebar-width h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md">
+        <div class="px-6 pb-8">
+            <img alt="Accounting Management System" class="w-[48px] h-[48px] rounded-lg mb-4" th:src="@{/images/logoams.png}">
+            <div>
+                <h1 class="font-headline-sm text-headline-sm text-on-surface">AMS</h1>
+                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Finance Admin</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-2 space-y-1">
+            <a class="flex items-center px-4 py-3 bg-secondary-fixed text-on-secondary-fixed-variant font-bold rounded-lg mx-2 my-1 transition-all" href="#">
+                <span class="material-symbols-outlined mr-3">dashboard</span>
+                <span class="font-body-md text-body-md">Dashboard</span>
+            </a>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" href="#">
+                <span class="material-symbols-outlined mr-3">group</span>
+                <span class="font-body-md text-body-md">User Management</span>
+            </a>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" href="#">
+                <span class="material-symbols-outlined mr-3">history_edu</span>
+                <span class="font-body-md text-body-md">Audit Logs</span>
+            </a>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" href="#">
+                <span class="material-symbols-outlined mr-3">security</span>
+                <span class="font-body-md text-body-md">Risk Models</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto space-y-4">
+            <div class="pt-4 border-t border-outline-variant">
+                <div class="flex items-center p-2 hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors">
+                    <span class="material-symbols-outlined text-4xl text-on-surface-variant mr-3">account_circle</span>
+                    <span class="font-body-md text-body-md text-on-surface font-bold">J. Miller</span>
+                </div>
+                <a class="flex items-center p-2 mt-1 text-error hover:bg-error-container hover:text-on-error-container rounded-lg transition-colors" href="#">
+                    <span class="material-symbols-outlined mr-3">logout</span>
+                    <span class="font-label-caps text-label-caps">Logout</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <header th:fragment="header" class="flex justify-between items-center w-full px-margin-page py-stack-md bg-surface border-b border-outline-variant sticky top-0 z-10">
+        <h2 class="font-headline-md text-headline-md font-bold text-on-background">Financial Governance</h2>
+        <div class="flex items-center space-x-6">
+            <nav class="hidden lg:flex items-center space-x-8 mr-8"></nav>
+        </div>
+    </header>
+
+</div>
+</body>
+</html>

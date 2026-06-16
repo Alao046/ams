@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html class="light" lang="en" style="width: 1280px; height: 1047px; overflow: hidden; position: relative;"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>CFO Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191c1e",
+                        "tertiary-container": "#410002",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed": "#131b2e",
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary-fixed": "#410002",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-bright": "#f7f9fb",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#565e74",
+                        "tertiary-fixed": "#ffdad6",
+                        "surface": "#f7f9fb",
+                        "error": "#ba1a1a",
+                        "primary-container": "#131b2e",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "outline": "#76777d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "secondary-container": "#2170e4",
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#f63a35",
+                        "on-background": "#191c1e",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "on-secondary-fixed": "#001a42",
+                        "surface-container-low": "#f2f4f6",
+                        "error-container": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "tertiary": "#000000",
+                        "primary": "#000000",
+                        "surface-dim": "#d8dadc",
+                        "secondary": "#0058be",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed-variant": "#93000b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "32px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "sidebar-width": "260px",
+                        "gutter": "24px",
+                        "padding-card": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-tabular": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .liquidity-gradient {
+            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+
+<aside th:replace="~{layouts/cfoLayout :: sidebar}"></aside>
+
+<header th:replace="~{layouts/cfoLayout :: header}"></header>
+
+<main class="ml-sidebar-width p-8 space-y-8 max-w-[1600px]">
+    <!-- KPI Row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Revenue -->
+        <div class="bg-surface-container-lowest border border-outline-variant p-padding-card rounded-xl kpi-card cursor-default">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-on-surface-variant font-label-caps text-label-caps">Total Revenue</span>
+                <span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded-full font-bold">+12.4%</span>
+            </div>
+            <div class="font-display-lg text-display-lg text-on-surface">$4.2M</div>
+            <div class="mt-4 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+                <div class="h-full bg-secondary w-3/4"></div>
+            </div>
+        </div>
+        <!-- Expenses -->
+        <div class="bg-surface-container-lowest border border-outline-variant p-padding-card rounded-xl kpi-card cursor-default">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-on-surface-variant font-label-caps text-label-caps">Operating Expenses</span>
+                <span class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">+3.1%</span>
+            </div>
+            <div class="font-display-lg text-display-lg text-on-surface">$2.8M</div>
+            <div class="mt-4 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+                <div class="h-full bg-error w-1/2"></div>
+            </div>
+        </div>
+        <!-- Budget -->
+        <div class="bg-surface-container-lowest border border-outline-variant p-padding-card rounded-xl kpi-card cursor-default" style="transform: translateY(0px); box-shadow: none; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-on-surface-variant font-label-caps text-label-caps">Budget Utilization</span>
+                <span class="text-on-surface-variant text-[10px] font-bold">FY24 Q3</span>
+            </div>
+            <div class="font-display-lg text-display-lg text-on-surface">82%</div>
+            <div class="mt-4 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+                <div class="h-full bg-primary w-[82%]"></div>
+            </div>
+        </div>
+        <!-- A/R -->
+        <div class="bg-surface-container-lowest border border-outline-variant p-padding-card rounded-xl kpi-card cursor-default" style="transform: translateY(0px); box-shadow: none; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            <div class="flex justify-between items-start mb-2">
+                <span class="text-on-surface-variant font-label-caps text-label-caps">Outstanding A/R</span>
+                <span class="material-symbols-outlined text-outline text-sm">schedule</span>
+            </div>
+            <div class="font-display-lg text-display-lg text-on-surface">$320K</div>
+            <div class="mt-4 flex gap-1">
+                <div class="h-1 flex-1 bg-secondary rounded-full"></div>
+                <div class="h-1 flex-1 bg-outline-variant rounded-full"></div>
+                <div class="h-1 flex-1 bg-outline-variant rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Central Grid -->
+    <div class="bento-grid">
+        <!-- Left: Liquidity Flux -->
+        <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl flex flex-col overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-bright">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface">Real-time Liquidity Flux</h2>
+                <div class="flex bg-surface-container rounded-lg p-1" id="region-filters">
+                    <button class="px-4 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm transition-all" data-region="AMER">AMER</button>
+                    <button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant transition-all hover:text-on-surface" data-region="EMEA">EMEA</button>
+                    <button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant transition-all hover:text-on-surface" data-region="APAC">APAC</button>
+                    <button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant transition-all hover:text-on-surface" data-region="LATAM">LATAM</button>
+                </div>
+            </div>
+            <div class="flex-1 p-6 relative min-h-[400px]">
+                <div class="relative z-10 grid grid-cols-2 gap-12 mt-4" id="flux-content">
+                    <div class="space-y-4">
+                        <p class="font-label-caps text-label-caps text-on-surface-variant">Inflow Velocity (<span id="active-region-label" class="">AMER</span>)</p>
+                        <div class="font-display-lg text-display-lg text-secondary" id="flux-value">$142,400 <span class="text-body-md font-normal text-on-surface-variant">/ hour</span></div>
+                        <p class="text-body-md text-on-surface-variant leading-relaxed" id="flux-desc">Aggregated cash concentration from North American operational accounts shows a 14% increase in settlement efficiency over the trailing 24 hours.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4" id="bank-balances">
+                        <div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant">
+                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-1">JP Morgan</p>
+                            <p class="font-data-tabular text-data-tabular">$1.2M</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant">
+                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Citibank</p>
+                            <p class="font-data-tabular text-data-tabular">$840K</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant">
+                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-1">HSBC</p>
+                            <p class="font-data-tabular text-data-tabular">$420K</p>
+                        </div>
+                        <div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant">
+                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-1">Wells Fargo</p>
+                            <p class="font-data-tabular text-data-tabular">$110K</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 left-6 right-6 h-32 opacity-40">
+                    <svg class="w-full h-full text-secondary stroke-current fill-none" preserveAspectRatio="none" viewBox="0 0 100 20">
+                        <path d="M0,15 Q10,5 20,12 T40,8 T60,15 T80,5 T100,10" id="flux-chart-path" stroke-linecap="round" stroke-width="0.5"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <!-- Right: Activity Ledger -->
+        <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl flex flex-col shadow-sm">
+            <div class="p-6 border-b border-outline-variant bg-surface-bright flex justify-between items-center">
+                <h2 class="font-headline-sm text-headline-sm text-on-surface">Activity Ledger</h2>
+                <button class="p-1 hover:bg-surface-container rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-outline">more_vert</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6 flex-1 overflow-y-auto" id="activity-ledger">
+                <!-- AWS -->
+                <div class="flex items-center justify-between group cursor-pointer hover:bg-surface-container-low p-2 -m-2 rounded-lg transition-all border border-transparent hover:border-outline-variant" data-txn="AWS">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-xs">AWS</div>
+                        <div>
+                            <p class="font-body-md text-body-md font-bold">Cloud Infrastructure</p>
+                            <p class="font-mono-label text-mono-label text-on-surface-variant">TXN_9921_US</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-data-tabular text-data-tabular text-error">-$24,400</p>
+                        <p class="text-[10px] text-on-surface-variant">2m ago</p>
+                    </div>
+                </div>
+                <!-- Acme -->
+                <div class="flex items-center justify-between group cursor-pointer hover:bg-surface-container-low p-2 -m-2 rounded-lg transition-all border border-transparent hover:border-outline-variant" data-txn="ACME">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-xs text-secondary">ACM</div>
+                        <div>
+                            <p class="font-body-md text-body-md font-bold">Acme Corp Settlement</p>
+                            <p class="font-mono-label text-mono-label text-on-surface-variant">RECV_1102_NY</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-data-tabular text-data-tabular text-green-600">+$120,000</p>
+                        <p class="text-[10px] text-on-surface-variant">1h ago</p>
+                    </div>
+                </div>
+                <!-- Stripe -->
+                <div class="flex items-center justify-between group cursor-pointer hover:bg-surface-container-low p-2 -m-2 rounded-lg transition-all border border-transparent hover:border-outline-variant" data-txn="STRIPE">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-xs text-secondary">STR</div>
+                        <div>
+                            <p class="font-body-md text-body-md font-bold">Stripe Payout</p>
+                            <p class="font-mono-label text-mono-label text-on-surface-variant">STRIPE_882</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-data-tabular text-data-tabular text-green-600">+$15,200</p>
+                        <p class="text-[10px] text-on-surface-variant">4h ago</p>
+                    </div>
+                </div>
+                <!-- Payroll -->
+                <div class="flex items-center justify-between group cursor-pointer hover:bg-surface-container-low p-2 -m-2 rounded-lg transition-all border border-transparent hover:border-outline-variant" data-txn="PAYROLL">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center font-bold text-xs">PAY</div>
+                        <div>
+                            <p class="font-body-md text-body-md font-bold">Monthly Payroll B</p>
+                            <p class="font-mono-label text-mono-label text-on-surface-variant">WIRE_PR_SEP24</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-data-tabular text-data-tabular text-error">-$640,000</p>
+                        <p class="text-[10px] text-on-surface-variant">6h ago</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-auto p-6 border-t border-outline-variant">
+                <button class="w-full text-center font-label-caps text-label-caps text-secondary py-2 hover:underline transition-all">View Full Ledger</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const regionData = {
+            AMER: {
+                label: "AMER",
+                value: "$142,400",
+                desc: "Aggregated cash concentration from North American operational accounts shows a 14% increase in settlement efficiency over the trailing 24 hours.",
+                banks: [
+                    { name: "JP Morgan", balance: "$1.2M" },
+                    { name: "Citibank", balance: "$840K" },
+                    { name: "HSBC", balance: "$420K" },
+                    { name: "Wells Fargo", balance: "$110K" }
+                ],
+                path: "M0,15 Q10,5 20,12 T40,8 T60,15 T80,5 T100,10"
+            },
+            EMEA: {
+                label: "EMEA",
+                value: "€98,200",
+                desc: "European and Middle Eastern liquidity clusters report stable intra-day clearing with high treasury utilization in London and Frankfurt hubs.",
+                banks: [
+                    { name: "Deutsche Bank", balance: "€1.1M" },
+                    { name: "Barclays", balance: "€650K" },
+                    { name: "BNP Paribas", balance: "€380K" },
+                    { name: "UBS", balance: "€290K" }
+                ],
+                path: "M0,10 Q15,18 30,10 T60,5 T90,15 T100,12"
+            },
+            APAC: {
+                label: "APAC",
+                value: "¥2.4M",
+                desc: "Asian markets showing strong morning volume. Settlement pathways in Singapore and Hong Kong are operating at peak efficiency.",
+                banks: [
+                    { name: "DBS Bank", balance: "S$1.4M" },
+                    { name: "HSBC HK", balance: "HK$2.2M" },
+                    { name: "SMBC", balance: "¥850M" },
+                    { name: "ANZ", balance: "A$320K" }
+                ],
+                path: "M0,5 Q20,15 40,5 T70,18 T100,5"
+            },
+            LATAM: {
+                label: "LATAM",
+                value: "$42,100",
+                desc: "Latin American cash pools are being consolidated following local market closes. Volatility remains within expected risk parameters.",
+                banks: [
+                    { name: "Itaú Unibanco", balance: "R$2.1M" },
+                    { name: "Banco de Chile", balance: "$120K" },
+                    { name: "Santander MX", balance: "$450K" },
+                    { name: "Bancolombia", balance: "$85K" }
+                ],
+                path: "M0,18 Q30,12 60,18 T90,8 T100,15"
+            }
+        };
+
+        const filterButtons = document.querySelectorAll('#region-filters button');
+        const activeLabel = document.getElementById('active-region-label');
+        const fluxValue = document.getElementById('flux-value');
+        const fluxDesc = document.getElementById('flux-desc');
+        const bankContainer = document.getElementById('bank-balances');
+        const chartPath = document.getElementById('flux-chart-path');
+        const fluxContent = document.getElementById('flux-content');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const region = btn.dataset.region;
+                const data = regionData[region];
+
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-white', 'shadow-sm');
+                    b.classList.add('text-on-surface-variant');
+                });
+                btn.classList.add('bg-white', 'shadow-sm');
+                btn.classList.remove('text-on-surface-variant');
+
+                fluxContent.style.opacity = '0';
+                setTimeout(() => {
+                    activeLabel.textContent = data.label;
+                    fluxValue.innerHTML = `${data.value} <span class="text-body-md font-normal text-on-surface-variant">/ hour</span>`;
+                    fluxDesc.textContent = data.desc;
+                    chartPath.setAttribute('d', data.path);
+
+                    bankContainer.innerHTML = data.banks.map(bank => `
+                        <div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant">
+                            <p class="font-label-caps text-label-caps text-on-surface-variant mb-1">${bank.name}</p>
+                            <p class="font-data-tabular text-data-tabular">${bank.balance}</p>
+                        </div>
+                    `).join('');
+
+                    fluxContent.style.opacity = '1';
+                }, 150);
+            });
+        });
+
+        const activityItems = document.querySelectorAll('#activity-ledger > div');
+        activityItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const txnId = item.querySelector('.font-mono-label').textContent;
+                console.log(`Navigating to transaction: ${txnId}`);
+                item.classList.add('bg-secondary-fixed');
+                setTimeout(() => item.classList.remove('bg-secondary-fixed'), 300);
+            });
+        });
+
+        document.querySelectorAll('.kpi-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1)';
+                card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.boxShadow = 'none';
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

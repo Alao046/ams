@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 1280px; height: 1024px; overflow: hidden; position: relative;"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Accountant Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191c1e",
+                        "tertiary-container": "#410002",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed": "#131b2e",
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary-fixed": "#410002",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-bright": "#f7f9fb",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#565e74",
+                        "tertiary-fixed": "#ffdad6",
+                        "surface": "#f7f9fb",
+                        "error": "#ba1a1a",
+                        "primary-container": "#131b2e",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "outline": "#76777d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "secondary-container": "#2170e4",
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#f63a35",
+                        "on-background": "#191c1e",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "on-secondary-fixed": "#001a42",
+                        "surface-container-low": "#f2f4f6",
+                        "error-container": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "tertiary": "#000000",
+                        "primary": "#000000",
+                        "surface-dim": "#d8dadc",
+                        "secondary": "#0058be",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed-variant": "#93000b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "32px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "sidebar-width": "260px",
+                        "gutter": "24px",
+                        "padding-card": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-tabular": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+
+<aside th:replace="~{layouts/accountantLayout :: sidebar}"></aside>
+
+<main class="ml-sidebar-width min-h-screen">
+
+    <header th:replace="~{layouts/accountantLayout :: header}"></header>
+
+    <div class="p-margin-page space-y-gutter overflow-y-auto max-h-[calc(100vh-73px)] custom-scrollbar">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">history_edu</span>
+                    <span class="text-green-600 font-bold text-label-caps">+12%</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Pending Journals</p>
+                <h3 class="text-display-lg font-display-lg mt-1">24</h3>
+                <p class="text-body-md text-on-surface-variant mt-2">Items requiring review</p>
+            </div>
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-secondary p-2 bg-secondary-fixed rounded-lg">receipt_long</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Pending Invoices</p>
+                <h3 class="text-display-lg font-display-lg mt-1">158</h3>
+                <p class="text-body-md text-on-surface-variant mt-2">Awaiting action</p>
+            </div>
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-error">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-error p-2 bg-error-container rounded-lg">warning</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Reconciliation Exceptions</p>
+                <h3 class="text-display-lg font-display-lg mt-1 text-error">9</h3>
+                <p class="text-body-md text-error mt-2">Critical issues detected</p>
+            </div>
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-tertiary-container">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-on-tertiary-container p-2 bg-tertiary-fixed rounded-lg">timer</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Overdue AR/AP</p>
+                <h3 class="text-display-lg font-display-lg mt-1">12</h3>
+                <p class="text-body-md text-on-surface-variant mt-2">Over 30 days past due</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+            <div class="lg:col-span-2 space-y-gutter">
+                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                        <h3 class="font-headline-sm text-headline-sm">Pending Journal Entries</h3>
+                        <button class="text-primary font-bold text-body-md hover:underline">View all</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-container-high text-on-surface-variant">
+                            <tr>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Journal ID</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Description</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase text-right">Amount</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Status</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Actions</th>
+                            </tr>
+                            Clyde border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                            <tbody class="divide-y divide-outline-variant">
+                            <tr class="hover:bg-surface-container-low transition-colors" data-id="GJ-2024-081">
+                                <td class="px-6 py-4 font-mono-label text-mono-label">GJ-2024-081</td>
+                                <td class="px-6 py-4 text-body-md">Monthly Payroll Accrual</td>
+                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">$42,500.00</td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-label-caps uppercase">Draft</span></td>
+                                <td class="px-6 py-4"><button class="action-approve text-primary hover:text-secondary"><span class="material-symbols-outlined">verified_user</span></button></td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low transition-colors" data-id="GJ-2024-082">
+                                <td class="px-6 py-4 font-mono-label text-mono-label">GJ-2024-082</td>
+                                <td class="px-6 py-4 text-body-md">Office Supply Depreciation</td>
+                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">$1,240.15</td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded text-label-caps uppercase">Pending</span></td>
+                                <td class="px-6 py-4"><button class="action-approve text-primary hover:text-secondary"><span class="material-symbols-outlined">verified_user</span></button></td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low transition-colors" data-id="GJ-2024-083">
+                                <td class="px-6 py-4 font-mono-label text-mono-label">GJ-2024-083</td>
+                                <td class="px-6 py-4 text-body-md">Deferred Revenue Recognition</td>
+                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">$12,000.00</td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded text-label-caps uppercase">Pending</span></td>
+                                <td class="px-6 py-4"><button class="action-approve text-primary hover:text-secondary"><span class="material-symbols-outlined">verified_user</span></button></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                        <h3 class="font-headline-sm text-headline-sm">Automated Invoice Pipeline</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-container-high text-on-surface-variant">
+                            <tr>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Invoice ID</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Current Stage</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Aging</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Flag</th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant">
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">INV-88921</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-primary rounded-full mr-2"></div>
+                                        <span class="text-body-md">L2 Audit Review</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-md">2 Days</td>
+                                <td class="px-6 py-4"><span class="material-symbols-outlined text-outline">flag</span></td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">INV-88922</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                                        <span class="text-body-md">Dept Head Approval</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-md">4 Days</td>
+                                <td class="px-6 py-4"><span class="material-symbols-outlined text-error">priority_high</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div class="space-y-gutter">
+                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                    <h3 class="font-headline-sm text-headline-sm mb-4 flex items-center">
+                        <span class="material-symbols-outlined text-error mr-2">error</span>
+                        Urgent Exceptions
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-error-container text-on-error-container rounded-lg border border-red-200">
+                            <p class="font-bold text-body-md">Bank ID Discrepancy</p>
+                            <p class="text-sm">Batch #TX-901 reconciliation failed due to routing mismatch.</p>
+                            <button class="mt-2 text-sm underline font-bold">Investigate</button>
+                        </div>
+                        <div class="p-3 bg-surface-container-high rounded-lg border border-outline-variant">
+                            <p class="font-bold text-body-md text-on-surface">Credit Card Unmatched</p>
+                            <p class="text-sm text-on-surface-variant">14 entries in Amex statement don't match ERP.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-headline-sm text-headline-sm">Aging Summary</h3>
+                        <div class="flex bg-surface-container-high p-1 rounded-lg">
+                            <button class="px-3 py-1 text-label-caps uppercase rounded bg-primary text-on-primary transition-all" id="arBtn" onclick="toggleAging('ar')">AR</button>
+                            <button class="px-3 py-1 text-label-caps uppercase rounded text-on-surface-variant hover:bg-surface-container-high transition-all" id="apBtn" onclick="toggleAging('ap')">AP</button>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <span class="text-body-md text-on-surface-variant">Current</span>
+                            <span class="font-bold text-headline-sm" id="val-current">$458,200</span>
+                        </div>
+                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full" id="bar-current" style="width: 75%"></div>
+                        </div>
+                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
+                            <span class="text-body-md text-on-surface-variant">31-60 Days Overdue</span>
+                            <span class="font-bold text-body-md" id="val-overdue">$82,400</span>
+                        </div>
+                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                            <div class="bg-yellow-500 h-full" id="bar-overdue" style="width: 15%"></div>
+                        </div>
+                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
+                            <span class="text-body-md text-on-surface-variant">90+ Days Delinquent</span>
+                            <span class="font-bold text-body-md text-error" id="val-delinquent">$12,050</span>
+                        </div>
+                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                            <div class="bg-error h-full" id="bar-delinquent" style="width: 5%"></div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center justify-center hover:bg-opacity-90 transition-all">
+                        <span class="material-symbols-outlined mr-2">description</span>
+                        <span id="aging-btn-text" class="">Generate AR Aging Report</span>
+                    </button>
+                </section>
+
+                <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-label-caps text-label-caps uppercase text-on-surface-variant">Q4 Fiscal Forecast</h3>
+                        <span class="material-symbols-outlined text-on-surface-variant text-sm">open_in_new</span>
+                    </div>
+                    <img alt="Fiscal Forecast Chart" class="w-full h-[120px] object-cover rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp543O585_h2xVIS4HzDN_M1SH68hlqPfzJwbufcq3WYgTON49GzOopoo2YR-xFKZG9KDX2xGrtHHI5izhtCvc7NoVTdnra22ZL-rbw93txRVyNhv6y305Ypm9MJ9c3_2L8Iv0I7QgIWJ_xl6wZkJ3L9zZ34xhnmnLlo2RoifFqZwp4afnu-LfYB6Ot6qQZVQeeTht5A6qNGprV9PeGmF-c6V2tv-LGKg4eRj8HRKVLxo76Tdh-i4rnZa4BZtPUafA3be7m5WmyTk">
+                    <div class="mt-3 flex items-center text-green-600">
+                        <span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                        <span class="text-body-md font-bold">Projected +4.2% Growth</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Aging Toggle Logic
+    function toggleAging(type) {
+        const arBtn = document.getElementById('arBtn');
+        const apBtn = document.getElementById('apBtn');
+        const btnText = document.getElementById('aging-btn-text');
+
+        // Elements to update
+        const valCurrent = document.getElementById('val-current');
+        const valOverdue = document.getElementById('val-overdue');
+        const valDelinquent = document.getElementById('val-delinquent');
+
+        const barCurrent = document.getElementById('bar-current');
+        const barOverdue = document.getElementById('bar-overdue');
+        const barDelinquent = document.getElementById('bar-delinquent');
+
+        if (type === 'ar') {
+            arBtn.classList.add('bg-primary', 'text-on-primary');
+            arBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
+            apBtn.classList.remove('bg-primary', 'text-on-primary');
+            apBtn.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
+
+            btnText.textContent = "Generate AR Aging Report";
+            valCurrent.textContent = "$458,200";
+            valOverdue.textContent = "$82,400";
+            valDelinquent.textContent = "$12,050";
+
+            barCurrent.style.width = "75%";
+            barOverdue.style.width = "15%";
+            barDelinquent.style.width = "5%";
+        } else {
+            apBtn.classList.add('bg-primary', 'text-on-primary');
+            apBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
+            arBtn.classList.remove('bg-primary', 'text-on-primary');
+            arBtn.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
+
+            btnText.textContent = "Generate AP Aging Report";
+            valCurrent.textContent = "$312,000";
+            valOverdue.textContent = "$45,600";
+            valDelinquent.textContent = "$8,900";
+
+            barCurrent.style.width = "60%";
+            barOverdue.style.width = "25%";
+            barDelinquent.style.width = "10%";
+        }
+    }
+
+    // Table Action Interactivity
+    document.querySelectorAll('.action-approve').forEach(button => {
+        button.addEventListener('click', function(e) {
+            const row = e.target.closest('tr');
+            const ref = row.getAttribute('data-id');
+
+            // Visual feedback
+            this.innerHTML = '<span class="material-symbols-outlined text-green-600">check_circle</span>';
+            this.classList.remove('text-primary');
+            this.disabled = true;
+
+            row.classList.add('opacity-50');
+            row.style.pointerEvents = 'none';
+
+            console.log(`Approved Journal Entry: ${ref}`);
+
+            // Simulate removal or completion
+            setTimeout(() => {
+                row.style.transition = 'opacity 0.5s ease';
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 500);
+            }, 1000);
+        });
+    });
+
+    // Initialize tooltips or other micro-interactions if needed
+    console.log("Accounting Management System (AMS) Accountant Dashboard Initialized.");
+</script>
+
+</body>
+</html>

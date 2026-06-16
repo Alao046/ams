@@ -81,6 +81,18 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.2.3</version>
 		</dependency>
+		<!-- Keycloak Admin Client -->
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-admin-client</artifactId>
+			<version>21.1.2</version>
+		</dependency>
+		<!-- Keycloak Core -->
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-core</artifactId>
+			<version>21.1.2</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<div xmlns:th="http://www.thymeleaf.org">
+
+    <!-- CFO Sidebar Fragment -->
+    <aside th:fragment="sidebar" class="w-sidebar-width h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md z-50">
+        <div class="px-6 mb-10">
+            <img alt="AMS Oversight" class="mb-4 w-12 h-12 object-contain" th:src="@{/images/logoams.png}">
+            <h1 class="font-headline-md text-headline-md font-bold text-on-surface">AMS</h1>
+            <p class="font-label-caps text-label-caps text-on-surface-variant">Chief Financial Officer (CFO)</p>
+        </div>
+        <nav class="flex-1 space-y-1">
+            <!-- Executive Dashboard (Active) -->
+            <a class="bg-secondary-fixed text-on-secondary-fixed-variant font-bold rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3" href="#">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-label-caps text-label-caps">&nbsp;Dashboard</span>
+            </a>
+            <!-- Financial Reporting -->
+            <a class="text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="font-label-caps text-label-caps">Financial Reporting</span>
+            </a>
+            <!-- User Access Matrices -->
+            <a class="text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+                <span class="material-symbols-outlined">security</span>
+                <span class="font-label-caps text-label-caps">User Access Matrices</span>
+            </a>
+            <!-- Core Ledger Audit Logs -->
+            <a class="text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-colors duration-200" href="#">
+                <span class="material-symbols-outlined">history_edu</span>
+                <span class="font-label-caps text-label-caps">Core Ledger Audit Logs</span>
+            </a>
+        </nav>
+        <div class="px-4 mt-auto">
+            <div class="bg-surface-container-high p-4 rounded-xl flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-body-md font-bold text-on-surface">C. Harrison</span>
+                    <span class="text-[10px] text-on-surface-variant font-label-caps">CFO</span>
+                </div>
+            </div>
+            <button class="w-full text-left text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-3 flex items-center gap-3 transition-colors duration-200">
+                <span class="material-symbols-outlined">logout</span>
+                <span class="font-label-caps text-label-caps">Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- CFO Header Fragment -->
+    <header th:fragment="header" class="flex justify-between items-center w-full px-margin-page py-stack-md ml-sidebar-width max-w-[calc(100%-260px)] bg-surface border-b border-outline-variant sticky top-0 z-40">
+        <div class="flex items-center gap-8">
+            <span class="font-headline-md text-headline-md font-bold text-on-background">Financial Governance</span>
+            <nav class="hidden md:flex gap-6"></nav>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+                <input class="pl-10 pr-4 py-2 bg-surface-container rounded-lg border-none focus:ring-2 focus:ring-secondary-container w-64 text-body-md" placeholder="Global Ledger Search..." type="text">
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors"></button>
+                <button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors"></button>
+            </div>
+        </div>
+    </header>
+
+</div>
+</body>
+</html>

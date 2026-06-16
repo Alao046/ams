@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" style="width: 1280px; height: 1024px; overflow: hidden; position: relative;"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Finance Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191c1e",
+                        "tertiary-container": "#410002",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed": "#131b2e",
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c6c6cd",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary-fixed": "#410002",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-bright": "#f7f9fb",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#565e74",
+                        "tertiary-fixed": "#ffdad6",
+                        "surface": "#f7f9fb",
+                        "error": "#ba1a1a",
+                        "primary-container": "#131b2e",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "outline": "#76777d",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "secondary-container": "#2170e4",
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#f63a35",
+                        "on-background": "#191c1e",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary-fixed-variant": "#004395",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "on-secondary-fixed": "#001a42",
+                        "surface-container-low": "#f2f4f6",
+                        "error-container": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "tertiary": "#000000",
+                        "primary": "#000000",
+                        "surface-dim": "#d8dadc",
+                        "secondary": "#0058be",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed-variant": "#93000b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "32px",
+                        "stack-sm": "8px",
+                        "stack-md": "16px",
+                        "sidebar-width": "260px",
+                        "gutter": "24px",
+                        "padding-card": "24px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "mono-label": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-tabular": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+
+<aside th:replace="~{layouts/financeAdminLayout :: sidebar}"></aside>
+
+<main class="ml-sidebar-width min-h-screen">
+
+    <header th:replace="~{layouts/financeAdminLayout :: header}"></header>
+
+    <div class="p-margin-page space-y-gutter overflow-y-auto max-h-[calc(100vh-73px)] custom-scrollbar">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">rule</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">COA Hierarchy</p>
+                <h3 class="text-display-lg font-display-lg mt-1">100%</h3>
+                <p class="text-body-md text-on-surface-variant mt-2">Active structure aligned</p>
+            </div>
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-secondary p-2 bg-secondary-fixed rounded-lg">percent</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Tax Component Status</p>
+                <h3 class="text-display-lg font-display-lg mt-1">85%</h3>
+                <p class="text-body-md text-on-surface-variant mt-2">Rates synchronized</p>
+            </div>
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-error">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-error p-2 bg-error-container rounded-lg">bolt</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Automation Pipelines</p>
+                <h3 class="text-display-lg font-display-lg mt-1 text-error">94%</h3>
+                <p class="text-body-md text-error mt-2">2 Engine tasks stuck</p>
+            </div>
+            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-tertiary-container">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="material-symbols-outlined text-on-tertiary-container p-2 bg-tertiary-fixed rounded-lg">hub</span>
+                </div>
+                <p class="text-on-surface-variant font-label-caps uppercase">Federation Realms</p>
+                <h3 class="text-display-lg font-display-lg mt-1">89%</h3>
+                <p class="text-body-md text-on-surface-variant mt-2">Identity syncing operational</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+            <div class="lg:col-span-2 space-y-gutter">
+                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                        <h3 class="font-headline-sm text-headline-sm">System Activity Logs</h3>
+                        <button class="text-primary font-bold text-body-md hover:underline">View all</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-container-high text-on-surface-variant">
+                            <tr>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Timestamp</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Administrator</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Action</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Status</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase text-right">IP Address</th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant">
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-24 14:22:01</td>
+                                <td class="px-6 py-4 text-body-md">Sarah Mitchell</td>
+                                <td class="px-6 py-4 text-body-md font-mono-label">Update_COA_Hierarchy</td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-label-caps uppercase">Success</span></td>
+                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">192.168.1.104</td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-24 14:18:55</td>
+                                <td class="px-6 py-4 text-body-md">Robert Kane</td>
+                                <td class="px-6 py-4 text-body-md font-mono-label">Auth_Override_Fail</td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 bg-error-container text-on-error-container rounded text-label-caps uppercase">Blocked</span></td>
+                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">10.0.4.22</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                        <h3 class="font-headline-sm text-headline-sm">Active Engine Workflows</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-container-high text-on-surface-variant">
+                            <tr>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Process ID</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Current State</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Duration</th>
+                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Flag</th>
+                            </tr>
+                            </thead>
+                            <tbody class="divide-y divide-outline-variant">
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">PROC-991A</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-primary rounded-full mr-2"></div>
+                                        <span class="text-body-md">Batch Verification Execution</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-md">1.2 Hours</td>
+                                <td class="px-6 py-4"><span class="material-symbols-outlined text-outline">flag</span></td>
+                            </tr>
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">PROC-884C</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
+                                        <span class="text-body-md">Consolidated Report Compile</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-body-md">4.5 Hours</td>
+                                <td class="px-6 py-4"><span class="material-symbols-outlined text-error">priority_high</span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div class="space-y-gutter">
+                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                    <h3 class="font-headline-sm text-headline-sm mb-4 flex items-center">
+                        <span class="material-symbols-outlined text-error mr-2">report</span>
+                        Oversight Alerts
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-error-container text-on-error-container rounded-lg border border-red-200">
+                            <p class="font-bold text-body-md">Unauthorized Policy Override</p>
+                            <p class="text-sm">Admin user 'J. Miller' attempted to modify escalation thresholds.</p>
+                            <button class="mt-2 text-sm underline font-bold">Investigate</button>
+                        </div>
+                        <div class="p-3 bg-surface-container-high rounded-lg border border-outline-variant">
+                            <p class="font-bold text-body-md text-on-surface">Bulk Data Modification</p>
+                            <p class="text-sm text-on-surface-variant">Detected mass deletion of historical reconciliation records (12k+ rows).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-headline-sm text-headline-sm">Workflow Health</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-end">
+                            <span class="text-body-md text-on-surface-variant">Active Instances</span>
+                            <span class="font-bold text-headline-sm" id="val-current">142</span>
+                        </div>
+                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full" style="width: 82%"></div>
+                        </div>
+                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
+                            <span class="text-body-md text-on-surface-variant">Stuck Transitions</span>
+                            <span class="font-bold text-body-md" id="val-overdue">08</span>
+                        </div>
+                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                            <div class="bg-yellow-500 h-full" style="width: 13%"></div>
+                        </div>
+                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
+                            <span class="text-body-md text-on-surface-variant">Failed Pipelines</span>
+                            <span class="font-bold text-body-md text-error" id="val-delinquent">02</span>
+                        </div>
+                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+                            <div class="bg-error h-full" style="width: 5%"></div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center justify-center hover:bg-opacity-90 transition-all">
+                        <span class="material-symbols-outlined mr-2">reorder</span>
+                        <span>View System Tasks</span>
+                    </button>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

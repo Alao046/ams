@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>AMS | Financial Governance &amp; Oversight</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#191c1e",
+                      "tertiary-container": "#410002",
+                      "on-surface-variant": "#45464d",
+                      "on-primary-fixed": "#131b2e",
+                      "primary-fixed": "#dae2fd",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#c6c6cd",
+                      "surface-container-high": "#e6e8ea",
+                      "on-primary-container": "#7c839b",
+                      "on-tertiary-fixed": "#410002",
+                      "secondary-fixed": "#d8e2ff",
+                      "surface-bright": "#f7f9fb",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#565e74",
+                      "tertiary-fixed": "#ffdad6",
+                      "surface": "#f7f9fb",
+                      "error": "#ba1a1a",
+                      "primary-container": "#131b2e",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "outline": "#76777d",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container": "#eceef0",
+                      "secondary-container": "#2170e4",
+                      "inverse-primary": "#bec6e0",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-error": "#ffffff",
+                      "inverse-surface": "#2d3133",
+                      "on-tertiary-container": "#f63a35",
+                      "on-background": "#191c1e",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-secondary-fixed-variant": "#004395",
+                      "tertiary-fixed-dim": "#ffb4ab",
+                      "on-secondary-fixed": "#001a42",
+                      "surface-container-low": "#f2f4f6",
+                      "error-container": "#ffdad6",
+                      "background": "#f7f9fb",
+                      "tertiary": "#000000",
+                      "primary": "#000000",
+                      "surface-dim": "#d8dadc",
+                      "secondary": "#0058be",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-tertiary": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "on-primary": "#ffffff",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-secondary-container": "#fefcff",
+                      "on-tertiary-fixed-variant": "#93000b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-page": "32px",
+                      "stack-sm": "8px",
+                      "stack-md": "16px",
+                      "sidebar-width": "260px",
+                      "gutter": "24px",
+                      "padding-card": "24px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "mono-label": ["JetBrains Mono"],
+                      "headline-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "data-tabular": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; color: #191c1e; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(226, 232, 240, 0.5); }
+        .hero-pattern { background-image: radial-gradient(#76777d 0.5px, transparent 0.5px); background-size: 24px 24px; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="flex justify-between items-center w-full px-margin-page py-stack-md bg-surface border-b border-outline-variant sticky top-0 z-50">
+    <div class="flex items-center gap-4">
+        <img alt="AMS Logo" class="object-contain" height="48" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6jk4OLMZNS953YrMyMhi72nyDIalN9UE9PrdKl9XryZK_U20-ObKjA1e9IHYeLSTT0jp9bq9V_2GeMKzlpbEC8eoMCw_5CgZKj5-LEQnf4h4KKCMav_h2kIgNOv9ybwn933F4L9_MTsdAa0-AyAsgfDcMczpsRsxlKxh2UDsqztORuSCgLAYBZEA3sLefsfgQw_Z_xGFMsnf5CUbTKZwB0a0pFLn7RKteWM01py_zbZfFqTHQnBKWlnMLGrZiOkTca2NJjlRNU4k" width="48">
+        <span class="font-headline-md text-headline-md font-bold text-on-background">Accounting Management System</span>
+    </div>
+    <nav class="hidden md:flex gap-8 items-center">
+        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Dashboard</a>
+        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Security</a>
+        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Compliance</a>
+        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Pricing</a>
+    </nav>
+    <div class="flex items-center gap-4">
+        <a href="/oauth2/authorization/keycloak" class="bg-primary text-on-primary px-6 py-2 font-bold transition-all hover:bg-on-surface-variant active:scale-95 rounded-lg">Login</a>
+    </div>
+</header>
+<main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[819px] flex flex-col justify-center items-center text-center px-margin-page py-20 bg-surface-container-lowest">
+        <div class="absolute inset-0 opacity-10 pointer-events-none hero-pattern"></div>
+        <div class="max-w-4xl z-10">
+            <span class="font-mono-label text-mono-label text-primary uppercase tracking-[0.2em] mb-6 block">Enterprise Grade Financial Control</span>
+            <h1 class="font-display-lg text-[56px] leading-[1.1] mb-8 text-on-surface">
+                The Standard in Enterprise <br><span class="text-secondary">Financial Integrity</span>
+            </h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12">
+                Secure, immutable, and hyper-efficient accounting systems designed for the modern multinational enterprise. Maintain absolute clarity in every transaction.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            </div>
+        </div>
+        <!-- Abstract Visual -->
+        <div class="mt-20 w-full max-w-6xl mx-auto glass-card rounded-xl p-4 shadow-2xl overflow-hidden border border-outline-variant">
+        </div>
+    </section>
+    <!-- Features Grid -->
+    <section class="py-24 px-margin-page bg-surface-container-low">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-16">
+                <h2 class="font-headline-md text-headline-md text-on-surface mb-4">Precision Engineering for Finance</h2>
+                <div class="w-16 h-1 bg-secondary"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+                <!-- Feature 1 -->
+                <div class="bg-surface p-padding-card border border-outline-variant hover:border-secondary transition-all group">
+                    <div class="w-12 h-12 bg-primary-container text-primary-fixed flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+                    </div>
+                    <h3 class="font-headline-sm text-headline-sm mb-4 text-on-surface">Immutable Audit Trails</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                        Every entry is cryptographically signed and stored in an immutable ledger, ensuring 100% compliance with global auditing standards.
+                    </p>
+                    <a class="text-secondary font-bold text-label-caps uppercase flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
+                        Learn more <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </a>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-surface p-padding-card border border-outline-variant hover:border-secondary transition-all group">
+                    <div class="w-12 h-12 bg-primary-container text-primary-fixed flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                    </div>
+                    <h3 class="font-headline-sm text-headline-sm mb-4 text-on-surface">Automated Workflows</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                        Reduce manual error with AI-driven reconciliation and automated ledger balancing that operates at the speed of your business.
+                    </p>
+                    <a class="text-secondary font-bold text-label-caps uppercase flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
+                        Learn more <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </a>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-surface p-padding-card border border-outline-variant hover:border-secondary transition-all group">
+                    <div class="w-12 h-12 bg-primary-container text-primary-fixed flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                    </div>
+                    <h3 class="font-headline-sm text-headline-sm mb-4 text-on-surface">Role-Based Governance</h3>
+                    <p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                        Granular permission sets and multi-sig approval processes designed to prevent fraud and maintain strict corporate oversight.
+                    </p>
+                    <a class="text-secondary font-bold text-label-caps uppercase flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
+                        Learn more <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonial Section -->
+    <section class="py-24 px-margin-page bg-surface-container-lowest">
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-primary-container p-12 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 opacity-10">
+                    <span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex gap-1 mb-8">
+                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
+                    </div>
+                    <blockquote class="font-headline-md text-headline-md text-on-secondary mb-8 leading-relaxed">
+                        "AMS has completely transformed our approach to multi-entity consolidation. The level of transparency and the speed of our month-end close has seen a 40% efficiency gain since implementation. It is, quite simply, the only choice for serious financial leadership."
+                    </blockquote>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary">
+                            <img alt="Jonathan Sterling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA39agjJML7zQMaAztejSVdnHML6dRHC5hvs69W-XUQTIvBtDjZ7mA2HxsE70D3j5b4h2oECGLPK7R8Rna-MgTSsHNia7W8B-IOxeui6ZDLo09_mUPNjHla0AhGv8-EnxrY8uPo6UP1uB9W9lRRg37ZDTwEnQNgnkm-DiyGqaeSvJ0YIV9cnG_CNZHmuh3QcPWi7SQu0cJZ170NVeBwjh7YnyhFbXce7PgmTDk5JgeLMUxhTOIZteLVFcaZx0gcAzZLCTOFsBt6AbA">
+                        </div>
+                        <div>
+                            <p class="text-on-secondary font-bold font-body-lg text-body-lg">Jonathan Sterling</p>
+                            <p class="text-on-primary-container font-mono-label text-mono-label uppercase tracking-widest">Chief Financial Officer, Global Capital Partners</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Stats Section -->
+    <section class="py-16 bg-surface border-y border-outline-variant">
+        <div class="max-w-7xl mx-auto px-margin-page grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div class="text-center">
+                <p class="font-display-lg text-display-lg text-primary mb-2">$42B+</p>
+                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Assets Audited</p>
+            </div>
+            <div class="text-center">
+                <p class="font-display-lg text-display-lg text-primary mb-2">99.99%</p>
+                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Uptime SLA</p>
+            </div>
+            <div class="text-center">
+                <p class="font-display-lg text-display-lg text-primary mb-2">120+</p>
+                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Countries Supported</p>
+            </div>
+            <div class="text-center">
+                <p class="font-display-lg text-display-lg text-primary mb-2">Zero</p>
+                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Integrity Failures</p>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant py-stack-md">
+    <div class="px-margin-page max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex flex-col gap-2">
+            <p class="font-label-caps text-label-caps font-bold text-on-surface">ACCOUNTING MANAGEMENT SYSTEM</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">© 2026 Accounting Management System. All rights reserved.</p>
+        </div>
+        <div class="flex flex-wrap gap-x-8 gap-y-4 justify-center">
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Privacy Policy</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Terms of Service</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">System Status</a>
+            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Security Architecture</a>
+        </div>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                button.style.transform = 'translateY(-1px)';
+            });
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = 'translateY(0)';
+            });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                e.preventDefault();
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

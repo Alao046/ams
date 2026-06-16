@@ -18,6 +18,11 @@ spring:
       hibernate:
         format_sql: true
 
+  # Jackson Configuration - ignore unknown properties from Keycloak API
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+
   # Security & Keycloak Configuration
   security:
     oauth2:
@@ -38,3 +43,13 @@ spring:
 flowable:
   async-executor-activate: true
   database-schema-update: true
+
+# Keycloak Admin Configuration
+keycloak:
+  base-url: ${KEYCLOAK_BASE_URL:http://localhost:8080}
+  realm: ams
+  base-realm: master
+  admin-client-id: admin-cli-client
+  admin-client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:2WFVHBXQXDWS3rV47I5XI4YrPsI3rxiq}
+  client-id: ams
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C}
