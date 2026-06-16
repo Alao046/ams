@@ -63,758 +63,1062 @@
                     },
                     fontFamily:{"headline":["Inter","sans-serif"],"body":["Inter","sans-serif"],"label":["Inter","sans-serif"]},
                     animation:{
-                        'fade-in':'fadeIn 0.3s ease-out','modal-in':'modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1)',
-                        'slide-in':'slideIn 0.35s cubic-bezier(0.34,1.56,0.64,1)',
-                        'toast-in':'toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1)','toast-out':'toastOut 0.3s ease-in forwards',
+                        'fade-in':'fadeIn 0.3s ease-out',
+                        'panel-in':'panelIn 0.32s cubic-bezier(0.22,1,0.36,1)',
+                        'overlay-in':'overlayIn 0.22s ease-out',
+                        'toast-in':'toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                        'toast-out':'toastOut 0.3s ease-in forwards',
+                        'card-in':'cardIn 0.28s ease-out',
                     },
                     keyframes:{
                         fadeIn:{from:{opacity:0},to:{opacity:1}},
-                        modalIn:{from:{opacity:0,transform:'translateY(20px) scale(0.97)'},to:{opacity:1,transform:'translateY(0) scale(1)'}},
-                        slideIn:{from:{opacity:0,transform:'translateX(100%)'},to:{opacity:1,transform:'translateX(0)'}},
-                        toastIn:{from:{opacity:0,transform:'translateY(12px) scale(0.95)'},to:{opacity:1,transform:'translateY(0) scale(1)'}},
-                        toastOut:{from:{opacity:1,transform:'translateY(0)'},to:{opacity:0,transform:'translateY(-8px)'}},
+                        panelIn:{from:{opacity:0,transform:'scale(0.96) translateY(12px)'},to:{opacity:1,transform:'scale(1) translateY(0)'}},
+                        overlayIn:{from:{opacity:0},to:{opacity:1}},
+                        toastIn:{from:{opacity:0,transform:'translateX(12px)'},to:{opacity:1,transform:'translateX(0)'}},
+                        toastOut:{from:{opacity:1},to:{opacity:0,transform:'translateX(12px)'}},
+                        cardIn:{from:{opacity:0,transform:'translateY(6px)'},to:{opacity:1,transform:'translateY(0)'}},
                     }
                 }
             }
         }
     </script>
     <style>
-        body{font-family:'Inter',sans-serif;background-color:#f7f9fb}
-        h1,h2,h3,.font-headline{font-family:'Inter',sans-serif;letter-spacing:-0.02em}
-        *,*::before,*::after{transition-property:background-color,border-color,color,box-shadow,opacity;transition-duration:.2s;transition-timing-function:cubic-bezier(.2,0,0,1)}
-        .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;transition:none !important;line-height:1;display:inline-flex;align-items:center;justify-content:center}
-        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#e2e8f0;border-radius:10px}::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:10px}::-webkit-scrollbar-thumb:hover{background:#5b6e8c}
-        .form-field{background:#f2f4f6;border:1.5px solid transparent;border-radius:.75rem;width:100%;padding:.625rem .875rem;font-size:.875rem;color:#191c1e;outline:none}
-        .form-field::placeholder{color:#8a8fa6}
-        .form-field:focus{background:#fff;border-color:#000000;box-shadow:0 0 0 3px rgba(0,0,0,.1)}
-        .form-field:hover:not(:focus){border-color:#c3c6d7;background:#eceef0}
-        .form-field-icon{padding-left:2.5rem}
-        .form-field-error{border-color:#ba1a1a !important;box-shadow:0 0 0 3px rgba(186,26,26,.12) !important}
-        .modal-overlay{animation:overlayIn .25s ease-out forwards}
-        .modal-panel{animation:modalIn .35s cubic-bezier(.34,1.56,.64,1) forwards}
-        .slide-panel{animation:slideIn .35s cubic-bezier(.34,1.56,.64,1) forwards}
-        @keyframes overlayIn{from{opacity:0}to{opacity:1}}
-        .manage-tab{display:none}.manage-tab.active{display:block}
-        .tab-btn{font-size:.75rem;font-weight:600;padding:.375rem .75rem;border-radius:.5rem;color:#434655;border:none;background:transparent;cursor:pointer}
-        .tab-btn.active{background:#000000;color:#fff}
-        .strength-bar{height:3px;border-radius:99px}
-        .attr-chip{display:inline-flex;align-items:center;gap:.25rem;background:rgba(0,0,0,.08);color:#000000;font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:99px;border:1px solid rgba(0,0,0,.15)}
-        .toast-entering{animation:toastIn .4s cubic-bezier(.34,1.56,.64,1) forwards}
-        .toast-leaving{animation:toastOut .3s ease-in forwards}
-        .step-dot{width:6px;height:6px;border-radius:99px;background:#c3c6d7}
-        .step-dot.active{background:#000000;transform:scale(1.4)}
-        .form-section{display:none}.form-section.active{display:block}
-        @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+        body{font-family:'Inter',sans-serif;background-color:#f2f4f6}
+
+        /* Scrollbar */
+        ::-webkit-scrollbar{width:5px;height:5px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:#c3c6d7;border-radius:99px}
+        ::-webkit-scrollbar-thumb:hover{background:#8a8fa6}
+
+        /* Sidebar — always open */
+        #sidebar{width:180px}
+
+        /* Form fields */
+        .ff{background:#f2f4f6;border:1.5px solid transparent;border-radius:.625rem;width:100%;padding:.55rem .85rem;font-size:.875rem;color:#191c1e;outline:none;transition:background .15s,border-color .15s,box-shadow .15s}
+        .ff::placeholder{color:#8a8fa6}
+        .ff:focus{background:#fff;border-color:#000;box-shadow:0 0 0 3px rgba(0,0,0,.09)}
+        .ff:hover:not(:focus){background:#e8eaec;border-color:#c3c6d7}
+        .ff-icon{padding-left:2.5rem}
+        .ff-err{border-color:#ba1a1a !important;box-shadow:0 0 0 3px rgba(186,26,26,.1) !important}
+
+        /* Overlay */
+        .ov-anim{animation:overlayIn .22s ease-out}
+
+        /* Panel animation */
+        .pn-anim{animation:panelIn .32s cubic-bezier(.22,1,.36,1)}
+
+        /* Step wizard */
+        .step-sec{display:none}.step-sec.active{display:flex;flex-direction:column;gap:1.25rem}
+        .sdot{width:8px;height:8px;border-radius:99px;background:#c3c6d7;transition:all .2s}
+        .sdot.active{background:#000;width:22px}
+
+        /* Manage tabs (vertical) */
+        .vtab-pane{display:none}.vtab-pane.active{display:block}
+        .vtab-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:.6rem .5rem;border-radius:.625rem;cursor:pointer;color:#76777d;font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;transition:background .15s,color .15s;border:none;background:transparent;width:100%}
+        .vtab-btn.active{background:#000;color:#fff}
+
+        /* Attr chips */
+        .achip{display:inline-flex;align-items:center;gap:.3rem;background:rgba(0,0,0,.07);color:#000;font-size:.68rem;font-weight:600;padding:.22rem .65rem;border-radius:.375rem;border:1px solid rgba(0,0,0,.12)}
+
+        /* Strength bar */
+        .sbar{height:4px;border-radius:99px;flex:1;background:#c3c6d7;transition:background .3s}
+
+        /* Toast */
+        .toast-in{animation:toastIn .4s cubic-bezier(.34,1.56,.64,1)}
+        .toast-out{animation:toastOut .3s ease-in forwards}
+
+        /* User card hover */
+        .user-row{transition:background .15s,box-shadow .15s}
+        .user-row:hover{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+
+        @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+        .shake{animation:shake .35s ease}
+
+        /* Material icons baseline */
+        .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;line-height:1;display:inline-flex;align-items:center;justify-content:center}
     </style>
 </head>
-<body class="bg-surface text-on-surface antialiased">
+<body class="bg-surface-container text-on-surface antialiased min-h-screen">
 
-<div id="toastArea" class="fixed top-20 right-4 z-[200] flex flex-col gap-2 pointer-events-none"></div>
+<!-- ── FLASH / TOAST DATA ── -->
+<div id="toastArea" class="fixed bottom-6 right-6 z-[300] flex flex-col-reverse gap-2 pointer-events-none"></div>
 <div th:if="${successMessage}" id="successFlash" th:attr="data-msg=${successMessage}" hidden></div>
 <div th:if="${errorMessage}"   id="errorFlash"   th:attr="data-msg=${errorMessage}"   hidden></div>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
     const REALM_GROUPS = /*[[${groups != null and !#lists.isEmpty(groups) ? groups.![name] : {}}]]*/ [];
-
     /*]]>*/
 </script>
 
-<!-- NAV -->
-<header class="sticky top-0 z-50 w-full bg-white/85 backdrop-blur-xl border-b border-outline-variant/20 shadow-sm h-16 flex justify-between items-center px-6 lg:px-10">
-    <div class="flex items-center gap-6 lg:gap-10">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-md shadow-primary/20">
-                <img alt="Accounting Management System" class="w-[48px] h-[40px] rounded-lg mb-4" th:src="@{/images/logoams.png}">
-            </div>
-            <div>
-                <h1 class="text-xl font-bold text-gray-800 tracking-tight font-headline">AMS</h1>
-                <p class="text-[11px] font-medium text-gray-500 tracking-wide uppercase">Administration</p>
-            </div>
-        </div>
-        <form th:action="@{/admin/users}" method="get" class="relative hidden md:block w-80 lg:w-96">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-            <input type="hidden" name="page" value="0"/>
-            <input type="text" name="search" th:value="${search}" placeholder="Search by name, email or username…"
-                   class="w-full bg-surface-container-low border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/30 placeholder:text-on-surface-variant/60 shadow-inner">
-        </form>
-    </div>
-    <div class="flex items-center gap-3 lg:gap-5">
-        <button id="logoutBtn" class="p-2 text-on-surface-variant hover:text-error rounded-full hover:bg-surface-container-high">
-            <span class="material-symbols-outlined">logout</span>
-        </button>
-        <div class="h-7 w-px bg-outline-variant/30 mx-1"></div>
-        <div class="flex items-center gap-3 cursor-pointer">
-            <div class="text-right hidden sm:block">
-                <p th:text="${userName}" class="text-sm font-semibold font-headline text-on-surface">Admin</p>
-                <p class="text-[10px] text-on-surface-variant uppercase tracking-wider font-medium">System Admin</p>
-            </div>
-            <div class="w-10 h-10 rounded-full ring-2 ring-primary/20 flex items-center justify-center bg-primary text-white font-bold text-sm shrink-0">
-                <span th:text="${#strings.substring(userName,0,1).toUpperCase()
-                               + (#strings.contains(userName,' ')
-                                  ? #strings.substring(userName,userName.indexOf(' ')+1,userName.indexOf(' ')+2).toUpperCase()
-                                  : '')}">AD</span>
-            </div>
-        </div>
-    </div>
-</header>
+<!-- ═══════════════════════════════════════════════
+     LAYOUT SHELL: sidebar + content area
+═══════════════════════════════════════════════ -->
+<div class="flex min-h-screen">
 
-<!-- MAIN -->
-<main class="w-full px-6 lg:px-10 py-8 lg:py-10 min-h-screen animate-fade-in">
-    <div class="flex flex-col md:flex-row justify-between md:items-end gap-5 mb-10">
-        <div>
-            <h2 class="text-3xl lg:text-4xl font-extrabold font-headline tracking-tight text-on-surface">User Manager</h2>
-            <p class="text-on-surface-variant mt-1 text-base lg:text-lg font-medium">
-                Manage users and group permissions
-                <span class="ml-2 text-xs font-mono bg-primary/10 text-primary px-2 py-0.5 rounded-full" th:text="${realmName}">realm</span>
-            </p>
+    <!-- ── SIDEBAR ── -->
+    <aside id="sidebar" class="shrink-0 bg-surface-container-lowest border-r border-outline-variant/20 flex flex-col h-screen sticky top-0 overflow-hidden z-40">
+
+        <!-- Logo area -->
+        <div class="flex items-center gap-3 px-4 py-5 border-b border-outline-variant/10 shrink-0 min-h-[68px]">
+            <div class="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-md shrink-0">
+                <img alt="AMS" class="w-[36px] h-[32px] rounded-lg" th:src="@{/images/logoams.png}">
+            </div>
+            <div class="whitespace-nowrap overflow-hidden">
+                <p class="text-sm font-bold text-on-surface font-headline">AMS</p>
+                <p class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-widest">Administration</p>
+            </div>
         </div>
-        <div class="flex gap-3">
-            <button onclick="openGroupsModal()"
-                    class="px-5 py-2.5 rounded-xl text-sm font-semibold text-primary border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high shadow-sm flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-lg">folder_shared</span> Manage Groups
+
+        <!-- Nav items (presentational — add links as needed) -->
+        <nav class="flex-1 py-3 flex flex-col gap-1 px-2 overflow-y-auto">
+            <div class="vtab-btn active" title="Users">
+                <span class="material-symbols-outlined text-[22px]">manage_accounts</span>
+                <span>Users</span>
+            </div>
+            <div class="vtab-btn" title="Groups">
+                <span class="material-symbols-outlined text-[22px]">folder_shared</span>
+                <span>Groups</span>
+            </div>
+        </nav>
+
+        <!-- Bottom: user avatar + logout -->
+        <div class="shrink-0 border-t border-outline-variant/10 px-2 py-3 flex flex-col gap-2">
+            <button id="logoutBtn" class="vtab-btn hover:bg-error/10 hover:text-error" title="Sign out">
+                <span class="material-symbols-outlined text-[20px]">logout</span>
+                <span>Sign out</span>
             </button>
-            <button onclick="openCreateModal()"
-                    class="px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-primary to-primary-container shadow-md hover:shadow-lg hover:scale-[1.02] transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-xl">add_circle</span> Create User
-            </button>
+            <div class="flex items-center gap-3 px-1 py-2">
+                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shrink-0">
+                    <span th:text="${#strings.substring(userName,0,1).toUpperCase()
+                                   + (#strings.contains(userName,' ')
+                                      ? #strings.substring(userName,userName.indexOf(' ')+1,userName.indexOf(' ')+2).toUpperCase()
+                                      : '')}">AD</span>
+                </div>
+                <div class="overflow-hidden">
+                    <p th:text="${userName}" class="text-xs font-semibold text-on-surface truncate">Admin</p>
+                    <p class="text-[10px] text-on-surface-variant uppercase tracking-wider">System Admin</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </aside>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 mb-12">
-        <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20">
-                    <span class="material-symbols-outlined text-3xl">group</span>
-                </div>
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/70">Total Users</p>
-                    <p class="text-4xl font-extrabold font-headline text-on-surface" th:text="${totalUsers}">0</p>
-                    <p class="text-[11px] text-tertiary/70 mt-0.5">All provisioned accounts</p>
-                </div>
-            </div>
-        </div>
-        <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary group-hover:bg-tertiary/20">
-                    <span class="material-symbols-outlined text-3xl">person_check</span>
-                </div>
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/70">Active Users</p>
-                    <p class="text-4xl font-extrabold font-headline text-on-surface" th:text="${totalActive}">0</p>
-                    <p class="text-[11px] text-tertiary/70 mt-0.5" th:text="${totalUsers > 0 ? #numbers.formatDecimal(totalActive * 100.0 / totalUsers, 0, 0) + '% active rate' : '—'}">—</p>
-                </div>
-            </div>
-        </div>
-        <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary/20">
-                    <span class="material-symbols-outlined text-3xl">person_off</span>
-                </div>
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/70">Inactive Users</p>
-                    <p class="text-4xl font-extrabold font-headline text-on-surface" th:text="${totalUsers - totalActive}">0</p>
-                    <p class="text-[11px] text-on-surface-variant/60 mt-0.5">Disabled accounts</p>
-                </div>
-            </div>
-        </div>
-        <div class="group bg-surface-container-lowest rounded-2xl border border-outline-variant/10 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center text-error group-hover:bg-error/20">
-                    <span class="material-symbols-outlined text-3xl">folder_shared</span>
-                </div>
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/70">Realm Groups</p>
-                    <p class="text-4xl font-extrabold font-headline text-on-surface" th:text="${groups.size()}">0</p>
-                    <p class="text-[11px] text-on-surface-variant/60 mt-0.5" th:text="${realmName}">realm</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- ── MAIN CONTENT ── -->
+    <div class="flex-1 flex flex-col min-w-0">
 
-    <!-- Table -->
-    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-lg overflow-hidden">
-        <div class="px-6 lg:px-8 py-5 border-b border-outline-variant/10 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center gap-2 flex-wrap">
-                <h3 class="font-headline font-bold text-xl text-on-surface">Directory</h3>
-                <span class="bg-primary/10 text-primary text-xs font-semibold px-2.5 py-0.5 rounded-full" th:text="${totalUsers} + ' users'">0 users</span>
-                <span th:if="${search != null and !search.isBlank()}" class="bg-tertiary/10 text-tertiary text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[13px]">search</span>
-                    <span th:text="'&quot;' + search + '&quot;'"></span>
-                    <a th:href="@{/admin/users}" class="hover:text-error ml-0.5"><span class="material-symbols-outlined text-[13px]">close</span></a>
-                </span>
+        <!-- Top bar -->
+        <header class="sticky top-0 z-30 bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant/15 h-[68px] flex items-center px-6 gap-4 shrink-0">
+            <!-- Search -->
+            <form th:action="@{/admin/users}" method="get" class="relative flex-1 max-w-md">
+                <input type="hidden" name="page" value="0"/>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/60 text-lg pointer-events-none">search</span>
+                <input type="text" name="search" th:value="${search}"
+                       placeholder="Search users…"
+                       class="ff ff-icon rounded-full py-2 pl-10 pr-4 text-sm w-full">
+            </form>
+
+            <div class="flex items-center gap-2 ml-auto">
+                <button onclick="openGroupsModal()"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-on-surface-variant border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high">
+                    <span class="material-symbols-outlined text-[18px]">folder_shared</span>
+                    <span class="hidden sm:inline">Groups</span>
+                </button>
+                <button onclick="openCreateModal()"
+                        class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:opacity-90">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    <span class="hidden sm:inline">New User</span>
+                </button>
             </div>
-            <div class="flex items-center gap-2">
-                <form th:action="@{/admin/users}" method="get" class="md:hidden flex items-center gap-2">
-                    <input type="hidden" name="page" value="0"/>
-                    <input type="text" name="search" th:value="${search}" placeholder="Search…" class="form-field text-xs py-1.5 px-3 rounded-full w-36">
-                    <button type="submit" class="p-1.5 text-primary bg-primary/10 hover:bg-primary/20 rounded-lg"><span class="material-symbols-outlined text-sm">search</span></button>
-                </form>
-                <a th:href="@{/admin/users(search=${search})}" class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-xl" title="Refresh">
-                    <span class="material-symbols-outlined">refresh</span>
-                </a>
+        </header>
+
+        <!-- Page body -->
+        <main class="flex-1 px-6 py-8 animate-fade-in">
+
+            <!-- Page title -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-extrabold font-headline tracking-tight text-on-surface">Accounting Management System</h1>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant/50">corporate_fare</span>
+                    <p class="text-sm font-medium text-on-surface-variant/70">User Directory</p>
+                </div>
             </div>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse min-w-[760px]">
-                <thead>
-                <tr class="bg-surface-container-low/40 border-b border-outline-variant/20">
-                    <th class="px-6 lg:px-8 py-4 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/60">User</th>
-                    <th class="px-6 lg:px-8 py-4 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/60">Email</th>
-                    <th class="px-6 lg:px-8 py-4 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/60">Username</th>
-                    <th class="px-6 lg:px-8 py-4 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/60">Status</th>
-                    <th class="px-6 lg:px-8 py-4 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant/60 text-right">Actions</th>
-                </tr>
-                </thead>
-                <tbody class="divide-y divide-outline-variant/5">
-                <tr th:each="user : ${users}" class="hover:bg-surface-container-low/50 group cursor-default">
-                    <td class="px-6 lg:px-8 py-4">
+
+            <!-- Stats row (4 inline tiles) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 px-5 py-4 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px] text-primary">group</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold font-headline leading-none text-on-surface" th:text="${totalUsers}">0</p>
+                        <p class="text-[11px] font-semibold text-on-surface-variant mt-0.5 uppercase tracking-wide">Total</p>
+                    </div>
+                </div>
+                <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 px-5 py-4 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px] text-tertiary">person_check</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold font-headline leading-none text-on-surface" th:text="${totalActive}">0</p>
+                        <p class="text-[11px] font-semibold text-on-surface-variant mt-0.5 uppercase tracking-wide">Active</p>
+                    </div>
+                </div>
+                <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 px-5 py-4 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px] text-secondary">person_off</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold font-headline leading-none text-on-surface" th:text="${totalUsers - totalActive}">0</p>
+                        <p class="text-[11px] font-semibold text-on-surface-variant mt-0.5 uppercase tracking-wide">Inactive</p>
+                    </div>
+                </div>
+                <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 px-5 py-4 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px] text-error">folder_shared</span>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-extrabold font-headline leading-none text-on-surface" th:text="${groups.size()}">0</p>
+                        <p class="text-[11px] font-semibold text-on-surface-variant mt-0.5 uppercase tracking-wide">Groups</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User list panel -->
+            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/10 shadow-sm overflow-hidden">
+
+                <!-- Panel header -->
+                <div class="px-5 py-4 border-b border-outline-variant/10 flex items-center justify-between gap-3 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-on-surface">Accounts</span>
+                        <span class="bg-surface-container text-on-surface-variant text-xs font-semibold px-2 py-0.5 rounded" th:text="${totalUsers}">0</span>
+                        <span th:if="${search != null and !search.isBlank()}"
+                              class="flex items-center gap-1 bg-primary/8 text-primary text-xs font-semibold px-2 py-0.5 rounded">
+                            <span class="material-symbols-outlined text-[12px]">search</span>
+                            <span th:text="${search}"></span>
+                            <a th:href="@{/admin/users}" class="ml-0.5 opacity-60 hover:opacity-100"><span class="material-symbols-outlined text-[12px]">close</span></a>
+                        </span>
+                    </div>
+                    <a th:href="@{/admin/users(search=${search})}"
+                       class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container rounded-lg" title="Refresh">
+                        <span class="material-symbols-outlined text-[18px]">refresh</span>
+                    </a>
+                </div>
+
+                <!-- Column headers -->
+                <div class="hidden md:grid grid-cols-[2fr_2fr_1.2fr_0.8fr_1.2fr_48px] gap-0 px-5 py-2.5 border-b border-outline-variant/10 bg-surface-container-low/50">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Name</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Email</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Status</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Group</span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50 text-center">Action</span>
+                </div>
+
+                <!-- User rows -->
+                <div class="divide-y divide-outline-variant/8">
+                    <div th:each="user : ${users}"
+                         class="user-row grid grid-cols-1 md:grid-cols-[2fr_2fr_1.2fr_0.8fr_1.2fr_48px] gap-3 md:gap-0 items-center px-5 py-3.5">
+
+                        <!-- Name + ID -->
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary/30 to-primary-container/50 flex items-center justify-center shrink-0 ring-2 ring-white shadow-sm">
-                                <span class="text-xs font-bold text-primary"
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center shrink-0 ring-1 ring-white">
+                                <span class="text-[11px] font-bold text-primary"
                                       th:text="${(user.firstName != null and !#strings.isEmpty(user.firstName) ? #strings.toUpperCase(#strings.substring(user.firstName,0,1)) : #strings.toUpperCase(#strings.substring(user.username,0,1))) + (user.lastName != null and !#strings.isEmpty(user.lastName) ? #strings.toUpperCase(#strings.substring(user.lastName,0,1)) : '')}">??</span>
                             </div>
                             <div>
-                                <p class="font-semibold text-sm text-on-surface" th:text="${(user.firstName != null ? user.firstName : '') + ' ' + (user.lastName != null ? user.lastName : '')}">Full Name</p>
-                                <p class="text-[10px] text-on-surface-variant/60 font-mono" th:text="${'ID: ' + #strings.substring(user.id,0,8) + '…'}">ID: …</p>
+                                <p class="text-sm font-semibold text-on-surface"
+                                   th:text="${(user.firstName != null ? user.firstName : '') + ' ' + (user.lastName != null ? user.lastName : '')}">Full Name</p>
+                                <p class="text-[10px] font-mono text-on-surface-variant/50"
+                                   th:text="${'·· ' + #strings.substring(user.id,0,8)}">ID</p>
                             </div>
                         </div>
-                    </td>
-                    <td class="px-6 lg:px-8 py-4 text-sm text-on-surface-variant" th:text="${user.email != null ? user.email : '—'}">—</td>
-                    <td class="px-6 lg:px-8 py-4">
-                        <span class="text-xs font-mono bg-surface-container-low px-2 py-1 rounded-lg text-on-surface-variant" th:text="${user.username}">username</span>
-                    </td>
-                    <td class="px-6 lg:px-8 py-4">
-                        <div th:if="${user.enabled == true}" class="flex items-center gap-2">
-                            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span></span>
-                            <span class="text-xs font-semibold text-tertiary">Active</span>
-                        </div>
-                        <div th:unless="${user.enabled == true}" class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-outline/60"></span>
-                            <span class="text-xs font-semibold text-on-surface-variant/60">Inactive</span>
-                        </div>
-                    </td>
-                    <td class="px-6 lg:px-8 py-4 text-right">
-                        <button type="button"
-                                th:attr="data-user-id=${user.id},data-username=${user.username},data-email=${user.email != null ? user.email : ''},data-firstname=${user.firstName != null ? user.firstName : ''},data-lastname=${user.lastName != null ? user.lastName : ''},data-enabled=${user.enabled == true}"
-                                onclick="openManageModal(this)"
-                                class="text-primary text-sm font-semibold hover:underline underline-offset-4 flex items-center gap-1 justify-end w-full group-hover:gap-1.5 transition-all">
-                            Manage <span class="material-symbols-outlined text-sm">chevron_right</span>
-                        </button>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(users)}">
-                    <td colspan="5" class="px-6 py-16 text-center">
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="w-16 h-16 rounded-2xl bg-surface-container-low flex items-center justify-center text-on-surface-variant/40"><span class="material-symbols-outlined text-4xl">manage_search</span></div>
-                            <p class="font-semibold text-on-surface/60" th:text="${search != null and !search.isBlank() ? 'No users found for &quot;' + search + '&quot;' : 'No users provisioned yet'}">No users</p>
-                            <p class="text-xs text-on-surface-variant/50" th:text="${search != null and !search.isBlank() ? 'Try a different search term.' : 'Click &quot;Create User&quot; to get started.'}">—</p>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- Pagination -->
-        <div class="px-6 lg:px-8 py-4 bg-surface-container-low/20 border-t border-outline-variant/10 flex flex-wrap justify-between items-center gap-3">
-            <p class="text-xs text-on-surface-variant font-medium" th:text="'Showing ' + fromIndex + '–' + toIndex + ' of ' + totalUsers + ' users'">Showing …</p>
-            <div class="flex items-center gap-2">
-                <a th:if="${currentPage > 0}" th:href="@{/admin/users(page=${currentPage - 1}, search=${search}, size=${pageSize})}" class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-outline-variant/30 bg-surface hover:bg-surface-container-high shadow-sm flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">chevron_left</span> Prev
-                </a>
-                <span th:unless="${currentPage > 0}" class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-outline-variant/10 bg-surface-container-low text-on-surface-variant/30 cursor-not-allowed flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">chevron_left</span> Prev
-                </span>
-                <span class="text-xs font-semibold text-on-surface-variant px-2" th:text="(currentPage + 1) + ' / ' + totalPages">1 / 1</span>
-                <a th:if="${currentPage + 1 < totalPages}" th:href="@{/admin/users(page=${currentPage + 1}, search=${search}, size=${pageSize})}" class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-outline-variant/30 bg-surface hover:bg-surface-container-high shadow-sm flex items-center gap-1">
-                    Next <span class="material-symbols-outlined text-sm">chevron_right</span>
-                </a>
-                <span th:unless="${currentPage + 1 < totalPages}" class="px-4 py-1.5 text-xs font-semibold rounded-lg border border-outline-variant/10 bg-surface-container-low text-on-surface-variant/30 cursor-not-allowed flex items-center gap-1">
-                    Next <span class="material-symbols-outlined text-sm">chevron_right</span>
-                </span>
-            </div>
-        </div>
-    </div>
-</main>
-<div class="text-center text-[10px] text-on-surface-variant/40 py-6 border-t border-outline-variant/10 mt-4">AMS · Secure Enterprise User Management & Financial Governance</div>
+
+                        <!-- Email -->
+                        <div class="text-sm text-on-surface-variant" th:text="${user.email != null ? user.email : '—'}">—</div>
 
 
-<!-- ════════════════ CREATE USER MODAL ════════════════ -->
-<div id="createUserModal" class="fixed inset-0 z-[100] items-end sm:items-center justify-center p-0 sm:p-4 hidden" role="dialog" aria-modal="true">
-    <div class="modal-overlay absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeCreateModal()"></div>
-    <div class="modal-panel relative w-full sm:max-w-2xl bg-surface-container-lowest rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[86vh]">
-        <div class="flex items-start justify-between px-6 pt-6 pb-5 border-b border-outline-variant/10 shrink-0">
-            <div class="flex items-center gap-4">
-                <div class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0"><span class="material-symbols-outlined text-2xl">person_add</span></div>
-                <div><h3 class="font-headline text-xl font-bold text-on-surface">Create New User</h3><p class="text-xs text-on-surface-variant mt-0.5">Provision a new Keycloak account</p></div>
+                        <!-- Status -->
+                        <div class="flex items-center">
+                            <div th:if="${user.enabled == true}" class="inline-flex items-center gap-1.5">
+                                <span class="relative flex h-1.5 w-1.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-60"></span>
+                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-tertiary"></span>
+                                </span>
+                                <span class="text-xs font-semibold text-tertiary">Active</span>
+                            </div>
+                            <div th:unless="${user.enabled == true}" class="inline-flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-outline/50"></span>
+                                <span class="text-xs text-on-surface-variant/50 font-semibold">Inactive</span>
+                            </div>
+                        </div>
+
+                        <!-- Groups: from userGroupsMap built in controller -->
+                        <div class="flex flex-wrap items-center gap-1">
+                            <th:block th:with="uGroups=${userGroupsMap != null ? userGroupsMap[user.id] : null}">
+                                <th:block th:if="${uGroups != null and !#lists.isEmpty(uGroups)}"
+                                          th:each="grp : ${uGroups}">
+                                    <span class="inline-flex items-center gap-1 text-[10px] font-semibold bg-secondary/10 text-secondary px-1.5 py-0.5 rounded"
+                                          th:text="${grp}">group</span>
+                                </th:block>
+                                <span th:if="${uGroups == null or #lists.isEmpty(uGroups)}"
+                                      class="text-xs text-on-surface-variant/30">—</span>
+                            </th:block>
+                        </div>
+
+                        <!-- Action: pen icon -->
+                        <div class="flex items-center justify-center">
+                            <button type="button"
+                                    th:attr="data-user-id=${user.id},data-username=${user.username},data-email=${user.email != null ? user.email : ''},data-firstname=${user.firstName != null ? user.firstName : ''},data-lastname=${user.lastName != null ? user.lastName : ''},data-enabled=${user.enabled == true}"
+                                    onclick="openManageModal(this)"
+                                    title="Manage user"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div th:if="${#lists.isEmpty(users)}" class="px-5 py-16 text-center">
+                        <div class="inline-flex w-14 h-14 rounded-xl bg-surface-container items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-3xl text-on-surface-variant/30">manage_search</span>
+                        </div>
+                        <p class="text-sm font-semibold text-on-surface/50"
+                           th:text="${search != null and !search.isBlank() ? 'No results for &quot;' + search + '&quot;' : 'No accounts yet'}">No users</p>
+                        <p class="text-xs text-on-surface-variant/40 mt-1"
+                           th:text="${search != null and !search.isBlank() ? 'Try a different search term.' : 'Use &quot;New User&quot; above to get started.'}">—</p>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="px-5 py-3.5 border-t border-outline-variant/10 bg-surface-container-low/20 flex items-center justify-between gap-3 flex-wrap">
+                    <p class="text-xs text-on-surface-variant"
+                       th:text="'Showing ' + fromIndex + '–' + toIndex + ' of ' + totalUsers">Showing …</p>
+                    <div class="flex items-center gap-1.5">
+                        <a th:if="${currentPage > 0}"
+                           th:href="@{/admin/users(page=${currentPage - 1}, search=${search}, size=${pageSize})}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-outline-variant/30 bg-surface hover:bg-surface-container-high flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span> Prev
+                        </a>
+                        <span th:unless="${currentPage > 0}"
+                              class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-outline-variant/10 bg-surface-container-low text-on-surface-variant/30 cursor-not-allowed flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span> Prev
+                        </span>
+                        <span class="text-xs font-mono text-on-surface-variant px-2"
+                              th:text="(currentPage + 1) + ' / ' + totalPages">1/1</span>
+                        <a th:if="${currentPage + 1 < totalPages}"
+                           th:href="@{/admin/users(page=${currentPage + 1}, search=${search}, size=${pageSize})}"
+                           class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-outline-variant/30 bg-surface hover:bg-surface-container-high flex items-center gap-0.5">
+                            Next <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </a>
+                        <span th:unless="${currentPage + 1 < totalPages}"
+                              class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-outline-variant/10 bg-surface-container-low text-on-surface-variant/30 cursor-not-allowed flex items-center gap-0.5">
+                            Next <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </span>
+                    </div>
+                </div>
             </div>
-            <button onclick="closeCreateModal()" class="p-1.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high shrink-0 ml-4"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="px-6 pt-4 pb-2 shrink-0 flex items-center gap-3">
-            <div class="flex gap-1.5">
-                <div id="cu-dot-1" class="step-dot active"></div><div id="cu-dot-2" class="step-dot"></div><div id="cu-dot-3" class="step-dot"></div>
+
+            <!-- Footer -->
+            <p class="text-center text-[10px] text-on-surface-variant/30 mt-8 pb-4">
+                AMS · Secure Enterprise User Management & Financial Governance
+            </p>
+        </main>
+    </div><!-- end content -->
+</div><!-- end layout shell -->
+
+
+<!-- ════════════════════════════════════════════════════
+     CREATE USER — split-panel centered dialog
+════════════════════════════════════════════════════ -->
+<div id="createUserModal" class="fixed inset-0 z-[100] items-center justify-center p-4 hidden" role="dialog" aria-modal="true">
+    <div class="ov-anim absolute inset-0 bg-on-surface/50 backdrop-blur-sm" onclick="closeCreateModal()"></div>
+    <div class="pn-anim relative w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden flex max-h-[90vh]">
+
+        <!-- Left accent rail -->
+        <div class="hidden sm:flex flex-col items-center py-8 px-5 bg-primary gap-6 shrink-0 w-[130px]">
+            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-2xl">person_add</span>
             </div>
-            <p id="cu-step-label" class="text-xs font-semibold text-on-surface-variant/70 uppercase tracking-wider">Step 1 of 3 — Identity</p>
+            <div class="text-center">
+                <p class="text-white font-bold text-sm font-headline">New Account</p>
+                <p class="text-white/60 text-[10px] mt-1 leading-relaxed">Provision a<br>Keycloak user</p>
+            </div>
+            <!-- Step indicators (vertical) -->
+            <div class="mt-auto flex flex-col items-center gap-2">
+                <div id="cu-dot-1" class="sdot active"></div>
+                <div id="cu-dot-2" class="sdot"></div>
+                <div id="cu-dot-3" class="sdot"></div>
+            </div>
+            <p id="cu-step-label" class="text-[10px] text-white/60 text-center uppercase tracking-widest font-semibold">1 of 3</p>
         </div>
-        <form id="createUserForm" th:action="@{/admin/create-user}" method="post" class="overflow-y-auto flex-1 px-6 pb-2 pt-3">
-            <input type="hidden" name="realm" th:value="${realmName}"/>
-            <!-- Step 1 -->
-            <div id="cu-step-1" class="form-section active space-y-5">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label for="cu-firstName" class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">First Name <span class="text-error">*</span></label>
+
+        <!-- Right form area -->
+        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-outline-variant/10 shrink-0">
+                <div>
+                    <h3 class="font-headline font-bold text-lg text-on-surface">Create New User</h3>
+                    <p id="cu-step-sublabel" class="text-xs text-on-surface-variant mt-0.5">Step 1 — Identity</p>
+                </div>
+                <button onclick="closeCreateModal()" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Form steps -->
+            <form id="createUserForm" th:action="@{/admin/create-user}" method="post" class="flex-1 overflow-y-auto px-6 py-5">
+                <input type="hidden" name="realm" th:value="${realmName}"/>
+
+                <!-- Step 1: Identity -->
+                <div id="cu-step-1" class="step-sec active">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label for="cu-firstName" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">First Name <span class="text-error">*</span></label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">badge</span>
+                                <input type="text" id="cu-firstName" name="firstName" required placeholder="e.g. Marcus" class="ff ff-icon">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label for="cu-lastName" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Last Name <span class="text-error">*</span></label>
+                            <div class="relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">badge</span>
+                                <input type="text" id="cu-lastName" name="lastName" required placeholder="e.g. Chen" class="ff ff-icon">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="cu-username" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Username <span class="text-error">*</span></label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">badge</span>
-                            <input type="text" id="cu-firstName" name="firstName" required placeholder="e.g. Marcus" class="form-field form-field-icon">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">alternate_email</span>
+                            <input type="text" id="cu-username" name="username" required placeholder="e.g. marcus.chen" autocomplete="off" class="ff ff-icon">
                         </div>
+                        <p class="text-[11px] text-on-surface-variant/50 pl-1">Lowercase letters, numbers, dots, and underscores only.</p>
                     </div>
-                    <div class="space-y-1.5">
-                        <label for="cu-lastName" class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Last Name <span class="text-error">*</span></label>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="cu-email" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Email Address <span class="text-error">*</span></label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">badge</span>
-                            <input type="text" id="cu-lastName" name="lastName" required placeholder="e.g. Chen" class="form-field form-field-icon">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">mail</span>
+                            <input type="email" id="cu-email" name="email" required placeholder="e.g. marcus@company.com" autocomplete="off" class="ff ff-icon">
                         </div>
                     </div>
                 </div>
-                <div class="space-y-1.5">
-                    <label for="cu-username" class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Username <span class="text-error">*</span></label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">alternate_email</span>
-                        <input type="text" id="cu-username" name="username" required placeholder="e.g. marcus.chen" autocomplete="off" class="form-field form-field-icon">
+
+                <!-- Step 2: Security -->
+                <div id="cu-step-2" class="step-sec">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="cu-password" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Password <span class="text-error">*</span></label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">lock</span>
+                            <input type="password" id="cu-password" name="password" required placeholder="Min. 8 characters" class="ff ff-icon pr-11" oninput="cuEvalStrength(this.value)">
+                            <button type="button" onclick="cuTogglePwd('cu-password','cu-pwd-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface-variant">
+                                <span id="cu-pwd-icon" class="material-symbols-outlined text-[17px]">visibility</span>
+                            </button>
+                        </div>
+                        <div class="flex gap-1 mt-1">
+                            <div id="cu-bar1" class="sbar"></div>
+                            <div id="cu-bar2" class="sbar"></div>
+                            <div id="cu-bar3" class="sbar"></div>
+                            <div id="cu-bar4" class="sbar"></div>
+                        </div>
+                        <p id="cu-strength-label" class="text-[11px] text-on-surface-variant/50">Enter a password to check its strength</p>
                     </div>
-                    <p class="text-[11px] text-on-surface-variant/60 pl-1">Lowercase, numbers, dots and underscores only.</p>
-                </div>
-                <div class="space-y-1.5">
-                    <label for="cu-email" class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Email Address <span class="text-error">*</span></label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">mail</span>
-                        <input type="email" id="cu-email" name="email" required placeholder="e.g. marcus@company.com" autocomplete="off" class="form-field form-field-icon">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="cu-confirm" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Confirm Password <span class="text-error">*</span></label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">lock_reset</span>
+                            <input type="password" id="cu-confirm" placeholder="Repeat password" class="ff ff-icon pr-11" oninput="cuCheckMatch()">
+                            <button type="button" onclick="cuTogglePwd('cu-confirm','cu-cpwd-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 hover:text-on-surface-variant">
+                                <span id="cu-cpwd-icon" class="material-symbols-outlined text-[17px]">visibility</span>
+                            </button>
+                        </div>
+                        <p id="cu-match-msg" class="text-[11px] pl-0.5 hidden"></p>
+                    </div>
+                    <div class="rounded-lg bg-primary/5 border border-primary/10 p-3.5 flex gap-3">
+                        <span class="material-symbols-outlined text-primary text-base shrink-0 mt-px">info</span>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">Min. <strong>8 characters</strong>, one uppercase, one number, one special character.</p>
                     </div>
                 </div>
+
+                <!-- Step 3: Attributes -->
+                <div id="cu-step-3" class="step-sec">
+                    <div class="rounded-lg bg-surface-container-low border border-outline-variant/10 p-3.5">
+                        <p class="text-xs text-on-surface-variant"><span class="font-semibold text-on-surface">Optional:</span> Add key-value pairs that map to Keycloak user attributes.</p>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Add Attribute</label>
+                        <div class="flex gap-2">
+                            <div class="relative flex-1">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">key</span>
+                                <input type="text" id="cu-attrKey" placeholder="Key (e.g. department)" class="ff ff-icon">
+                            </div>
+                            <div class="relative flex-1">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">data_object</span>
+                                <input type="text" id="cu-attrVal" placeholder="Value" class="ff ff-icon"
+                                       onkeydown="if(event.key==='Enter'){event.preventDefault();cuAddAttr();}">
+                            </div>
+                            <button type="button" onclick="cuAddAttr()"
+                                    class="shrink-0 px-4 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary font-semibold flex items-center">
+                                <span class="material-symbols-outlined text-[17px]">add</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cu-attrHidden"></div>
+                    <div id="cu-attrChips"
+                         class="flex flex-wrap gap-1.5 min-h-[2.5rem] rounded-lg border border-outline-variant/20 bg-surface-container-low/60 p-3">
+                        <span class="text-xs text-on-surface-variant/40 self-center">No attributes added yet</span>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Footer actions -->
+            <div class="shrink-0 px-6 py-4 border-t border-outline-variant/10 flex items-center gap-3">
+                <button id="cu-back" onclick="cuGoBack()"
+                        class="hidden items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-on-surface-variant border border-outline-variant/30 hover:bg-surface-container-high">
+                    <span class="material-symbols-outlined text-[17px]">arrow_back</span> Back
+                </button>
+                <button id="cu-cancel" onclick="closeCreateModal()"
+                        class="flex items-center px-4 py-2 rounded-lg text-sm font-semibold text-on-surface-variant border border-outline-variant/30 hover:bg-surface-container-high">
+                    Cancel
+                </button>
+                <button id="cu-next" onclick="cuGoNext()"
+                        class="ml-auto flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-primary hover:opacity-90">
+                    Next <span class="material-symbols-outlined text-[17px]">arrow_forward</span>
+                </button>
+                <button id="cu-submit" type="submit" form="createUserForm"
+                        class="ml-auto hidden items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold text-white bg-tertiary-container hover:opacity-90">
+                    <span class="material-symbols-outlined text-[17px]">check_circle</span> Create User
+                </button>
             </div>
-            <!-- Step 2 -->
-            <div id="cu-step-2" class="form-section space-y-5">
-                <div class="space-y-1.5">
-                    <label for="cu-password" class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Password <span class="text-error">*</span></label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">lock</span>
-                        <input type="password" id="cu-password" name="password" required placeholder="Min. 8 characters" class="form-field form-field-icon pr-12" oninput="cuEvalStrength(this.value)">
-                        <button type="button" onclick="cuTogglePwd('cu-password','cu-pwd-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface-variant">
-                            <span id="cu-pwd-icon" class="material-symbols-outlined text-[18px]">visibility</span>
-                        </button>
-                    </div>
-                    <div class="mt-2 space-y-1.5">
-                        <div class="flex gap-1">
-                            <div id="cu-bar1" class="strength-bar flex-1 bg-outline-variant/30"></div>
-                            <div id="cu-bar2" class="strength-bar flex-1 bg-outline-variant/30"></div>
-                            <div id="cu-bar3" class="strength-bar flex-1 bg-outline-variant/30"></div>
-                            <div id="cu-bar4" class="strength-bar flex-1 bg-outline-variant/30"></div>
-                        </div>
-                        <p id="cu-strength-label" class="text-[11px] text-on-surface-variant/60">Enter a password to check its strength</p>
-                    </div>
-                </div>
-                <div class="space-y-1.5">
-                    <label for="cu-confirm" class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Confirm Password <span class="text-error">*</span></label>
-                    <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">lock_reset</span>
-                        <input type="password" id="cu-confirm" placeholder="Repeat password" class="form-field form-field-icon pr-12" oninput="cuCheckMatch()">
-                        <button type="button" onclick="cuTogglePwd('cu-confirm','cu-cpwd-icon')" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 hover:text-on-surface-variant">
-                            <span id="cu-cpwd-icon" class="material-symbols-outlined text-[18px]">visibility</span>
-                        </button>
-                    </div>
-                    <p id="cu-match-msg" class="text-[11px] pl-0.5 hidden"></p>
-                </div>
-                <div class="rounded-xl bg-primary/5 border border-primary/10 p-4 flex gap-3">
-                    <span class="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">info</span>
-                    <p class="text-xs text-on-surface-variant leading-relaxed">Min. <strong>8 characters</strong>, one uppercase, one number, one special character.</p>
-                </div>
-            </div>
-            <!-- Step 3 -->
-            <div id="cu-step-3" class="form-section space-y-5">
-                <div class="rounded-xl bg-surface-container-low border border-outline-variant/10 p-4">
-                    <p class="text-xs text-on-surface-variant leading-relaxed"><span class="font-semibold text-on-surface">Optional:</span> Add key-value attributes that map to Keycloak user attributes.</p>
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Add Attribute</label>
-                    <div class="flex gap-2">
-                        <div class="relative flex-1">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">key</span>
-                            <input type="text" id="cu-attrKey" placeholder="Key (e.g. department)" class="form-field form-field-icon">
-                        </div>
-                        <div class="relative flex-1">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">data_object</span>
-                            <input type="text" id="cu-attrVal" placeholder="Value" class="form-field form-field-icon" onkeydown="if(event.key==='Enter'){event.preventDefault();cuAddAttr();}">
-                        </div>
-                        <button type="button" onclick="cuAddAttr()" class="shrink-0 px-4 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary font-semibold flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[18px]">add</span>
-                        </button>
-                    </div>
-                </div>
-                <div id="cu-attrHidden"></div>
-                <div id="cu-attrChips" class="flex flex-wrap gap-2 min-h-[2.75rem] rounded-xl border border-outline-variant/20 bg-surface-container-low/50 p-3">
-                    <span class="text-xs text-on-surface-variant/40 self-center">No attributes added yet</span>
-                </div>
-            </div>
-        </form>
-        <div class="shrink-0 px-6 py-4 bg-surface-container-low/30 border-t border-outline-variant/10 flex items-center justify-between gap-3">
-            <button id="cu-back" onclick="cuGoBack()" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-on-surface-variant border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high hidden items-center gap-1.5">
-                <span class="material-symbols-outlined text-lg">arrow_back</span> Back
-            </button>
-            <button id="cu-cancel" onclick="closeCreateModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-on-surface-variant border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high flex items-center gap-1.5">Cancel</button>
-            <button id="cu-next" onclick="cuGoNext()" class="ml-auto px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-primary to-primary-container shadow-md hover:shadow-lg hover:scale-[1.02] flex items-center gap-2 transition-all">
-                Next <span class="material-symbols-outlined text-lg">arrow_forward</span>
-            </button>
-            <button id="cu-submit" type="submit" form="createUserForm" class="ml-auto px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-tertiary to-tertiary-container shadow-md hover:shadow-lg hover:scale-[1.02] hidden items-center gap-2 transition-all">
-                <span class="material-symbols-outlined text-lg">check_circle</span> Create User
-            </button>
-        </div>
+        </div><!-- end right form area -->
     </div>
 </div>
 
 
-<!-- ════════════════ MANAGE GROUPS MODAL ════════════════ -->
+<!-- ════════════════════════════════════════════════════
+     GROUPS MODAL — two-column layout
+════════════════════════════════════════════════════ -->
 <div id="groupsModal" class="fixed inset-0 z-[100] items-center justify-center p-4 hidden" role="dialog" aria-modal="true">
-    <div class="modal-overlay absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeGroupsModal()"></div>
-    <div class="modal-panel relative w-full sm:max-w-lg bg-surface-container-lowest rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-        <div class="flex items-start justify-between px-6 pt-6 pb-5 border-b border-outline-variant/10 shrink-0">
-            <div class="flex items-center gap-4">
-                <div class="w-11 h-11 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary shrink-0"><span class="material-symbols-outlined text-2xl">folder_shared</span></div>
-                <div><h3 class="font-headline text-xl font-bold text-on-surface">Manage Groups</h3><p class="text-xs text-on-surface-variant mt-0.5">Create and view realm groups</p></div>
+    <div class="ov-anim absolute inset-0 bg-on-surface/50 backdrop-blur-sm" onclick="closeGroupsModal()"></div>
+    <div class="pn-anim relative w-full max-w-xl bg-surface-container-lowest rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-outline-variant/10 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-secondary/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-secondary text-xl">folder_shared</span>
+                </div>
+                <div>
+                    <h3 class="font-headline font-bold text-base text-on-surface">Realm Groups</h3>
+                    <p class="text-xs text-on-surface-variant mt-px">Create and inspect groups</p>
+                </div>
             </div>
-            <button onclick="closeGroupsModal()" class="p-1.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high shrink-0 ml-4"><span class="material-symbols-outlined">close</span></button>
+            <button onclick="closeGroupsModal()" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
-        <div class="overflow-y-auto flex-1 px-6 py-5 space-y-5">
-            <!-- Create group -->
-            <div class="space-y-3">
-                <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">Create New Group</p>
-                <form th:action="@{/admin/create-group}" method="post" class="space-y-3">
-                    <div class="flex gap-2">
-                        <div class="relative flex-1">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">create_new_folder</span>
-                            <input type="text" name="groupName" required placeholder="Group name…" class="form-field form-field-icon">
-                        </div>
-                        <button type="submit" class="shrink-0 px-5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-primary to-primary-container shadow-sm hover:shadow-md flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px]">add</span> Create
-                        </button>
+
+        <!-- Body: two columns -->
+        <div class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant/10">
+
+            <!-- Left: create -->
+            <div class="px-5 py-5 flex flex-col gap-4">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">New Group</p>
+                <form th:action="@{/admin/create-group}" method="post" class="flex flex-col gap-3">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">create_new_folder</span>
+                        <input type="text" name="groupName" required placeholder="Group name…" class="ff ff-icon">
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Parent Group <span class="text-on-surface-variant/40 font-normal normal-case">(optional)</span></label>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
+                            Parent Group <span class="font-normal normal-case text-on-surface-variant/40">(optional)</span>
+                        </label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px] pointer-events-none">account_tree</span>
-                            <select name="parentGroupId" class="form-field form-field-icon appearance-none pr-8">
-                                <option value="">— No parent (top-level) —</option>
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[17px] pointer-events-none">account_tree</span>
+                            <select name="parentGroupId" class="ff ff-icon appearance-none pr-8">
+                                <option value="">— Top-level —</option>
                                 <option th:each="g : ${groups}" th:value="${g.id}" th:text="${g.name}">Group</option>
                             </select>
                         </div>
                     </div>
+                    <button type="submit"
+                            class="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:opacity-90">
+                        <span class="material-symbols-outlined text-[17px]">add</span> Create Group
+                    </button>
                 </form>
             </div>
-            <!-- Existing groups -->
-            <div class="space-y-2">
-                <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">Existing Groups
-                    <span class="font-normal normal-case text-on-surface-variant/50" th:text="'(' + ${groups.size()} + ')'"></span>
-                </p>
-                <div th:if="${#lists.isEmpty(groups)}" class="rounded-xl bg-surface-container-low border border-outline-variant/10 p-4 text-xs text-on-surface-variant/50 text-center">No groups in this realm yet.</div>
-                <div th:unless="${#lists.isEmpty(groups)}" class="flex flex-wrap gap-2">
-                    <div th:each="g : ${groups}" class="attr-chip">
-                        <span class="material-symbols-outlined text-[13px]">folder_shared</span>
+
+            <!-- Right: existing groups -->
+            <div class="px-5 py-5 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Existing</p>
+                    <span class="text-[10px] font-mono text-on-surface-variant/40" th:text="${groups.size()} + ' groups'"></span>
+                </div>
+                <div th:if="${#lists.isEmpty(groups)}"
+                     class="rounded-lg bg-surface-container-low border border-outline-variant/10 p-4 text-xs text-on-surface-variant/50 text-center">
+                    No groups in this realm yet.
+                </div>
+                <div th:unless="${#lists.isEmpty(groups)}" class="flex flex-wrap gap-1.5">
+                    <div th:each="g : ${groups}" class="achip">
+                        <span class="material-symbols-outlined text-[12px]">folder_shared</span>
                         <span th:text="${g.name}">Group</span>
-                        <span class="opacity-30 text-[10px] font-mono ml-0.5" th:text="${'#' + #strings.substring(g.id,0,6)}"></span>
+                        <span class="opacity-30 text-[9px] font-mono" th:text="${'#' + #strings.substring(g.id,0,6)}"></span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="shrink-0 px-6 py-4 bg-surface-container-low/30 border-t border-outline-variant/10 flex justify-end">
-            <button onclick="closeGroupsModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-on-surface-variant border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high">Close</button>
+
+        <!-- Footer -->
+        <div class="shrink-0 px-6 py-3.5 border-t border-outline-variant/10 flex justify-end">
+            <button onclick="closeGroupsModal()"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-on-surface-variant border border-outline-variant/30 hover:bg-surface-container-high">
+                Close
+            </button>
         </div>
     </div>
 </div>
 
 
-<!-- ════════════════ MANAGE USER SLIDE-OVER ════════════════ -->
-<div id="manageModal" class="fixed inset-0 z-[100] items-start justify-end hidden" role="dialog" aria-modal="true">
-    <div class="absolute inset-0 bg-on-surface/30 backdrop-blur-sm" onclick="closeManageModal()"></div>
-    <div class="slide-panel relative w-full sm:max-w-md bg-surface-container-lowest h-full shadow-2xl flex flex-col overflow-hidden">
-        <div class="px-6 pt-6 pb-5 border-b border-outline-variant/10 shrink-0">
-            <div class="flex items-start justify-between gap-4 mb-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/30 to-primary-container/50 flex items-center justify-center shrink-0">
-                        <span id="mg-initials" class="text-lg font-bold text-primary">??</span>
-                    </div>
-                    <div>
-                        <h3 id="mg-title" class="font-headline font-bold text-lg text-on-surface">User Name</h3>
-                        <p id="mg-username" class="text-xs font-mono text-on-surface-variant/70">@username</p>
-                        <p id="mg-email" class="text-xs text-on-surface-variant/60 mt-0.5">email</p>
-                    </div>
+<!-- ════════════════════════════════════════════════════
+     MANAGE USER — centered dialog w/ vertical icon tabs
+════════════════════════════════════════════════════ -->
+<div id="manageModal" class="fixed inset-0 z-[100] items-center justify-center p-4 hidden" role="dialog" aria-modal="true">
+    <div class="ov-anim absolute inset-0 bg-on-surface/50 backdrop-blur-sm" onclick="closeManageModal()"></div>
+    <div class="pn-anim relative w-full max-w-lg bg-surface-container-lowest rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+
+        <!-- User header strip -->
+        <div class="px-6 pt-5 pb-4 border-b border-outline-variant/10 shrink-0 flex items-start justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/40 flex items-center justify-center shrink-0">
+                    <span id="mg-initials" class="text-base font-bold text-primary">??</span>
                 </div>
-                <button onclick="closeManageModal()" class="p-1.5 rounded-xl text-on-surface-variant hover:bg-surface-container-high shrink-0"><span class="material-symbols-outlined">close</span></button>
+                <div>
+                    <h3 id="mg-title" class="font-headline font-bold text-base text-on-surface">User Name</h3>
+                    <p id="mg-username" class="text-xs font-mono text-on-surface-variant/60">@username</p>
+                    <p id="mg-email" class="text-xs text-on-surface-variant/50 mt-px">email</p>
+                </div>
             </div>
-            <div id="mg-status-active" class="hidden items-center gap-2 text-xs font-semibold text-tertiary bg-tertiary/10 border border-tertiary/20 rounded-full px-3 py-1 w-fit">
-                <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-tertiary"></span></span>
-                Account Active
-            </div>
-            <div id="mg-status-inactive" class="hidden items-center gap-2 text-xs font-semibold text-on-surface-variant/60 bg-surface-container-low border border-outline-variant/20 rounded-full px-3 py-1 w-fit">
-                <span class="w-2 h-2 rounded-full bg-outline/60"></span> Account Inactive
-            </div>
-            <div class="flex gap-1 mt-4 bg-surface-container-low p-1 rounded-xl">
-                <button class="tab-btn active flex-1" onclick="mgTab('overview',this)">Overview</button>
-                <button class="tab-btn flex-1"        onclick="mgTab('access',  this)">Access</button>
-                <button class="tab-btn flex-1"        onclick="mgTab('danger',  this)">Danger</button>
+            <div class="flex flex-col items-end gap-2 shrink-0">
+                <button onclick="closeManageModal()" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <div id="mg-status-active" class="hidden items-center gap-1.5 text-[11px] font-bold text-tertiary bg-tertiary/10 border border-tertiary/20 rounded-full px-2.5 py-0.5">
+                    <span class="relative flex h-1.5 w-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary opacity-60"></span><span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-tertiary"></span></span>
+                    Active
+                </div>
+                <div id="mg-status-inactive" class="hidden items-center gap-1.5 text-[11px] font-bold text-on-surface-variant/50 bg-surface-container-low border border-outline-variant/20 rounded-full px-2.5 py-0.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-outline/50"></span> Inactive
+                </div>
             </div>
         </div>
-        <div class="overflow-y-auto flex-1 px-6 py-5 space-y-5">
-            <!-- OVERVIEW -->
-            <div id="mg-tab-overview" class="manage-tab active space-y-4">
-                <div class="rounded-xl bg-surface-container-low p-4 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-on-surface-variant/50 text-lg">fingerprint</span>
-                    <div><p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/60">User ID</p><p id="mg-id-display" class="text-xs font-mono text-on-surface/70 break-all">—</p></div>
-                </div>
-                <div class="rounded-xl border border-outline-variant/10 p-4 space-y-3">
-                    <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">Account Control</p>
-                    <div class="flex gap-2">
-                        <form th:action="@{/admin/enable-user}" method="post" class="flex-1">
-                            <input type="hidden" name="userId" id="mg-userId-enable"/>
-                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-semibold text-tertiary bg-tertiary/10 hover:bg-tertiary/20 border border-tertiary/20 flex items-center justify-center gap-1.5">
-                                <span class="material-symbols-outlined text-sm">check_circle</span> Enable
-                            </button>
-                        </form>
-                        <form th:action="@{/admin/disable-user}" method="post" class="flex-1">
-                            <input type="hidden" name="userId" id="mg-userId-disable"/>
-                            <button type="submit" class="w-full py-2 rounded-xl text-xs font-semibold text-on-surface-variant bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 flex items-center justify-center gap-1.5">
-                                <span class="material-symbols-outlined text-sm">block</span> Disable
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="rounded-xl border border-outline-variant/10 p-4 space-y-3">
-                    <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">Password</p>
-                    <form th:action="@{/admin/reset-password-email}" method="post">
-                        <input type="hidden" name="userId" id="mg-userId-reset"/>
-                        <button type="submit" class="w-full py-2.5 rounded-xl text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-sm">mark_email_read</span> Send Password Reset Email
-                        </button>
-                    </form>
-                </div>
+
+        <!-- Body: vertical tabs on left, content on right -->
+        <div class="flex-1 flex overflow-hidden">
+
+            <!-- Vertical tab rail -->
+            <div class="shrink-0 w-[68px] border-r border-outline-variant/10 flex flex-col gap-1 py-4 px-2 bg-surface-container-low/30">
+                <button class="vtab-btn active" onclick="mgTab('overview',this)" title="Overview">
+                    <span class="material-symbols-outlined text-[20px]">person</span>
+                    <span>Info</span>
+                </button>
+                <button class="vtab-btn" onclick="mgTab('access',this)" title="Access">
+                    <span class="material-symbols-outlined text-[20px]">shield</span>
+                    <span>Access</span>
+                </button>
+                <button class="vtab-btn hover:bg-error/10 hover:text-error" onclick="mgTab('danger',this)" title="Danger Zone">
+                    <span class="material-symbols-outlined text-[20px]">warning</span>
+                    <span>Danger</span>
+                </button>
             </div>
-            <!-- ACCESS -->
-            <div id="mg-tab-access" class="manage-tab space-y-5">
-                <div class="rounded-xl border border-outline-variant/10 p-4 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs font-bold uppercase tracking-wider text-on-surface-variant/60">Groups</p>
-                        <span id="mg-groups-loader" class="text-[10px] text-on-surface-variant/50 hidden">Loading…</span>
-                    </div>
-                    <div id="mg-groups-list" class="flex flex-wrap gap-2 min-h-[2rem]">
-                        <span class="text-xs text-on-surface-variant/50">Open this tab to load groups.</span>
-                    </div>
-                    <!-- Dropdown populated from model -->
-                    <form th:action="@{/admin/add/group}" method="post" class="flex gap-2 mt-2">
-                        <input type="hidden" name="userId" id="mg-userId-addGroup"/>
-                        <div class="relative flex-1">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[16px] pointer-events-none">folder_shared</span>
-                            <select name="groupName" required class="form-field form-field-icon text-xs py-2 appearance-none pr-6">
-                                <option value="">Select a group…</option>
-                                <option th:each="g : ${groups}" th:value="${g.name}" th:text="${g.name}">Group</option>
-                            </select>
+
+            <!-- Tab content -->
+            <div class="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+
+                <!-- OVERVIEW tab -->
+                <div id="mg-tab-overview" class="vtab-pane active space-y-4">
+                    <!-- ID display -->
+                    <div class="rounded-lg bg-surface-container-low p-3.5 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-on-surface-variant/40 text-lg">fingerprint</span>
+                        <div>
+                            <p class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/50">User ID</p>
+                            <p id="mg-id-display" class="text-[11px] font-mono text-on-surface/60 break-all">—</p>
                         </div>
-                        <button type="submit" class="px-4 rounded-xl text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 whitespace-nowrap flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">add</span> Add
-                        </button>
-                    </form>
+                    </div>
+
+                    <!-- Account control -->
+                    <div class="rounded-lg border border-outline-variant/10 p-4 space-y-3">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Account Status</p>
+                        <div class="flex gap-2">
+                            <form th:action="@{/admin/enable-user}" method="post" class="flex-1">
+                                <input type="hidden" name="userId" id="mg-userId-enable"/>
+                                <button type="submit"
+                                        class="w-full py-2 rounded-lg text-xs font-semibold text-tertiary bg-tertiary/10 hover:bg-tertiary/20 border border-tertiary/20 flex items-center justify-center gap-1.5">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Enable
+                                </button>
+                            </form>
+                            <form th:action="@{/admin/disable-user}" method="post" class="flex-1">
+                                <input type="hidden" name="userId" id="mg-userId-disable"/>
+                                <button type="submit"
+                                        class="w-full py-2 rounded-lg text-xs font-semibold text-on-surface-variant bg-surface-container-low hover:bg-surface-container border border-outline-variant/20 flex items-center justify-center gap-1.5">
+                                    <span class="material-symbols-outlined text-sm">block</span> Disable
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Password reset -->
+                    <div class="rounded-lg border border-outline-variant/10 p-4 space-y-3">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Password</p>
+                        <form th:action="@{/admin/reset-password-email}" method="post">
+                            <input type="hidden" name="userId" id="mg-userId-reset"/>
+                            <button type="submit"
+                                    class="w-full py-2.5 rounded-lg text-xs font-semibold text-primary bg-primary/8 hover:bg-primary/15 border border-primary/15 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">mark_email_read</span> Send Password Reset Email
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <!-- DANGER -->
-            <div id="mg-tab-danger" class="manage-tab space-y-4">
-                <div class="rounded-xl border border-error/20 bg-error/5 p-4 space-y-3">
-                    <div class="flex items-center gap-2 text-error"><span class="material-symbols-outlined text-xl">warning</span><p class="text-sm font-bold">Danger Zone</p></div>
-                    <p class="text-xs text-on-surface-variant leading-relaxed">Deleting this user is <strong>permanent and irreversible</strong>. All sessions, credentials, and group memberships will be removed from Keycloak immediately.</p>
-                    <form th:action="@{/admin/delete-user}" method="post" onsubmit="return confirmDelete(event)">
-                        <input type="hidden" name="userId" id="mg-userId-delete"/>
-                        <button type="submit" class="w-full py-2.5 mt-1 rounded-xl text-sm font-semibold text-white bg-error hover:bg-red-700 flex items-center justify-center gap-2 shadow-md">
-                            <span class="material-symbols-outlined text-sm">delete_forever</span> Delete User Account
-                        </button>
-                    </form>
+
+                <!-- ACCESS tab -->
+                <div id="mg-tab-access" class="vtab-pane space-y-4">
+                    <div class="rounded-lg border border-outline-variant/10 p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/50">Group Memberships</p>
+                            <span id="mg-groups-loader" class="text-[10px] text-on-surface-variant/40 hidden">Loading…</span>
+                        </div>
+                        <div id="mg-groups-list" class="flex flex-wrap gap-1.5 min-h-[1.75rem]">
+                            <span class="text-xs text-on-surface-variant/40">Open this tab to load groups.</span>
+                        </div>
+
+                        <!-- Add to group -->
+                        <form th:action="@{/admin/add/group}" method="post" class="flex gap-2 pt-1 border-t border-outline-variant/10">
+                            <input type="hidden" name="userId" id="mg-userId-addGroup"/>
+                            <div class="relative flex-1">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-[15px] pointer-events-none">folder_shared</span>
+                                <select name="groupName" required class="ff ff-icon text-xs py-2 appearance-none pr-6">
+                                    <option value="">Select a group…</option>
+                                    <option th:each="g : ${groups}" th:value="${g.name}" th:text="${g.name}">Group</option>
+                                </select>
+                            </div>
+                            <button type="submit"
+                                    class="px-3 rounded-lg text-xs font-semibold text-primary bg-primary/8 hover:bg-primary/15 border border-primary/15 whitespace-nowrap flex items-center gap-1">
+                                <span class="material-symbols-outlined text-sm">add</span> Add
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </div>
+
+                <!-- DANGER tab -->
+                <div id="mg-tab-danger" class="vtab-pane">
+                    <div class="rounded-lg border border-error/20 bg-error/5 p-4 space-y-4">
+                        <div class="flex items-center gap-2 text-error">
+                            <span class="material-symbols-outlined text-xl">warning</span>
+                            <p class="text-sm font-bold">Danger Zone</p>
+                        </div>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">
+                            Deleting this user is <strong>permanent and irreversible</strong>. All sessions, credentials, and group memberships will be removed from Keycloak immediately.
+                        </p>
+                        <form th:action="@{/admin/delete-user}" method="post">
+                            <input type="hidden" name="userId" id="mg-userId-delete"/>
+                            <button type="submit"
+                                    class="w-full py-2.5 rounded-lg text-sm font-semibold text-white bg-error hover:bg-red-700 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">delete_forever</span> Delete User Account
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div><!-- end tab content -->
+        </div><!-- end body -->
     </div>
 </div>
 
 
-<!-- ════════════════ LOGOUT MODAL ════════════════ -->
+<!-- ════════════════════════════════════════════════════
+     LOGOUT MODAL
+════════════════════════════════════════════════════ -->
 <div id="logoutModal" class="fixed inset-0 z-[200] flex items-center justify-center hidden">
-    <div class="absolute inset-0 bg-on-surface/40 backdrop-blur-sm" onclick="closeLogoutModal()"></div>
-    <div class="modal-panel relative bg-surface-container-lowest rounded-2xl shadow-2xl max-w-md w-full mx-4 p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold font-headline text-on-surface">Confirm Logout</h3>
-            <button onclick="closeLogoutModal()" class="text-on-surface-variant hover:text-on-surface p-1 rounded-lg hover:bg-surface-container-high"><span class="material-symbols-outlined">close</span></button>
+    <div class="ov-anim absolute inset-0 bg-on-surface/50 backdrop-blur-sm" onclick="closeLogoutModal()"></div>
+    <div class="pn-anim relative bg-surface-container-lowest rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 flex flex-col gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-error/10 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-error text-xl">logout</span>
+            </div>
+            <div>
+                <h3 class="text-base font-bold font-headline text-on-surface">Sign Out?</h3>
+                <p class="text-xs text-on-surface-variant">You will need to authenticate again.</p>
+            </div>
+            <button onclick="closeLogoutModal()" class="ml-auto p-1 rounded-lg text-on-surface-variant hover:bg-surface-container-high shrink-0">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
-        <p class="text-sm text-on-surface-variant mb-6 leading-relaxed">Are you sure you want to sign out? You will need to authenticate again to access the dashboard.</p>
-        <div class="flex justify-end gap-3">
-            <button onclick="closeLogoutModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-on-surface-variant border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-high">Cancel</button>
-            <button id="confirmLogoutBtn" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-error hover:bg-red-700 flex items-center gap-2">
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+            Are you sure you want to sign out of AMS? Your current session will be terminated.
+        </p>
+        <div class="flex justify-end gap-2">
+            <button onclick="closeLogoutModal()"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-on-surface-variant border border-outline-variant/30 hover:bg-surface-container-high">
+                Cancel
+            </button>
+            <button id="confirmLogoutBtn"
+                    class="px-4 py-2 rounded-lg text-sm font-semibold text-white bg-error hover:bg-red-700 flex items-center gap-2">
                 <span class="material-symbols-outlined text-sm">logout</span> Sign Out
             </button>
         </div>
     </div>
 </div>
-<form id="logoutForm" th:action="@{/users/logout}" method="post" style="display:none">
-</form>
+<form id="logoutForm" th:action="@{/users/logout}" method="post" style="display:none"></form>
 
 
+<!-- ════════════════════════════════════════════════════
+     SCRIPTS — all logic identical to original
+════════════════════════════════════════════════════ -->
 <script>
 
     /* ── TOAST ── */
-    function showToast(msg,type='success'){
-        const area=document.getElementById('toastArea'),toast=document.createElement('div'),isOk=type==='success';
-        toast.className=`pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border max-w-sm toast-entering bg-white ${isOk?'border-tertiary/20':'border-error/20'} text-on-surface`;
-        toast.innerHTML=`<span class="material-symbols-outlined text-lg mt-0.5 shrink-0 ${isOk?'text-tertiary':'text-error'}">${isOk?'check_circle':'error'}</span><p class="text-sm font-medium flex-1">${esc(msg)}</p><button onclick="this.closest('div').remove()" class="text-on-surface-variant/40 hover:text-on-surface-variant shrink-0 mt-0.5"><span class="material-symbols-outlined text-sm">close</span></button>`;
+    function showToast(msg, type = 'success') {
+        const area = document.getElementById('toastArea');
+        const toast = document.createElement('div');
+        const isOk = type === 'success';
+        toast.className = `pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border max-w-xs toast-in bg-white ${isOk ? 'border-tertiary/20' : 'border-error/20'} text-on-surface`;
+        toast.innerHTML = `<span class="material-symbols-outlined text-lg mt-0.5 shrink-0 ${isOk ? 'text-tertiary' : 'text-error'}">${isOk ? 'check_circle' : 'error'}</span><p class="text-sm font-medium flex-1">${esc(msg)}</p><button onclick="this.closest('div').remove()" class="text-on-surface-variant/40 hover:text-on-surface-variant shrink-0 mt-0.5"><span class="material-symbols-outlined text-sm">close</span></button>`;
         area.appendChild(toast);
-        setTimeout(()=>{toast.classList.remove('toast-entering');toast.classList.add('toast-leaving');setTimeout(()=>toast.remove(),350);},5000);
+        setTimeout(() => {
+            toast.classList.remove('toast-in');
+            toast.classList.add('toast-out');
+            setTimeout(() => toast.remove(), 350);
+        }, 5000);
     }
-    window.addEventListener('DOMContentLoaded',()=>{
-        const ok=document.getElementById('successFlash'),err=document.getElementById('errorFlash');
-        if(ok)showToast(ok.dataset.msg,'success');
-        if(err)showToast(err.dataset.msg,'error');
+    window.addEventListener('DOMContentLoaded', () => {
+        const ok = document.getElementById('successFlash'), err = document.getElementById('errorFlash');
+        if (ok) showToast(ok.dataset.msg, 'success');
+        if (err) showToast(err.dataset.msg, 'error');
     });
 
-    function v(id){return document.getElementById(id)?.value?.trim()||'';}
-    function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-    function toggle(id,show){const el=document.getElementById(id);if(!el)return;el.classList.toggle('hidden',!show);el.classList.toggle('flex',show);document.body.style.overflow=show?'hidden':'';}
+    /* ── HELPERS ── */
+    function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+    function esc(s) { return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function toggle(id, show) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('hidden', !show);
+        el.classList.toggle('flex', show);
+        document.body.style.overflow = show ? 'hidden' : '';
+    }
 
     /* ── CREATE USER ── */
-    let cuStep=1;const cuTotal=3;
-    const cuLabels=['Step 1 of 3 — Identity','Step 2 of 3 — Security','Step 3 of 3 — Attributes'];
-    const cuAttrs={};
+    let cuStep = 1;
+    const cuTotal = 3;
+    const cuSublabels = ['Step 1 — Identity', 'Step 2 — Security', 'Step 3 — Attributes'];
+    const cuStepDotLabels = ['1 of 3', '2 of 3', '3 of 3'];
+    const cuAttrs = {};
 
-    function openCreateModal(){cuStep=1;cuRenderStep();toggle('createUserModal',true);setTimeout(()=>document.getElementById('cu-firstName')?.focus(),350);}
-    function closeCreateModal(){toggle('createUserModal',false);document.getElementById('createUserForm')?.reset();for(const k in cuAttrs)delete cuAttrs[k];cuRenderAttrs();}
-
-    function cuRenderStep(){
-        for(let i=1;i<=cuTotal;i++){document.getElementById(`cu-step-${i}`).classList.toggle('active',i===cuStep);document.getElementById(`cu-dot-${i}`).classList.toggle('active',i===cuStep);}
-        document.getElementById('cu-step-label').textContent=cuLabels[cuStep-1];
-        const back=document.getElementById('cu-back'),cancel=document.getElementById('cu-cancel'),next=document.getElementById('cu-next'),submit=document.getElementById('cu-submit');
-        back.classList.toggle('hidden',cuStep===1);back.classList.toggle('flex',cuStep>1);
-        cancel.classList.toggle('hidden',cuStep>1);
-        next.classList.toggle('hidden',cuStep===cuTotal);next.classList.toggle('flex',cuStep<cuTotal);
-        submit.classList.toggle('hidden',cuStep!==cuTotal);submit.classList.toggle('flex',cuStep===cuTotal);
+    function openCreateModal() {
+        cuStep = 1; cuRenderStep(); toggle('createUserModal', true);
+        setTimeout(() => document.getElementById('cu-firstName')?.focus(), 350);
     }
-    function cuGoNext(){if(cuValidate(cuStep)){cuStep=Math.min(cuStep+1,cuTotal);cuRenderStep();}}
-    function cuGoBack(){cuStep=Math.max(1,cuStep-1);cuRenderStep();}
+    function closeCreateModal() {
+        toggle('createUserModal', false);
+        document.getElementById('createUserForm')?.reset();
+        for (const k in cuAttrs) delete cuAttrs[k];
+        cuRenderAttrs();
+    }
 
-    function cuValidate(step){
-        if(step===1){
-            const fn=v('cu-firstName'),ln=v('cu-lastName'),un=v('cu-username'),em=v('cu-email');
-            if(!fn||!ln||!un||!em){cuShake();return false;}
-            if(!/^[a-z0-9._]+$/.test(un)){cuHighlight('cu-username');return false;}
-            if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){cuHighlight('cu-email');return false;}
+    function cuRenderStep() {
+        for (let i = 1; i <= cuTotal; i++) {
+            document.getElementById(`cu-step-${i}`).classList.toggle('active', i === cuStep);
+            document.getElementById(`cu-dot-${i}`).classList.toggle('active', i === cuStep);
         }
-        if(step===2){const pwd=v('cu-password'),cpwd=v('cu-confirm');if(pwd.length<8){cuHighlight('cu-password');return false;}if(pwd!==cpwd){cuHighlight('cu-confirm');return false;}}
+        document.getElementById('cu-step-sublabel').textContent = cuSublabels[cuStep - 1];
+        document.getElementById('cu-step-label').textContent = cuStepDotLabels[cuStep - 1];
+
+        const back = document.getElementById('cu-back');
+        const cancel = document.getElementById('cu-cancel');
+        const next = document.getElementById('cu-next');
+        const submit = document.getElementById('cu-submit');
+
+        back.classList.toggle('hidden', cuStep === 1);
+        back.classList.toggle('flex', cuStep > 1);
+        cancel.classList.toggle('hidden', cuStep > 1);
+        next.classList.toggle('hidden', cuStep === cuTotal);
+        next.classList.toggle('flex', cuStep < cuTotal);
+        submit.classList.toggle('hidden', cuStep !== cuTotal);
+        submit.classList.toggle('flex', cuStep === cuTotal);
+    }
+    function cuGoNext() { if (cuValidate(cuStep)) { cuStep = Math.min(cuStep + 1, cuTotal); cuRenderStep(); } }
+    function cuGoBack() { cuStep = Math.max(1, cuStep - 1); cuRenderStep(); }
+
+    function cuValidate(step) {
+        if (step === 1) {
+            const fn = v('cu-firstName'), ln = v('cu-lastName'), un = v('cu-username'), em = v('cu-email');
+            if (!fn || !ln || !un || !em) { cuShake(); return false; }
+            if (!/^[a-z0-9._]+$/.test(un)) { cuHighlight('cu-username'); return false; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { cuHighlight('cu-email'); return false; }
+        }
+        if (step === 2) {
+            const pwd = v('cu-password'), cpwd = v('cu-confirm');
+            if (pwd.length < 8) { cuHighlight('cu-password'); return false; }
+            if (pwd !== cpwd) { cuHighlight('cu-confirm'); return false; }
+        }
         return true;
     }
-    function cuHighlight(id){const el=document.getElementById(id);el.classList.add('form-field-error');el.focus();setTimeout(()=>el.classList.remove('form-field-error'),2500);}
-    function cuShake(){const p=document.querySelector('#createUserModal .modal-panel');p.style.animation='none';p.offsetHeight;p.style.animation='shake .4s ease';setTimeout(()=>p.style.animation='',400);}
+    function cuHighlight(id) {
+        const el = document.getElementById(id);
+        el.classList.add('ff-err');
+        el.focus();
+        setTimeout(() => el.classList.remove('ff-err'), 2500);
+    }
+    function cuShake() {
+        const p = document.querySelector('#createUserModal .pn-anim');
+        p.style.animation = 'none'; p.offsetHeight; p.style.animation = 'shake .35s ease';
+        setTimeout(() => p.style.animation = '', 400);
+    }
 
-    ['cu-firstName','cu-lastName'].forEach(id=>document.getElementById(id)?.addEventListener('blur',()=>{
-        const un=document.getElementById('cu-username');if(un.value)return;
-        const fn=v('cu-firstName').toLowerCase().replace(/\s+/g,'.'),ln=v('cu-lastName').toLowerCase().replace(/\s+/g,'.');
-        if(fn&&ln)un.value=`${fn}.${ln}`;
+    ['cu-firstName', 'cu-lastName'].forEach(id => document.getElementById(id)?.addEventListener('blur', () => {
+        const un = document.getElementById('cu-username');
+        if (un.value) return;
+        const fn = v('cu-firstName').toLowerCase().replace(/\s+/g, '.'),
+              ln = v('cu-lastName').toLowerCase().replace(/\s+/g, '.');
+        if (fn && ln) un.value = `${fn}.${ln}`;
     }));
 
-    function cuTogglePwd(inputId,iconId){const i=document.getElementById(inputId),ic=document.getElementById(iconId);const show=i.type==='password';i.type=show?'text':'password';ic.textContent=show?'visibility_off':'visibility';}
-    function cuEvalStrength(val){
-        let s=0;if(val.length>=8)s++;if(/[A-Z]/.test(val))s++;if(/[0-9]/.test(val))s++;if(/[^A-Za-z0-9]/.test(val))s++;
-        const colors=['','#ba1a1a','#f59e0b','#0284c7','#006242'],labels=['Enter a password to check its strength','Weak','Fair','Good','Strong'];
-        [1,2,3,4].forEach(i=>{document.getElementById(`cu-bar${i}`).style.backgroundColor=i<=s?colors[s]:'#c3c6d7';});
-        const lbl=document.getElementById('cu-strength-label');lbl.textContent=val?labels[s]:labels[0];lbl.style.color=s>0?colors[s]:'';
+    function cuTogglePwd(inputId, iconId) {
+        const i = document.getElementById(inputId), ic = document.getElementById(iconId);
+        const show = i.type === 'password';
+        i.type = show ? 'text' : 'password';
+        ic.textContent = show ? 'visibility_off' : 'visibility';
     }
-    function cuCheckMatch(){
-        const pwd=v('cu-password'),cpwd=v('cu-confirm'),msg=document.getElementById('cu-match-msg');
-        if(!cpwd){msg.classList.add('hidden');return;}msg.classList.remove('hidden');
-        if(pwd===cpwd){msg.textContent='✓ Passwords match';msg.className='text-[11px] pl-0.5 text-tertiary font-semibold';}
-        else{msg.textContent='✗ Passwords do not match';msg.className='text-[11px] pl-0.5 text-error font-semibold';}
+    function cuEvalStrength(val) {
+        let s = 0;
+        if (val.length >= 8) s++;
+        if (/[A-Z]/.test(val)) s++;
+        if (/[0-9]/.test(val)) s++;
+        if (/[^A-Za-z0-9]/.test(val)) s++;
+        const colors = ['', '#ba1a1a', '#f59e0b', '#0284c7', '#006242'];
+        const labels = ['Enter a password to check its strength', 'Weak', 'Fair', 'Good', 'Strong'];
+        [1, 2, 3, 4].forEach(i => {
+            document.getElementById(`cu-bar${i}`).style.backgroundColor = i <= s ? colors[s] : '#c3c6d7';
+        });
+        const lbl = document.getElementById('cu-strength-label');
+        lbl.textContent = val ? labels[s] : labels[0];
+        lbl.style.color = s > 0 ? colors[s] : '';
     }
-    function cuAddAttr(){
-        const k=document.getElementById('cu-attrKey').value.trim(),vl=document.getElementById('cu-attrVal').value.trim();
-        if(!k||!vl)return;if(!cuAttrs[k])cuAttrs[k]=[];cuAttrs[k].push(vl);
-        document.getElementById('cu-attrKey').value='';document.getElementById('cu-attrVal').value='';document.getElementById('cu-attrKey').focus();cuRenderAttrs();
+    function cuCheckMatch() {
+        const pwd = v('cu-password'), cpwd = v('cu-confirm'), msg = document.getElementById('cu-match-msg');
+        if (!cpwd) { msg.classList.add('hidden'); return; }
+        msg.classList.remove('hidden');
+        if (pwd === cpwd) {
+            msg.textContent = '✓ Passwords match';
+            msg.className = 'text-[11px] pl-0.5 text-tertiary font-semibold';
+        } else {
+            msg.textContent = '✗ Passwords do not match';
+            msg.className = 'text-[11px] pl-0.5 text-error font-semibold';
+        }
     }
-    function cuRemoveAttr(k,idx){cuAttrs[k].splice(idx,1);if(!cuAttrs[k].length)delete cuAttrs[k];cuRenderAttrs();}
-    function cuRenderAttrs(){
-        const chips=document.getElementById('cu-attrChips'),hidden=document.getElementById('cu-attrHidden');
-        chips.innerHTML='';hidden.innerHTML='';
-        const entries=Object.entries(cuAttrs);
-        if(!entries.length){chips.innerHTML='<span class="text-xs text-on-surface-variant/40 self-center">No attributes added yet</span>';return;}
-        entries.forEach(([k,vals])=>vals.forEach((vl,idx)=>{
-            const chip=document.createElement('div');chip.className='attr-chip';
-            chip.innerHTML=`<span class="material-symbols-outlined text-[13px]">key</span>${esc(k)}<span class="opacity-40 mx-0.5">→</span>${esc(vl)}<button type="button" onclick="cuRemoveAttr('${esc(k)}',${idx})" class="ml-1 opacity-60 hover:opacity-100"><span class="material-symbols-outlined text-[12px]">close</span></button>`;
+    function cuAddAttr() {
+        const k = document.getElementById('cu-attrKey').value.trim(), vl = document.getElementById('cu-attrVal').value.trim();
+        if (!k || !vl) return;
+        if (!cuAttrs[k]) cuAttrs[k] = [];
+        cuAttrs[k].push(vl);
+        document.getElementById('cu-attrKey').value = '';
+        document.getElementById('cu-attrVal').value = '';
+        document.getElementById('cu-attrKey').focus();
+        cuRenderAttrs();
+    }
+    function cuRemoveAttr(k, idx) { cuAttrs[k].splice(idx, 1); if (!cuAttrs[k].length) delete cuAttrs[k]; cuRenderAttrs(); }
+    function cuRenderAttrs() {
+        const chips = document.getElementById('cu-attrChips'), hidden = document.getElementById('cu-attrHidden');
+        chips.innerHTML = ''; hidden.innerHTML = '';
+        const entries = Object.entries(cuAttrs);
+        if (!entries.length) { chips.innerHTML = '<span class="text-xs text-on-surface-variant/40 self-center">No attributes added yet</span>'; return; }
+        entries.forEach(([k, vals]) => vals.forEach((vl, idx) => {
+            const chip = document.createElement('div'); chip.className = 'achip';
+            chip.innerHTML = `<span class="material-symbols-outlined text-[12px]">key</span>${esc(k)}<span class="opacity-30 mx-0.5">→</span>${esc(vl)}<button type="button" onclick="cuRemoveAttr('${esc(k)}',${idx})" class="ml-1 opacity-50 hover:opacity-100"><span class="material-symbols-outlined text-[11px]">close</span></button>`;
             chips.appendChild(chip);
-            const inp=document.createElement('input');inp.type='hidden';inp.name=`attribute[${k}][${idx}]`;inp.value=vl;hidden.appendChild(inp);
+            const inp = document.createElement('input'); inp.type = 'hidden'; inp.name = `attribute[${k}][${idx}]`; inp.value = vl;
+            hidden.appendChild(inp);
         }));
     }
 
     /* ── GROUPS MODAL ── */
-    function openGroupsModal(){toggle('groupsModal',true);}
-    function closeGroupsModal(){toggle('groupsModal',false);}
+    function openGroupsModal() { toggle('groupsModal', true); }
+    function closeGroupsModal() { toggle('groupsModal', false); }
 
-    /* ── MANAGE USER PANEL ── */
-    let mgCurrentUserId=null,mgAccessLoaded=false;
+    /* ── MANAGE USER MODAL ── */
+    let mgCurrentUserId = null, mgAccessLoaded = false;
 
-    function openManageModal(btn){
-        const d=btn.dataset;mgCurrentUserId=d.userId;mgAccessLoaded=false;
-        const fn=d.firstname||'',ln=d.lastname||'',un=d.username||'';
-        const initials=(fn?fn[0].toUpperCase():un[0]?.toUpperCase()||'?')+(ln?ln[0].toUpperCase():'');
-        document.getElementById('mg-initials').textContent=initials;
-        document.getElementById('mg-title').textContent=(fn+' '+ln).trim()||un;
-        document.getElementById('mg-username').textContent='@'+un;
-        document.getElementById('mg-email').textContent=d.email||'—';
-        document.getElementById('mg-id-display').textContent=d.userId;
-        const active=d.enabled==='true';
-        document.getElementById('mg-status-active').classList.toggle('flex',active);document.getElementById('mg-status-active').classList.toggle('hidden',!active);
-        document.getElementById('mg-status-inactive').classList.toggle('flex',!active);document.getElementById('mg-status-inactive').classList.toggle('hidden',active);
-        ['enable','disable','reset','addGroup','delete'].forEach(s=>{const el=document.getElementById(`mg-userId-${s}`);if(el)el.value=d.userId;});
-        mgTab('overview',document.querySelector('.tab-btn'));
-        toggle('manageModal',true);
+    function openManageModal(btn) {
+        const d = btn.dataset; mgCurrentUserId = d.userId; mgAccessLoaded = false;
+        const fn = d.firstname || '', ln = d.lastname || '', un = d.username || '';
+        const initials = (fn ? fn[0].toUpperCase() : un[0]?.toUpperCase() || '?') + (ln ? ln[0].toUpperCase() : '');
+        document.getElementById('mg-initials').textContent = initials;
+        document.getElementById('mg-title').textContent = (fn + ' ' + ln).trim() || un;
+        document.getElementById('mg-username').textContent = '@' + un;
+        document.getElementById('mg-email').textContent = d.email || '—';
+        document.getElementById('mg-id-display').textContent = d.userId;
+        const active = d.enabled === 'true';
+        document.getElementById('mg-status-active').classList.toggle('flex', active);
+        document.getElementById('mg-status-active').classList.toggle('hidden', !active);
+        document.getElementById('mg-status-inactive').classList.toggle('flex', !active);
+        document.getElementById('mg-status-inactive').classList.toggle('hidden', active);
+        ['enable', 'disable', 'reset', 'addGroup', 'delete'].forEach(s => {
+            const el = document.getElementById(`mg-userId-${s}`); if (el) el.value = d.userId;
+        });
+        mgTab('overview', document.querySelector('.vtab-btn'));
+        toggle('manageModal', true);
     }
-    function closeManageModal(){toggle('manageModal',false);mgCurrentUserId=null;}
+    function closeManageModal() { toggle('manageModal', false); mgCurrentUserId = null; }
 
-    function mgTab(name,btn){
-        ['overview','access','danger'].forEach(t=>document.getElementById(`mg-tab-${t}`)?.classList.toggle('active',t===name));
-        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-        if(btn)btn.classList.add('active');
-        if(name==='access'&&mgCurrentUserId&&!mgAccessLoaded){mgLoadAccess(mgCurrentUserId);mgAccessLoaded=true;}
+    function mgTab(name, btn) {
+        ['overview', 'access', 'danger'].forEach(t =>
+            document.getElementById(`mg-tab-${t}`)?.classList.toggle('active', t === name)
+        );
+        document.querySelectorAll('.vtab-btn').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        if (name === 'access' && mgCurrentUserId && !mgAccessLoaded) {
+            mgLoadAccess(mgCurrentUserId); mgAccessLoaded = true;
+        }
     }
-    async function mgLoadAccess(userId){
+    async function mgLoadAccess(userId) {
         document.getElementById('mg-groups-loader').classList.remove('hidden');
-        try{const res=await fetch(`/admin/user/${userId}/groups`);const groups=await res.json();mgRenderGroupChips(groups,userId);}
-        catch{document.getElementById('mg-groups-list').innerHTML='<span class="text-xs text-error/70">Failed to load groups.</span>';}
-        finally{document.getElementById('mg-groups-loader').classList.add('hidden');}
+        try {
+            const res = await fetch(`/admin/user/${userId}/groups`);
+            const groups = await res.json();
+            mgRenderGroupChips(groups, userId);
+        } catch {
+            document.getElementById('mg-groups-list').innerHTML = '<span class="text-xs text-error/70">Failed to load groups.</span>';
+        } finally {
+            document.getElementById('mg-groups-loader').classList.add('hidden');
+        }
     }
-    function mgRenderGroupChips(items,userId){
-        const el=document.getElementById('mg-groups-list');
-        if(!items.length){el.innerHTML='<span class="text-xs text-on-surface-variant/50">No groups assigned.</span>';return;}
-        el.innerHTML='';
-        items.forEach(item=>{
-            const div=document.createElement('div');div.className='attr-chip';
-            div.innerHTML=`<span class="material-symbols-outlined text-[13px]">folder_shared</span>${esc(item)}<form action="/admin/remove/group" method="post" class="inline" onsubmit="return confirm('Remove from group &quot;${esc(item)}&quot;?')"><input type="hidden" name="userId" value="${esc(userId)}"><input type="hidden" name="groupName" value="${esc(item)}"><button type="submit" class="ml-1 opacity-60 hover:opacity-100 hover:text-error"><span class="material-symbols-outlined text-[12px]">close</span></button></form>`;
+    function mgRenderGroupChips(items, userId) {
+        const el = document.getElementById('mg-groups-list');
+        if (!items.length) { el.innerHTML = '<span class="text-xs text-on-surface-variant/50">No groups assigned.</span>'; return; }
+        el.innerHTML = '';
+        items.forEach(item => {
+            const div = document.createElement('div'); div.className = 'achip';
+            div.innerHTML = `<span class="material-symbols-outlined text-[12px]">folder_shared</span>${esc(item)}<form action="/admin/remove/group" method="post" class="inline"><input type="hidden" name="userId" value="${esc(userId)}"><input type="hidden" name="groupName" value="${esc(item)}"><button type="submit" class="ml-1 opacity-50 hover:opacity-100 hover:text-error"><span class="material-symbols-outlined text-[11px]">close</span></button></form>`;
             el.appendChild(div);
         });
     }
-    function confirmDelete(e){const name=document.getElementById('mg-title').textContent;if(!confirm(`Permanently delete "${name}"?\n\nThis action cannot be undone.`)){e.preventDefault();return false;}return true;}
+    function confirmDelete(e) {
+        return true;
+    }
 
     /* ── LOGOUT ── */
-    document.getElementById('logoutBtn')?.addEventListener('click',()=>toggle('logoutModal',true));
-    document.getElementById('confirmLogoutBtn')?.addEventListener('click',()=>document.getElementById('logoutForm')?.submit());
-    function closeLogoutModal(){toggle('logoutModal',false);}
+    document.getElementById('logoutBtn')?.addEventListener('click', () => toggle('logoutModal', true));
+    document.getElementById('confirmLogoutBtn')?.addEventListener('click', () => document.getElementById('logoutForm')?.submit());
+    function closeLogoutModal() { toggle('logoutModal', false); }
 
     /* ── ESC ── */
-    document.addEventListener('keydown',e=>{
-        if(e.key!=='Escape')return;
-        if(!document.getElementById('createUserModal').classList.contains('hidden'))closeCreateModal();
-        else if(!document.getElementById('manageModal').classList.contains('hidden'))closeManageModal();
-        else if(!document.getElementById('groupsModal').classList.contains('hidden'))closeGroupsModal();
-        else if(!document.getElementById('logoutModal').classList.contains('hidden'))closeLogoutModal();
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        if (!document.getElementById('createUserModal').classList.contains('hidden')) closeCreateModal();
+        else if (!document.getElementById('manageModal').classList.contains('hidden')) closeManageModal();
+        else if (!document.getElementById('groupsModal').classList.contains('hidden')) closeGroupsModal();
+        else if (!document.getElementById('logoutModal').classList.contains('hidden')) closeLogoutModal();
     });
+
 </script>
 </body>
 </html>

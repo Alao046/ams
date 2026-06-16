@@ -8,6 +8,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -28,8 +33,22 @@ public class AdminController {
             var groups = keycloakAdminService.getAllGroupsForRealm();
             var realm = keycloakAdminService.getRealmName();
 
+            // Build userId -> group names map for the current page of users
+            Map<String, List<String>> userGroupsMap = users.stream()
+                    .collect(Collectors.toMap(
+                            u -> u.getId(),
+                            u -> {
+                                try {
+                                    return keycloakAdminService.getUserGroups(u.getId());
+                                } catch (Exception e) {
+                                    return Collections.emptyList();
+                                }
+                            }
+                    ));
+
             model.addAttribute("users", users);
             model.addAttribute("groups", groups);
+            model.addAttribute("userGroupsMap", userGroupsMap);
             model.addAttribute("realmName", realm);
             model.addAttribute("currentPage", page);
             model.addAttribute("pageSize", size);
@@ -150,11 +169,11 @@ public class AdminController {
 
     @GetMapping("/user/{userId}/groups")
     @ResponseBody
-    public java.util.List<String> getUserGroups(@PathVariable String userId) {
+    public List<String> getUserGroups(@PathVariable String userId) {
         try {
             return keycloakAdminService.getUserGroups(userId);
         } catch (Exception e) {
-            return java.util.Collections.emptyList();
+            return Collections.emptyList();
         }
     }
 }

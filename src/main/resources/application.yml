@@ -1,9 +1,9 @@
 spring:
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/ams
-    username: postgres
-    password: alaopost
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/ams}
+    username: ${JDBC_DATABASE_USERNAME:postgres}
+    password: ${JDBC_DATABASE_PASSWORD:alaopost}
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000
@@ -29,13 +29,13 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/ams
+            issuer-uri: ${ISSUER_URI:http://localhost:8080/realms/ams}
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
-            client-id: ams
-            client-secret: NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C
+            client-id: ${KEYCLOAK_CLIENT_ID:ams}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C}
             authorization-grant-type: authorization_code
             scope: openid, profile, email
 
@@ -51,5 +51,10 @@ keycloak:
   base-realm: master
   admin-client-id: admin-cli-client
   admin-client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:2WFVHBXQXDWS3rV47I5XI4YrPsI3rxiq}
-  client-id: ams
+  client-id: ${KEYCLOAK_CLIENT_ID:ams}
   client-secret: ${KEYCLOAK_CLIENT_SECRET:NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C}
+
+server:
+  forward-headers-strategy: native
+  tomcat:
+    max-part-count: '100'
