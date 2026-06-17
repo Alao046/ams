@@ -13,15 +13,21 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
   # Jackson Configuration - ignore unknown properties from Keycloak API
   jackson:
     deserialization:
       fail-on-unknown-properties: false
+
+  # Multipart Upload Configuration
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
   # Security & Keycloak Configuration
   security:
@@ -29,13 +35,13 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: ${ISSUER_URI:http://localhost:8080/realms/ams}
+            issuer-uri: ${ISSUER_URI:https://ngcloak-production.up.railway.app/realms/ams}
             user-name-attribute: preferred_username
         registration:
           keycloak:
             provider: keycloak
             client-id: ${KEYCLOAK_CLIENT_ID:ams}
-            client-secret: ${KEYCLOAK_CLIENT_SECRET:NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:YuK5FH9q83qsZhLf61VXDAGGnbITthPX}
             authorization-grant-type: authorization_code
             scope: openid, profile, email
 
@@ -46,13 +52,13 @@ flowable:
 
 # Keycloak Admin Configuration
 keycloak:
-  base-url: ${KEYCLOAK_BASE_URL:http://localhost:8080}
+  base-url: ${KEYCLOAK_BASE_URL:https://ngcloak-production.up.railway.app}
   realm: ams
   base-realm: master
   admin-client-id: admin-cli-client
-  admin-client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:2WFVHBXQXDWS3rV47I5XI4YrPsI3rxiq}
+  admin-client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:MXSasVnuHsBodtnuFu69Tp8yyl4EYb4E}
   client-id: ${KEYCLOAK_CLIENT_ID:ams}
-  client-secret: ${KEYCLOAK_CLIENT_SECRET:NgmB1BemVnpwbzCo29L2qMCFmuqg2Q8C}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET:YuK5FH9q83qsZhLf61VXDAGGnbITthPX}
 
 server:
   forward-headers-strategy: native
