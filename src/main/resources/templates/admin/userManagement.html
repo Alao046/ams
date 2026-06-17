@@ -392,7 +392,7 @@
                 <!-- Pagination -->
                 <div class="px-5 py-3.5 border-t border-outline-variant/10 bg-surface-container-low/20 flex items-center justify-between gap-3 flex-wrap">
                     <p class="text-xs text-on-surface-variant"
-                       th:text="'Showing ' + fromIndex + '–' + toIndex + ' of ' + totalUsers">Showing …</p>
+                       th:text="'Showing ' + ${fromIndex} + ' to ' + ${toIndex} + ' of ' + ${totalUsers}">Showing …</p>
                     <div class="flex items-center gap-1.5">
                         <a th:if="${currentPage > 0}"
                            th:href="@{/admin/users(page=${currentPage - 1}, search=${search}, size=${pageSize})}"
@@ -404,7 +404,7 @@
                             <span class="material-symbols-outlined text-sm">chevron_left</span> Prev
                         </span>
                         <span class="text-xs font-mono text-on-surface-variant px-2"
-                              th:text="(currentPage + 1) + ' / ' + totalPages">1/1</span>
+                              th:text="(${currentPage} + 1) + ' / ' + ${totalPages}">1/1</span>
                         <a th:if="${currentPage + 1 < totalPages}"
                            th:href="@{/admin/users(page=${currentPage + 1}, search=${search}, size=${pageSize})}"
                            class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-outline-variant/30 bg-surface hover:bg-surface-container-high flex items-center gap-0.5">
