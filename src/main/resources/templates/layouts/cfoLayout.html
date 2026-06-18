@@ -6,7 +6,7 @@
 <body>
 <div xmlns:th="http://www.thymeleaf.org">
 
-    <aside th:fragment="sidebar" class="w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50">
+    <aside th:fragment="sidebar(activeTab)" class="w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50">
         <div class="px-6 pb-8">
             <img alt="Accounting Management System" class="w-[48px] h-[48px] rounded-lg mb-4" th:src="@{/images/logoams.png}">
             <div>
@@ -15,23 +15,37 @@
             </div>
         </div>
         <nav class="flex-1 px-2 space-y-1">
-            <a class="flex items-center px-4 py-3 bg-secondary-fixed text-on-secondary-fixed-variant font-bold rounded-lg mx-2 my-1 transition-all" th:href="@{/cfo/dashboard}">
+            <a th:href="@{/cfo/dashboard}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'dashboard'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">dashboard</span>
                 <span class="font-body-md text-body-md">Dashboard</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/cfo/approvalsHub}">
+
+            <a th:href="@{/cfo/approvalsHub}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'approvalsHub'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">fact_check</span>
                 <span class="font-body-md text-body-md">Approvals Hub</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/cfo/trialBalance}">
+
+            <a th:href="@{/cfo/trialBalance}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'trialBalance'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">account_balance</span>
                 <span class="font-body-md text-body-md">Trial Balance</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/cfo/financialReports}">
+
+            <a th:href="@{/cfo/financialReports}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'financialReports'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">analytics</span>
                 <span class="font-body-md text-body-md">Financial Reporting</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/cfo/budgetControl}">
+
+            <a th:href="@{/cfo/budgetControl}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'budgetControl'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">monitoring</span>
                 <span class="font-body-md text-body-md">Budget Control</span>
             </a>

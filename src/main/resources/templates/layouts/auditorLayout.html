@@ -6,7 +6,8 @@
 <body>
 <div xmlns:th="http://www.thymeleaf.org">
 
-    <aside th:fragment="sidebar" class="w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50">
+    <!-- Configured fragment to take the parameter -->
+    <aside th:fragment="sidebar(activeTab)" class="w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50">
         <div class="px-6 pb-8">
             <img alt="Accounting Management System" class="w-[48px] h-[48px] rounded-lg mb-4" th:src="@{/images/logoams.png}">
             <div>
@@ -15,15 +16,26 @@
             </div>
         </div>
         <nav class="flex-1 px-2 space-y-1">
-            <a class="flex items-center px-4 py-3 bg-secondary-fixed text-on-secondary-fixed-variant font-bold rounded-lg mx-2 my-1 transition-all" th:href="@{/auditor/dashboard}">
+            <!-- Dashboard -->
+            <a th:href="@{/auditor/dashboard}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'dashboard'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">dashboard</span>
                 <span class="font-body-md text-body-md">Dashboard</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/auditor/auditLogExplorer}">
+
+            <!-- Audit Log Explorer -->
+            <a th:href="@{/auditor/auditLogExplorer}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'auditLogExplorer'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">history_edu</span>
                 <span class="font-body-md text-body-md">Audit Log Explorer</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/auditor/securityEvents}">
+
+            <!-- Security Events -->
+            <a th:href="@{/auditor/securityEvents}"
+               class="flex items-center px-4 py-3 rounded-lg mx-2 my-1 transition-all"
+               th:classappend="${activeTab == 'securityEvents'} ? 'bg-secondary-fixed text-on-secondary-fixed-variant font-bold' : 'text-on-surface-variant hover:bg-surface-container-high'">
                 <span class="material-symbols-outlined mr-3">gavel</span>
                 <span class="font-body-md text-body-md">Security Events</span>
             </a>

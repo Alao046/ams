@@ -130,7 +130,7 @@
 <body class="bg-background font-body-md text-on-surface overflow-hidden selection:bg-primary-fixed selection:text-primary">
 
 <div class="flex h-screen w-full overflow-hidden">
-    <aside th:replace="~{layouts/financeAdminLayout :: sidebar}"></aside>
+    <aside th:replace="~{layouts/financeAdminLayout :: sidebar('fiscalConfiguration')}"></aside>
 
     <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
         <header class="bg-surface dark:bg-surface-container-low w-full h-16 border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-outer-padding z-50 shrink-0">
