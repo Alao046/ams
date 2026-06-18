@@ -30,7 +30,7 @@ public class HomeController {
         } else if (authenticationManager.isCfo()) {
             return "redirect:/cfo/dashboard";
         } else if (authenticationManager.isFinanceAdmin()) {
-            return "redirect:/finance-admin/dashboard";
+            return "redirect:/financeAdmin/dashboard";
         }
 
         model.addAttribute("title", "Accounting Management System");

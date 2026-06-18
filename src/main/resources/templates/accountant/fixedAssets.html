@@ -1,0 +1,307 @@
+<!DOCTYPE html><html class="light" lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Fixed Asset Register - FinAdmin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#cfc4c5",
+                      "on-tertiary": "#ffffff",
+                      "surface-variant": "#e0e3e5",
+                      "on-primary-fixed-variant": "#474747",
+                      "inverse-on-surface": "#eff1f3",
+                      "secondary-fixed": "#d3e4fe",
+                      "secondary": "#505f76",
+                      "primary": "#000000",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#e0e3e5",
+                      "surface-container-high": "#e6e8ea",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "on-error-container": "#93000a",
+                      "background": "#f7f9fb",
+                      "on-tertiary-container": "#7c839b",
+                      "surface-bright": "#f7f9fb",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-surface": "#191c1e",
+                      "surface-tint": "#5e5e5e",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#848484",
+                      "tertiary-container": "#131b2e",
+                      "on-secondary-fixed": "#0b1c30",
+                      "surface-container-low": "#f2f4f6",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed": "#1b1b1b",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "on-tertiary-fixed": "#131b2e",
+                      "tertiary-fixed": "#dae2fd",
+                      "secondary-container": "#d0e1fb",
+                      "on-surface-variant": "#4c4546",
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "surface-container-lowest": "#ffffff",
+                      "inverse-primary": "#c6c6c6",
+                      "surface-dim": "#d8dadc",
+                      "tertiary": "#000000",
+                      "outline": "#7e7576",
+                      "inverse-surface": "#2d3133",
+                      "primary-container": "#1b1b1b",
+                      "surface": "#f7f9fb",
+                      "surface-container": "#eceef0",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "primary-fixed": "#e2e2e2",
+                      "error-container": "#ffdad6",
+                      "on-secondary-container": "#54647a",
+                      "on-background": "#191c1e",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "12px",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "card-padding": "24px",
+                      "stack-md": "16px",
+                      "stack-sm": "8px",
+                      "outer-padding": "32px"
+              },
+              "fontFamily": {
+                      "label-md": ["JetBrains Mono"],
+                      "body-sm": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "currency-display": ["Hanken Grotesk"],
+                      "body-md": ["Hanken Grotesk"],
+                      "body-lg": ["Hanken Grotesk"],
+                      "headline-sm": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f2f4f6;
+            font-family: 'Hanken Grotesk', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .table-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .table-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .active-row:hover {
+            background-color: #f2f4f6;
+            transition: background-color 0.2s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex">
+
+<aside th:replace="~{layouts/accountantLayout :: sidebar}"></aside>
+
+<div class="flex-grow flex flex-col min-w-0">
+    <header class="bg-surface sticky top-0 z-40 border-b border-outline-variant flex justify-between items-center w-full px-outer-padding py-4 max-w-full">
+        <div class="flex items-center gap-4">
+            <span class="font-headline-sm text-headline-sm font-bold text-primary">Fixed Asset Register</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <button class="text-secondary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
+                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+            </button>
+            <button class="text-secondary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
+                <span class="material-symbols-outlined" data-icon="settings">settings</span>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden">
+                <img class="w-full h-full object-cover" data-alt="A professional business headshot of a Nigerian financial controller, clean studio lighting, corporate attire, minimalist neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBu9v-GzbrL5Yxb5HqKPUAOvaUkMfn-Zo0ow8-ExsjTE1CdCTI_U6MqyLBnLI3G1-5wcf39byXjpqqt3GJVvBl1oFFa8bF1egMxSZOuKC8F02NsgX_9S-sG1hGwNtpRjhXo6TiRpkBJNmcF7h3WMm8uKekZzyEXbMnP1Oc0_chOKnMsM6Xc5CKPXZPk3F60KadsYOxyaM_AJuaTNbJqAEKxlikX99MUOOBhjRU875Rf2xKy0yKdGsnju87RJX6GMBzyEijXjxqW9pA">
+            </div>
+        </div>
+    </header>
+
+    <main class="px-outer-padding py-gutter max-w-7xl mx-auto w-full flex flex-col gap-gutter">
+        <div class="-mb-2">
+            <p class="font-body-md text-body-md text-on-surface-variant">Track corporate assets, manage location deployments, and process depreciation entries.</p>
+        </div>
+
+        <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding shadow-sm">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex gap-4">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+                        <input class="pl-10 pr-4 py-2 border border-outline-variant rounded-lg bg-surface text-body-sm font-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all w-64" placeholder="Search assets..." type="text">
+                    </div>
+                    <button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg text-body-sm font-body-sm hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                        Filter
+                    </button>
+                </div>
+                <button class="bg-primary text-on-primary font-bold px-6 py-2.5 rounded-lg text-body-sm hover:opacity-90 transition-opacity flex items-center gap-2">
+                    <span class="material-symbols-outlined" data-icon="add">add</span>
+                    + Register New Asset
+                </button>
+            </div>
+
+            <div class="overflow-x-auto table-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-surface-container-low border-b border-outline-variant">
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant">Asset ID</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant">Description Name</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant">Location</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant">Purchase Date</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant text-right">Cost Baseline</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant">Method</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant text-right">Accum. Depr.</th>
+                        <th class="px-4 py-3 font-label-md text-label-md uppercase text-on-surface-variant text-right">Net Book Value</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <tr class="active-row cursor-pointer">
+                        <td class="px-4 py-4 font-label-md text-body-md">#AS-GEN-001</td>
+                        <td class="px-4 py-4">
+                            <div class="font-body-md font-bold text-on-surface">Industrial 500kVA Generator</div>
+                            <div class="text-[11px] text-on-surface-variant">Power & Infrastructure</div>
+                        </td>
+                        <td class="px-4 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-secondary-container text-on-secondary-fixed-variant">
+                                    Lagos Hub
+                                </span>
+                        </td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">12 Jan 2023</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦45,000,000.00</td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">Straight Line</td>
+                        <td class="px-4 py-4 font-body-md text-right text-error font-medium">₦9,000,000.00</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦36,000,000.00</td>
+                    </tr>
+                    <tr class="active-row cursor-pointer">
+                        <td class="px-4 py-4 font-label-md text-body-md">#AS-IT-421</td>
+                        <td class="px-4 py-4">
+                            <div class="font-body-md font-bold text-on-surface">Core Banking Server Rack</div>
+                            <div class="text-[11px] text-on-surface-variant">Information Technology</div>
+                        </td>
+                        <td class="px-4 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-surface-container-highest text-on-surface-variant">
+                                    Abuja HQ
+                                </span>
+                        </td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">25 Mar 2023</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦12,500,000.00</td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">Red. Balance</td>
+                        <td class="px-4 py-4 font-body-md text-right text-error font-medium">₦3,125,000.00</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦9,375,000.00</td>
+                    </tr>
+                    <tr class="active-row cursor-pointer">
+                        <td class="px-4 py-4 font-label-md text-body-md">#AS-VH-012</td>
+                        <td class="px-4 py-4">
+                            <div class="font-body-md font-bold text-on-surface">Toyota Hilux - Ops Unit</div>
+                            <div class="text-[11px] text-on-surface-variant">Motor Vehicles</div>
+                        </td>
+                        <td class="px-4 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-secondary-container text-on-secondary-fixed-variant">
+                                    Port Harcourt
+                                </span>
+                        </td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">05 Jun 2023</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦32,000,000.00</td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">Straight Line</td>
+                        <td class="px-4 py-4 font-body-md text-right text-error font-medium">₦4,000,000.00</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦28,000,000.00</td>
+                    </tr>
+                    <tr class="active-row cursor-pointer">
+                        <td class="px-4 py-4 font-label-md text-body-md">#AS-OF-882</td>
+                        <td class="px-4 py-4">
+                            <div class="font-body-md font-bold text-on-surface">Ergonomic Suite Set (12)</div>
+                            <div class="text-[11px] text-on-surface-variant">Furniture & Fittings</div>
+                        </td>
+                        <td class="px-4 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-surface-container-highest text-on-surface-variant">
+                                    Lagos Hub
+                                </span>
+                        </td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">14 Aug 2023</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦6,800,000.00</td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">Straight Line</td>
+                        <td class="px-4 py-4 font-body-md text-right text-error font-medium">₦680,000.00</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦6,120,000.00</td>
+                    </tr>
+                    <tr class="active-row cursor-pointer">
+                        <td class="px-4 py-4 font-label-md text-body-md">#AS-IT-901</td>
+                        <td class="px-4 py-4">
+                            <div class="font-body-md font-bold text-on-surface">MacBook Pro 16" (Batch 5)</div>
+                            <div class="text-[11px] text-on-surface-variant">Information Technology</div>
+                        </td>
+                        <td class="px-4 py-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-secondary-container text-on-secondary-fixed-variant">
+                                    Kano Branch
+                                </span>
+                        </td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">22 Sep 2023</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦18,200,000.00</td>
+                        <td class="px-4 py-4 font-body-sm text-on-surface-variant">Red. Balance</td>
+                        <td class="px-4 py-4 font-body-md text-right text-error font-medium">₦2,730,000.00</td>
+                        <td class="px-4 py-4 font-body-md font-bold text-right text-on-surface">₦15,470,000.00</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 flex justify-between items-center border-t border-outline-variant pt-6">
+                <div class="flex gap-8">
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant uppercase">Total Gross Value</p>
+                        <p class="font-headline-sm text-headline-sm font-bold text-on-surface">₦114,500,000.00</p>
+                    </div>
+                    <div>
+                        <p class="font-label-md text-label-md text-on-surface-variant uppercase">Total NBV</p>
+                        <p class="font-headline-sm text-headline-sm font-bold text-on-surface">₦94,965,000.00</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container disabled:opacity-30" disabled="">
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                    </button>
+                    <span class="font-body-sm text-on-surface-variant px-4">Page 1 of 12</span>
+                    <button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container">
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const rows = document.querySelectorAll('.active-row');
+        rows.forEach(row => {
+            row.addEventListener('click', () => {
+                console.log('Asset details view requested');
+            });
+        });
+    });
+</script>
+</body></html>

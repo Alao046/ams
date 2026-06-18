@@ -1,0 +1,410 @@
+<!DOCTYPE html><html class="light" lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Customer Invoice Builder | LedgerPrecise</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-bright": "#f7f9fb",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#54647a",
+                      "on-primary-fixed": "#1b1b1b",
+                      "secondary-container": "#d0e1fb",
+                      "outline-variant": "#cfc4c5",
+                      "tertiary-container": "#131b2e",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-container": "#eceef0",
+                      "on-background": "#191c1e",
+                      "on-primary-container": "#848484",
+                      "on-surface": "#191c1e",
+                      "primary": "#000000",
+                      "surface-tint": "#5e5e5e",
+                      "primary-fixed": "#e2e2e2",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface": "#f7f9fb",
+                      "on-tertiary-fixed": "#131b2e",
+                      "background": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "secondary-fixed": "#d3e4fe",
+                      "outline": "#7e7576",
+                      "surface-dim": "#d8dadc",
+                      "on-error-container": "#93000a",
+                      "surface-container-low": "#f2f4f6",
+                      "on-surface-variant": "#4c4546",
+                      "on-primary-fixed-variant": "#474747",
+                      "inverse-primary": "#c6c6c6",
+                      "on-tertiary-container": "#7c839b",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed": "#dae2fd",
+                      "primary-container": "#1b1b1b",
+                      "on-secondary-fixed": "#0b1c30",
+                      "surface-container-highest": "#e0e3e5",
+                      "surface-variant": "#e0e3e5",
+                      "secondary": "#505f76",
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "surface-container-high": "#e6e8ea",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "inverse-surface": "#2d3133",
+                      "tertiary": "#000000",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-padding": "24px",
+                      "stack-sm": "8px",
+                      "gutter": "24px",
+                      "stack-md": "16px",
+                      "outer-padding": "32px"
+              },
+              "fontFamily": {
+                      "headline-sm": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "body-md": ["Hanken Grotesk"],
+                      "currency-display": ["Hanken Grotesk"],
+                      "body-lg": ["Hanken Grotesk"],
+                      "label-md": ["JetBrains Mono"],
+                      "body-sm": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                      "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+
+        .data-table-header {
+            background-color: #f7f9fb;
+            border-bottom: 1px solid #cfc4c5;
+        }
+
+        input, select {
+            border: 1px solid #cfc4c5 !important;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #000000 !important;
+            outline: none !important;
+            box-shadow: 0 0 0 2px #f2f4f6 !important;
+        }
+
+        .naira-symbol::before {
+            content: "₦";
+            margin-right: 2px;
+        }
+    </style>
+</head>
+<body class="bg-surface-bright text-on-surface min-h-screen font-body-md flex">
+
+<aside th:replace="~{layouts/accountantLayout :: sidebar}"></aside>
+
+<div class="flex-grow flex flex-col min-w-0">
+    <header class="bg-surface-container-lowest border-b border-outline-variant flex justify-between items-center w-full px-outer-padding py-4 sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <div>
+                <h2 class="font-headline-sm text-headline-sm text-primary">Customer Invoice Builder</h2>
+            </div>
+        </div>
+        <div class="flex items-center gap-6">
+            <button class="relative p-2 hover:bg-surface-container transition-colors rounded-full cursor-pointer active:opacity-80">
+                <span class="material-symbols-outlined text-secondary">notifications</span>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface-container-lowest"></span>
+            </button>
+            <div class="flex items-center gap-3 cursor-pointer group">
+                <span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-outer-padding max-w-[1440px] mx-auto space-y-gutter w-full">
+        <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-stack-md mb-8">
+                <div class="space-y-1.5">
+                    <label class="block font-body-sm font-semibold text-primary">Customer Account Selector</label>
+                    <select class="w-full bg-surface-container-lowest rounded-lg p-2.5 text-body-md focus:ring-0">
+                        <option value="">Select Customer...</option>
+                        <option>Dangote Cement PLC</option>
+                        <option>MTN Nigeria Communications</option>
+                        <option>Zenith Bank PLC</option>
+                        <option>Flutterwave Technology Solutions</option>
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block font-body-sm font-semibold text-primary">Payment Terms</label>
+                    <select class="w-full bg-surface-container-lowest rounded-lg p-2.5 text-body-md focus:ring-0">
+                        <option>Due on Receipt</option>
+                        <option>Net 15 Days</option>
+                        <option selected="">Net 30 Days</option>
+                        <option>Net 60 Days</option>
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block font-body-sm font-semibold text-primary">Invoice Date</label>
+                    <input class="w-full bg-surface-container-lowest rounded-lg p-2 text-body-md focus:ring-0" type="date" value="2023-11-24">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="block font-body-sm font-semibold text-primary">Applied Tax Rules</label>
+                    <select class="w-full bg-surface-container-lowest rounded-lg p-2.5 text-body-md focus:ring-0">
+                        <option>NG VAT (7.5%)</option>
+                        <option>WHT Exempt (0%)</option>
+                        <option>Combined VAT + Levy (10%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-left border-collapse" id="invoice-table">
+                    <thead class="data-table-header">
+                    <tr>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px]">Item / Service Description</th>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px]">GL Account Link</th>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px] text-right">Rate (₦)</th>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px] text-center">Qty</th>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px]">Tax Component</th>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px] text-right">Net Total (₦)</th>
+                        <th class="py-3 px-4 font-label-md text-secondary uppercase tracking-widest text-[10px] w-10"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                    <tr class="group hover:bg-surface-bright transition-colors">
+                        <td class="py-4 px-4">
+                            <input class="w-full bg-transparent border-none focus:ring-0 text-body-md p-0" placeholder="Enter service description..." type="text" value="Enterprise Software License Renewal">
+                        </td>
+                        <td class="py-4 px-4">
+                            <select class="w-full bg-transparent border-none focus:ring-0 text-body-md p-0">
+                                <option>4001 - Sales Income</option>
+                                <option>4002 - Service Revenue</option>
+                                <option>4005 - Software Subscriptions</option>
+                            </select>
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <input class="w-24 text-right bg-transparent border-none focus:ring-0 text-body-md p-0 rate-input" step="0.01" type="number" value="1250000.00">
+                        </td>
+                        <td class="py-4 px-4 text-center">
+                            <input class="w-12 text-center bg-transparent border-none focus:ring-0 text-body-md p-0 qty-input" type="number" value="1">
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="bg-secondary-container text-on-secondary-fixed-variant px-2 py-1 rounded text-[11px] font-label-md uppercase">7.5% VAT</span>
+                        </td>
+                        <td class="py-4 px-4 text-right font-semibold text-primary net-total naira-symbol">1,250,000.00</td>
+                        <td class="py-4 px-4">
+                            <button type="button" onclick="this.closest('tr').remove(); updateTotals();" class="text-secondary hover:text-error opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="group hover:bg-surface-bright transition-colors">
+                        <td class="py-4 px-4">
+                            <input class="w-full bg-transparent border-none focus:ring-0 text-body-md p-0" placeholder="Enter service description..." type="text" value="Cloud Infrastructure Support - Q4">
+                        </td>
+                        <td class="py-4 px-4">
+                            <select class="w-full bg-transparent border-none focus:ring-0 text-body-md p-0">
+                                <option>4002 - Service Revenue</option>
+                                <option selected="">4003 - Technical Support</option>
+                                <option>4004 - Consulting Fees</option>
+                            </select>
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <input class="w-24 text-right bg-transparent border-none focus:ring-0 text-body-md p-0 rate-input" step="0.01" type="number" value="450000.00">
+                        </td>
+                        <td class="py-4 px-4 text-center">
+                            <input class="w-12 text-center bg-transparent border-none focus:ring-0 text-body-md p-0 qty-input" type="number" value="3">
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="bg-secondary-container text-on-secondary-fixed-variant px-2 py-1 rounded text-[11px] font-label-md uppercase">7.5% VAT</span>
+                        </td>
+                        <td class="py-4 px-4 text-right font-semibold text-primary net-total naira-symbol">1,350,000.00</td>
+                        <td class="py-4 px-4">
+                            <button type="button" onclick="this.closest('tr').remove(); updateTotals();" class="text-secondary hover:text-error opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="button" class="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary transition-colors font-semibold text-body-sm group" onclick="addRow()">
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover:scale-110">add_circle</span>
+                Add Line Item
+            </button>
+
+            <div class="mt-12 flex flex-col items-end gap-stack-md">
+                <div class="w-full max-w-xs space-y-3">
+                    <div class="flex justify-between items-center text-body-md text-secondary">
+                        <span class="">Subtotal</span>
+                        <span class="font-semibold text-primary naira-symbol" id="subtotal-display">2,600,000.00</span>
+                    </div>
+                    <div class="flex justify-between items-center text-body-md text-secondary">
+                        <span class="">Tax Total (7.5%)</span>
+                        <span class="font-semibold text-primary naira-symbol" id="tax-display">195,000.00</span>
+                    </div>
+                    <div class="h-px bg-outline-variant w-full"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-headline-sm text-headline-sm text-primary">Grand Total</span>
+                        <span class="font-headline-sm text-headline-sm text-primary naira-symbol" id="grand-total-display">2,795,000.00</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 mt-4">
+                    <button class="px-6 py-3 bg-surface-container-lowest border border-outline-variant text-primary font-bold rounded-lg hover:bg-surface-container transition-all active:opacity-80">
+                        Save as Draft
+                    </button>
+                    <button class="px-8 py-3 bg-primary text-on-primary font-bold rounded-lg shadow-md hover:bg-zinc-800 transition-all active:opacity-80 flex items-center gap-2">
+                        Generate & Post Customer Invoice
+                        <span class="material-symbols-outlined text-[20px]">send</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-card-padding">
+                <h3 class="font-label-md text-secondary uppercase mb-4 tracking-wider">Credit Compliance</h3>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-on-secondary-fixed-variant">verified_user</span>
+                    </div>
+                    <div>
+                        <p class="text-body-md font-semibold text-primary">Within Limit</p>
+                        <p class="text-body-sm text-secondary">Account has ₦4.2M available credit.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-card-padding">
+                <h3 class="font-label-md text-secondary uppercase mb-4 tracking-wider">Account Receivable Impact</h3>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-on-secondary-fixed-variant">trending_up</span>
+                    </div>
+                    <div>
+                        <p class="text-body-md font-semibold text-primary">+₦2.79M Projected</p>
+                        <p class="text-body-sm text-secondary">Balances expected to settle by Dec 24.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-surface-container-low border border-outline-variant rounded-xl p-card-padding">
+                <h3 class="font-label-md text-secondary uppercase mb-4 tracking-wider">GL Mapping Verified</h3>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center">
+                        <span class="material-symbols-outlined text-on-secondary-fixed-variant">account_balance_wallet</span>
+                    </div>
+                    <div>
+                        <p class="text-body-md font-semibold text-primary">ERP Sync Enabled</p>
+                        <p class="text-body-sm text-secondary">Direct posting to Sage/Oracle Ledger.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('en-NG', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(value);
+    }
+
+    function updateTotals() {
+        let subtotal = 0;
+        const rows = document.querySelectorAll('#invoice-table tbody tr');
+
+        rows.forEach(row => {
+            const rate = parseFloat(row.querySelector('.rate-input').value) || 0;
+            const qty = parseInt(row.querySelector('.qty-input').value) || 0;
+            const net = rate * qty;
+            row.querySelector('.net-total').textContent = formatCurrency(net);
+            subtotal += net;
+        });
+
+        const tax = subtotal * 0.075;
+        const grandTotal = subtotal + tax;
+
+        document.getElementById('subtotal-display').textContent = formatCurrency(subtotal);
+        document.getElementById('tax-display').textContent = formatCurrency(tax);
+        document.getElementById('grand-total-display').textContent = formatCurrency(grandTotal);
+    }
+
+    // Delegated listener to handle row input updates on runtime-created content
+    document.getElementById('invoice-table').addEventListener('input', (e) => {
+        if (e.target.classList.contains('rate-input') || e.target.classList.contains('qty-input')) {
+            updateTotals();
+        }
+    });
+
+    function addRow() {
+        const tbody = document.querySelector('#invoice-table tbody');
+        const newRow = document.createElement('tr');
+        newRow.className = "group hover:bg-surface-bright transition-colors";
+        newRow.innerHTML = `
+            <td class="py-4 px-4">
+                <input type="text" placeholder="Enter service description..." class="w-full bg-transparent border-none focus:ring-0 text-body-md p-0">
+            </td>
+            <td class="py-4 px-4">
+                <select class="w-full bg-transparent border-none focus:ring-0 text-body-md p-0">
+                    <option>4001 - Sales Income</option>
+                    <option>4002 - Service Revenue</option>
+                </select>
+            </td>
+            <td class="py-4 px-4 text-right">
+                <input type="number" step="0.01" class="w-24 text-right bg-transparent border-none focus:ring-0 text-body-md p-0 rate-input" value="0.00">
+            </td>
+            <td class="py-4 px-4 text-center">
+                <input type="number" class="w-12 text-center bg-transparent border-none focus:ring-0 text-body-md p-0 qty-input" value="1">
+            </td>
+            <td class="py-4 px-4">
+                <span class="bg-secondary-container text-on-secondary-fixed-variant px-2 py-1 rounded text-[11px] font-label-md uppercase">7.5% VAT</span>
+            </td>
+            <td class="py-4 px-4 text-right font-semibold text-primary net-total naira-symbol">0.00</td>
+            <td class="py-4 px-4">
+                <button type="button" onclick="this.closest('tr').remove(); updateTotals();" class="text-secondary hover:text-error transition-opacity group-hover:opacity-100">
+                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(newRow);
+        updateTotals();
+    }
+
+    // Run Initial Calculations on load
+    updateTotals();
+</script>
+</body>
+</html>

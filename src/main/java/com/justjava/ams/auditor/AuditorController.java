@@ -12,4 +12,14 @@ public class AuditorController {
     public String dashboard() {
         return "auditor/dashboard";
     }
+
+    @GetMapping("/auditLogExplorer")
+    public String auditLogExplorer() {
+        return "auditor/auditLogExplorer";
+    }
+
+    @GetMapping("/securityEvents")
+    public String securityEvents() {
+        return "auditor/securityEvents";
+    }
 }

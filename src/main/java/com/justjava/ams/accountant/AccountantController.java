@@ -12,4 +12,29 @@ public class AccountantController {
     public String dashboard() {
         return "accountant/dashboard";
     }
+
+    @GetMapping("/manualJournal")
+    public String manualJournal() {
+        return "accountant/manualJournal";
+    }
+
+    @GetMapping("/purchaseInvoice")
+    public String purchaseInvoice() {
+        return "accountant/purchaseInvoice";
+    }
+
+    @GetMapping("/customerInvoicing")
+    public String customerInvoicing() {
+        return "accountant/customerInvoicing";
+    }
+
+    @GetMapping("/cashAndBank")
+    public String cashAndBank() {
+        return "accountant/cashAndBank";
+    }
+
+    @GetMapping("/fixedAssets")
+    public String fixedAssets() {
+        return "accountant/fixedAssets";
+    }
 }

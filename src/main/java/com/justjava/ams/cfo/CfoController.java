@@ -12,4 +12,24 @@ public class CfoController {
     public String dashboard() {
         return "cfo/dashboard";
     }
+
+    @GetMapping("/approvalsHub")
+    public String approvalsHub() {
+        return "cfo/approvalsHub";
+    }
+
+    @GetMapping("/trialBalance")
+    public String trialBalance() {
+        return "cfo/trialBalance";
+    }
+
+    @GetMapping("/financialReports")
+    public String financialReports() {
+        return "cfo/financialReports";
+    }
+
+    @GetMapping("/budgetControl")
+    public String budgetControl() {
+        return "cfo/budgetControl";
+    }
 }

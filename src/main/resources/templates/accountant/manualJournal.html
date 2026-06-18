@@ -1,0 +1,361 @@
+<!DOCTYPE html><html class="light" lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Manual Journal Entry | FinAdmin</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "secondary-container": "#d0e1fb",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#54647a",
+                        "error-container": "#ffdad6",
+                        "surface-variant": "#e0e3e5",
+                        "on-primary-fixed-variant": "#474747",
+                        "on-surface-variant": "#4c4546",
+                        "outline": "#7e7576",
+                        "on-background": "#191c1e",
+                        "secondary": "#505f76",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-container": "#7c839b",
+                        "outline-variant": "#cfc4c5",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-primary-container": "#848484",
+                        "surface-container-high": "#e6e8ea",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "inverse-surface": "#2d3133",
+                        "secondary-fixed": "#d3e4fe",
+                        "primary": "#000000",
+                        "surface-tint": "#5e5e5e",
+                        "primary-fixed": "#e2e2e2",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#131b2e",
+                        "surface": "#f7f9fb",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "primary-container": "#1b1b1b",
+                        "on-error": "#ffffff",
+                        "tertiary": "#000000",
+                        "tertiary-fixed": "#dae2fd",
+                        "on-primary-fixed": "#1b1b1b",
+                        "inverse-primary": "#c6c6c6",
+                        "background": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "12px",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-padding": "24px",
+                        "stack-sm": "8px",
+                        "outer-padding": "32px",
+                        "stack-md": "16px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "currency-display": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-md": ["JetBrains Mono"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f2f4f6;
+            font-family: 'Hanken Grotesk', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        input:focus, select:focus {
+            outline: none !important;
+            border-color: #000000 !important;
+            box-shadow: 0 0 0 2px #f2f4f6 !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-24 flex">
+
+<!-- Shared Accountant Navigation Sidebar Component Insertion -->
+<aside th:replace="~{layouts/accountantLayout :: sidebar}"></aside>
+
+<!-- Structural Application Workspace Content Pane -->
+<div class="flex-grow flex flex-col min-w-0">
+    <!-- TopNavBar Header Template Blueprint -->
+    <header class="bg-surface sticky top-0 z-40 border-b border-outline-variant flex justify-between items-center w-full px-outer-padding py-4 max-w-full">
+        <div class="flex items-center gap-4">
+            <span class="font-headline-sm text-headline-sm font-bold text-primary">Manual Journal Entry</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <button class="text-secondary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
+                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+            </button>
+            <button class="text-secondary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
+                <span class="material-symbols-outlined" data-icon="settings">settings</span>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden">
+                <img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate accountant in a minimalist Lagos office. The lighting is soft and natural, emphasizing a clean, modern aesthetic with neutral tones and a slight architectural background of glass and steel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBniQBeAeQhbwAJbll5n5GvWfQKyHW2yHzRVg3NpBDT2G5R2H95Nmpbhp6neQ3IrFO3K_M0ofWt3w6jQEfQ0y4Y6FWOY85AaDinvknLOppIDEiXfsMs8FJ6KTyQC0W2QfLP1z3zoewXUGrleFV2Kev86ra1wwExrddwg5pDUE8G3ATLKbJTh_OVNCOnsQgpnWX_OzFTKTXff01jypxK-UFTwqr-Tql0bHZ9tT0Q4sBGoCwAhUuAyj8qdwiWK5RcOg_h_uPuRIc3FdE">
+            </div>
+        </div>
+    </header>
+
+    <main class="px-outer-padding py-gutter max-w-7xl mx-auto w-full flex flex-col gap-gutter">
+        <!-- Block 1: Metadata Card -->
+        <section class="bg-white border border-slate-200 rounded-lg p-card-padding">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+                <div class="flex flex-col gap-2">
+                    <label class="font-body-sm font-semibold text-on-surface">Entry Description</label>
+                    <input class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black" placeholder="e.g. Monthly Payroll Accrual" type="text">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-body-sm font-semibold text-on-surface">Transaction Date</label>
+                    <input class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black" type="date">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-body-sm font-semibold text-on-surface">Journal Type</label>
+                    <select class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black appearance-none">
+                        <option>Standard</option>
+                        <option>Adjusting</option>
+                        <option>Reversing</option>
+                    </select>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-body-sm font-semibold text-on-surface">Base Currency</label>
+                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5">
+                        <span class="font-label-md bg-black text-white px-2 py-0.5 rounded">NGN</span>
+                        <span class="text-body-md text-slate-600">Nigerian Naira</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Block 2: Journal Lines Grid -->
+        <section class="bg-white border border-slate-200 rounded-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Account Code</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right">Debit (₦)</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right">Credit (₦)</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Dept</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Project</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Branch</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="journal-lines">
+                    <!-- Default Rows -->
+                    <tr class="border-b border-slate-100 group transition-colors hover:bg-slate-50/50">
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-md focus:ring-0 cursor-pointer">
+                                <option>Select Account...</option>
+                                <option>1001 - Petty Cash</option>
+                                <option>4005 - Professional Fees</option>
+                                <option>2010 - Accrued Liabilities</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4">
+                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
+                        </td>
+                        <td class="px-6 py-4">
+                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
+                        </td>
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
+                                <option>HQ</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
+                                <option>General</option>
+                                <option>Expansion-24</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
+                                <option>Lagos</option>
+                                <option>Abuja</option>
+                                <option>Port Harcourt</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <button class="text-slate-300 hover:text-error transition-colors" onclick="this.closest('tr').remove(); updateTotals();">
+                                <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Repeat Row -->
+                    <tr class="border-b border-slate-100 group transition-colors hover:bg-slate-50/50">
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-md focus:ring-0 cursor-pointer">
+                                <option>Select Account...</option>
+                                <option>1001 - Petty Cash</option>
+                                <option>4005 - Professional Fees</option>
+                                <option>2010 - Accrued Liabilities</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4">
+                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
+                        </td>
+                        <td class="px-6 py-4">
+                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
+                        </td>
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
+                                <option>HQ</option>
+                                <option>Operations</option>
+                                <option>Sales</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
+                                <option>General</option>
+                                <option>Expansion-24</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4">
+                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
+                                <option>Lagos</option>
+                                <option>Abuja</option>
+                                <option>Port Harcourt</option>
+                            </select>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <button class="text-slate-300 hover:text-error transition-colors" onclick="this.closest('tr').remove(); updateTotals();">
+                                <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-6 py-4 bg-slate-50/30">
+                <button class="flex items-center gap-2 text-body-md font-semibold text-primary hover:underline transition-all" onclick="addRow()">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+                    Add New Line
+                </button>
+            </div>
+            <!-- Table Footer: Summary -->
+            <div class="p-card-padding border-t border-slate-200 bg-white">
+                <div class="flex flex-col items-end gap-3">
+                    <div class="flex items-center gap-12 text-right">
+                        <div>
+                            <p class="font-label-md text-slate-500 uppercase mb-1">Total Debits</p>
+                            <p class="font-currency-display text-primary">₦ <span id="total-debit">0.00</span></p>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-slate-500 uppercase mb-1">Total Credits</p>
+                            <p class="font-currency-display text-primary">₦ <span id="total-credit">0.00</span></p>
+                        </div>
+                    </div>
+                    <!-- Equality Validation Indicator -->
+                    <div class="flex items-center gap-2 bg-error-container text-on-error-container px-3 py-1.5 rounded-full transition-all opacity-100" id="balance-badge">
+                        <span class="material-symbols-outlined text-[18px]" id="balance-icon">error</span>
+                        <span class="font-label-md" id="balance-text">Unbalanced (Difference: ₦0.00)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Page Actions (Sticky Footer balanced with Sidebar layout context) -->
+    <div class="fixed bottom-0 right-0 bg-white/80 backdrop-blur-md border-t border-slate-200 px-outer-padding py-4 z-30 left-auto w-[calc(100%-280px)]">
+        <div class="max-w-7xl mx-auto flex justify-end gap-4">
+            <button class="px-6 py-3 bg-white border border-slate-200 text-primary font-bold rounded-lg hover:bg-slate-50 transition-colors active:scale-95">
+                Save Draft
+            </button>
+            <button class="px-6 py-3 bg-black text-white font-bold rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+                Submit to CFO for Approval
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Interactivity Application Engineering Scripts -->
+<script>
+    function addRow() {
+        const tbody = document.getElementById('journal-lines');
+        if(tbody.children.length === 0) return;
+        const newRow = tbody.children[0].cloneNode(true);
+        newRow.querySelectorAll('input').forEach(input => input.value = '');
+        newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+        tbody.appendChild(newRow);
+    }
+
+    function updateTotals() {
+        let debits = 0;
+        let credits = 0;
+
+        const rows = document.querySelectorAll('#journal-lines tr');
+        rows.forEach(row => {
+            const d = parseFloat(row.cells[1].querySelector('input').value) || 0;
+            const c = parseFloat(row.cells[2].querySelector('input').value) || 0;
+            debits += d;
+            credits += c;
+        });
+
+        document.getElementById('total-debit').textContent = debits.toLocaleString('en-NG', {minimumFractionDigits: 2});
+        document.getElementById('total-credit').textContent = credits.toLocaleString('en-NG', {minimumFractionDigits: 2});
+
+        const diff = Math.abs(debits - credits);
+        const badge = document.getElementById('balance-badge');
+        const icon = document.getElementById('balance-icon');
+        const text = document.getElementById('balance-text');
+
+        if (debits > 0 && credits > 0 && diff < 0.01) {
+            badge.className = "flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1.5 rounded-full transition-all";
+            icon.textContent = "check_circle";
+            text.textContent = "Balanced";
+        } else {
+            badge.className = "flex items-center gap-2 bg-error-container text-on-error-container px-3 py-1.5 rounded-full transition-all";
+            icon.textContent = "error";
+            text.textContent = `Unbalanced (Diff: ₦${diff.toLocaleString('en-NG', {minimumFractionDigits: 2})})`;
+        }
+    }
+</script>
+</body>
+</html>

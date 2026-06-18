@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Fiscal Configuration | Financial AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+            vertical-align: middle;
+        }
+        /* Custom scrollbar for data-heavy sections */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cfc4c5;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7e7576;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c6c6c6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline-variant": "#cfc4c5",
+                        "outline": "#7e7576",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-secondary-container": "#54647a",
+                        "primary": "#000000",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "on-error": "#ffffff",
+                        "secondary": "#505f76",
+                        "tertiary-fixed": "#dae2fd",
+                        "on-primary-fixed": "#1b1b1b",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#c6c6c6",
+                        "tertiary-container": "#131b2e",
+                        "primary-container": "#1b1b1b",
+                        "tertiary": "#000000",
+                        "primary-fixed": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#131b2e",
+                        "on-background": "#191c1e",
+                        "secondary-container": "#d0e1fb",
+                        "error-container": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-dim": "#d8dadc",
+                        "on-primary": "#ffffff",
+                        "on-surface-variant": "#4c4546",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-tertiary-container": "#7c839b",
+                        "surface-container": "#eceef0",
+                        "on-primary-fixed-variant": "#474747",
+                        "secondary-fixed": "#d3e4fe",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-primary-container": "#848484",
+                        "inverse-surface": "#2d3133",
+                        "surface": "#f7f9fb",
+                        "surface-tint": "#5e5e5e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "outer-padding": "32px",
+                        "stack-sm": "8px",
+                        "card-padding": "24px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "currency-display": ["Hanken Grotesk"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background font-body-md text-on-surface overflow-hidden selection:bg-primary-fixed selection:text-primary">
+
+<div class="flex h-screen w-full overflow-hidden">
+    <aside th:replace="~{layouts/financeAdminLayout :: sidebar}"></aside>
+
+    <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
+        <header class="bg-surface dark:bg-surface-container-low w-full h-16 border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-outer-padding z-50 shrink-0">
+            <div class="flex items-center gap-4">
+                <span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Fiscal Configuration</span>
+            </div>
+            <div class="flex items-center gap-stack-md">
+                <button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200">
+                    <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200">
+                    <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+                </button>
+                <div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+                    <img class="w-full h-full object-cover" data-alt="A professional headshot of a financial executive in a minimalist studio setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc">
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-outer-padding">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter max-w-[1600px] mx-auto w-full">
+
+                <section class="lg:col-span-1">
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col gap-6 sticky top-0">
+                        <div class="flex flex-col gap-1">
+                            <h2 class="font-headline-sm text-headline-sm text-primary uppercase tracking-tight">Initialize New Fiscal Year</h2>
+                            <p class="font-body-sm text-body-sm text-secondary">Set the temporal boundaries for your ledger operations.</p>
+                        </div>
+                        <form class="flex flex-col gap-5" id="fiscalForm">
+                            <div class="flex flex-col gap-2">
+                                <label class="font-body-sm text-body-sm text-on-surface" for="start-date">Start Date</label>
+                                <div class="relative">
+                                    <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200" id="start-date" name="start-date" type="date"/>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="font-body-sm text-body-sm text-on-surface" for="end-date">End Date</label>
+                                <div class="relative">
+                                    <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-200" id="end-date" name="end-date" type="date"/>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <button class="w-full bg-primary text-on-primary font-body-lg font-bold py-4 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 shadow-sm shadow-black/10" type="submit">
+                                    <span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+                                    Initialize Boundary Year
+                                </button>
+                            </div>
+                        </form>
+                        <div class="mt-4 p-4 rounded-lg bg-surface-container-low border border-dashed border-outline flex items-start gap-3">
+                            <span class="material-symbols-outlined text-secondary" data-icon="info">info</span>
+                            <p class="font-body-sm text-body-sm text-secondary leading-relaxed">Initializing a new year will automatically generate 12 monthly posting periods based on the selected dates.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="lg:col-span-2">
+                    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding h-full flex flex-col shadow-sm">
+                        <div class="flex justify-between items-end mb-6">
+                            <div class="flex flex-col gap-1">
+                                <h2 class="font-headline-sm text-headline-sm text-primary uppercase tracking-tight">Active Posting Periods</h2>
+                                <p class="font-body-sm text-body-sm text-secondary">Manage operational status and audit locks for individual months.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-4 py-2 bg-surface-container-high border border-outline-variant rounded-lg font-body-sm text-body-sm flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
+                                    <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                <tr class="bg-surface-container-low border-y border-outline-variant">
+                                    <th class="px-4 py-3 font-label-md text-label-md text-secondary uppercase tracking-widest">Period Name</th>
+                                    <th class="px-4 py-3 font-label-md text-label-md text-secondary uppercase tracking-widest">Date Range</th>
+                                    <th class="px-4 py-3 font-label-md text-label-md text-secondary uppercase tracking-widest text-right">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody class="divide-y divide-outline-variant/30">
+                                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                                    <td class="px-4 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-2 h-2 rounded-full bg-on-tertiary-container"></div>
+                                            <span class="font-body-md font-bold text-on-surface">Jan 2026</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 font-label-md text-label-md text-secondary">01 JAN 2026 — 31 JAN 2026</td>
+                                    <td class="px-4 py-4 text-right">
+                                        <select class="bg-surface border border-outline-variant rounded-full px-3 py-1 text-body-sm focus:ring-1 focus:ring-primary appearance-none cursor-pointer pr-8 relative bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236B7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
+                                            <option selected value="open">Open</option>
+                                            <option value="closed">Closed</option>
+                                            <option value="locked">Locked</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                                    <td class="px-4 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-2 h-2 rounded-full bg-outline"></div>
+                                            <span class="font-body-md font-bold text-on-surface">Feb 2026</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 font-label-md text-label-md text-secondary">01 FEB 2026 — 28 FEB 2026</td>
+                                    <td class="px-4 py-4 text-right">
+                                        <select class="bg-surface border border-outline-variant rounded-full px-3 py-1 text-body-sm focus:ring-1 focus:ring-primary appearance-none cursor-pointer pr-8 relative bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236B7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
+                                            <option value="open">Open</option>
+                                            <option value="closed">Closed</option>
+                                            <option selected value="locked">Locked</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                                    <td class="px-4 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-2 h-2 rounded-full bg-outline"></div>
+                                            <span class="font-body-md font-bold text-on-surface">Mar 2026</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 font-label-md text-label-md text-secondary">01 MAR 2026 — 31 MAR 2026</td>
+                                    <td class="px-4 py-4 text-right">
+                                        <select class="bg-surface border border-outline-variant rounded-full px-3 py-1 text-body-sm focus:ring-1 focus:ring-primary appearance-none cursor-pointer pr-8 relative bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236B7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
+                                            <option value="open">Open</option>
+                                            <option selected value="closed">Closed</option>
+                                            <option value="locked">Locked</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-auto pt-6 flex justify-between items-center border-t border-outline-variant">
+                            <p class="font-body-sm text-body-sm text-secondary">Showing 12 of 12 periods for FY 2026</p>
+                            <div class="flex items-center gap-4">
+                                <span class="flex items-center gap-1.5 font-label-md text-label-md text-on-surface">
+                                    <span class="w-2 h-2 rounded-full bg-on-tertiary-container"></span> Open
+                                </span>
+                                <span class="flex items-center gap-1.5 font-label-md text-label-md text-on-surface">
+                                    <span class="w-2 h-2 rounded-full bg-outline"></span> Closed
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="fixed bottom-8 right-8 bg-primary text-on-primary px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-24 transition-transform duration-300 z-[100]" id="toast">
+    <span class="material-symbols-outlined text-on-primary" data-icon="check_circle">check_circle</span>
+    <span class="font-body-md">Fiscal Year 2026 successfully initialized.</span>
+</div>
+
+<script>
+    // Build row array via loop inject
+    const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const tbody = document.querySelector('tbody');
+    months.forEach((month, index) => {
+        const row = document.createElement('tr');
+        row.className = "hover:bg-surface-container-low/50 transition-colors";
+        row.innerHTML = `
+            <td class="px-4 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-outline-variant"></div>
+                    <span class="font-body-md font-bold text-on-surface">${month} 2026</span>
+                </div>
+            </td>
+            <td class="px-4 py-4 font-label-md text-label-md text-secondary">01 ${month.toUpperCase()} 2026 — ${index === 2 || index === 4 ? '30' : '31'} ${month.toUpperCase()} 2026</td>
+            <td class="px-4 py-4 text-right">
+                <select class="bg-surface border border-outline-variant rounded-full px-3 py-1 text-body-sm focus:ring-1 focus:ring-primary appearance-none cursor-pointer pr-8 relative bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236B7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_0.5rem_center] bg-no-repeat">
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
+                    <option value="locked">Locked</option>
+                </select>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+
+    // Micro-interactions and Form Logic
+    const fiscalForm = document.getElementById('fiscalForm');
+    const toast = document.getElementById('toast');
+
+    fiscalForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Interaction feedback
+        const submitBtn = fiscalForm.querySelector('button');
+        const originalContent = submitBtn.innerHTML;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="material-symbols-outlined animate-spin" data-icon="sync">sync</span> Processing...`;
+
+        setTimeout(() => {
+            submitBtn.innerHTML = originalContent;
+            submitBtn.disabled = false;
+
+            // Show toast
+            toast.classList.remove('translate-y-24');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-24');
+            }, 3000);
+        }, 1200);
+    });
+
+    // Active status indicators handling
+    document.addEventListener('change', function(e) {
+        if(e.target && e.target.tagName === 'SELECT') {
+            const row = e.target.closest('tr');
+            if(!row) return;
+            const indicator = row.querySelector('.w-2.h-2');
+
+            if(e.target.value === 'open') {
+                indicator.className = 'w-2 h-2 rounded-full bg-on-tertiary-container';
+            } else if(e.target.value === 'closed') {
+                indicator.className = 'w-2 h-2 rounded-full bg-outline';
+            } else {
+                indicator.className = 'w-2 h-2 rounded-full bg-error';
+            }
+        }
+    });
+</script>
+</body>
+</html>

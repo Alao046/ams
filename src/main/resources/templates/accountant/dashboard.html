@@ -1,413 +1,291 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Accountant Dashboard</title>
+    <title>Financial AMS - Operational Ledger Workspace</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
-            border-radius: 10px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "on-surface": "#191c1e",
-                        "tertiary-container": "#410002",
-                        "on-surface-variant": "#45464d",
-                        "on-primary-fixed": "#131b2e",
-                        "primary-fixed": "#dae2fd",
-                        "on-secondary": "#ffffff",
-                        "outline-variant": "#c6c6cd",
-                        "surface-container-high": "#e6e8ea",
-                        "on-primary-container": "#7c839b",
-                        "on-tertiary-fixed": "#410002",
-                        "secondary-fixed": "#d8e2ff",
-                        "surface-bright": "#f7f9fb",
+                        "tertiary-fixed": "#dae2fd",
+                        "on-primary-fixed": "#1b1b1b",
+                        "on-secondary-fixed-variant": "#38485d",
                         "on-error-container": "#93000a",
-                        "surface-tint": "#565e74",
-                        "tertiary-fixed": "#ffdad6",
-                        "surface": "#f7f9fb",
-                        "error": "#ba1a1a",
-                        "primary-container": "#131b2e",
-                        "on-primary-fixed-variant": "#3f465c",
-                        "outline": "#76777d",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container": "#eceef0",
-                        "secondary-container": "#2170e4",
-                        "inverse-primary": "#bec6e0",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-error": "#ffffff",
-                        "inverse-surface": "#2d3133",
-                        "on-tertiary-container": "#f63a35",
-                        "on-background": "#191c1e",
-                        "primary-fixed-dim": "#bec6e0",
-                        "on-secondary-fixed-variant": "#004395",
-                        "tertiary-fixed-dim": "#ffb4ab",
-                        "on-secondary-fixed": "#001a42",
+                        "secondary": "#505f76",
+                        "primary-container": "#1b1b1b",
+                        "tertiary": "#000000",
+                        "inverse-primary": "#c6c6c6",
+                        "tertiary-container": "#131b2e",
+                        "outline": "#7e7576",
+                        "outline-variant": "#cfc4c5",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "on-tertiary": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
                         "surface-container-low": "#f2f4f6",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "on-error": "#ffffff",
+                        "primary": "#000000",
+                        "on-surface": "#191c1e",
+                        "on-secondary-container": "#54647a",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-tertiary-container": "#7c839b",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#474747",
+                        "surface-container": "#eceef0",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "surface-tint": "#5e5e5e",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-primary-container": "#848484",
+                        "secondary-fixed": "#d3e4fe",
+                        "inverse-surface": "#2d3133",
+                        "secondary-container": "#d0e1fb",
                         "error-container": "#ffdad6",
                         "background": "#f7f9fb",
-                        "tertiary": "#000000",
-                        "primary": "#000000",
+                        "on-background": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed": "#131b2e",
+                        "primary-fixed": "#e2e2e2",
+                        "error": "#ba1a1a",
                         "surface-dim": "#d8dadc",
-                        "secondary": "#0058be",
-                        "inverse-on-surface": "#eff1f3",
-                        "on-tertiary": "#ffffff",
-                        "surface-variant": "#e0e3e5",
                         "on-primary": "#ffffff",
-                        "secondary-fixed-dim": "#adc6ff",
-                        "on-secondary-container": "#fefcff",
-                        "on-tertiary-fixed-variant": "#93000b"
+                        "surface-container-high": "#e6e8ea",
+                        "on-surface-variant": "#4c4546"
                     },
                     "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
                     },
                     "spacing": {
-                        "margin-page": "32px",
-                        "stack-sm": "8px",
-                        "stack-md": "16px",
-                        "sidebar-width": "260px",
+                        "outer-padding": "32px",
                         "gutter": "24px",
-                        "padding-card": "24px",
-                        "unit": "4px"
+                        "stack-md": "16px",
+                        "stack-sm": "8px",
+                        "card-padding": "24px"
                     },
                     "fontFamily": {
-                        "mono-label": ["JetBrains Mono"],
-                        "headline-sm": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "label-caps": ["Inter"],
-                        "data-tabular": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "body-md": ["Inter"]
+                        "headline-sm": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "currency-display": ["Hanken Grotesk"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"]
                     },
                     "fontSize": {
-                        "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
                         "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
                         "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
                     }
                 },
             },
         }
     </script>
+    <style>
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+        }
+    </style>
 </head>
-<body class="bg-background text-on-surface">
+<body class="bg-surface min-h-screen flex overflow-hidden">
 
+<!-- Shared Accountant Layout Sidebar Component -->
 <aside th:replace="~{layouts/accountantLayout :: sidebar}"></aside>
 
-<main class="ml-sidebar-width min-h-screen">
+<!-- Main Dynamic Structural Workspace -->
+<div class="flex-grow flex flex-col min-w-0 h-screen overflow-hidden">
 
-    <header th:replace="~{layouts/accountantLayout :: header}"></header>
-
-    <div class="p-margin-page space-y-gutter overflow-y-auto max-h-[calc(100vh-73px)] custom-scrollbar">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">history_edu</span>
-                    <span class="text-green-600 font-bold text-label-caps">+12%</span>
-                </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Pending Journals</p>
-                <h3 class="text-display-lg font-display-lg mt-1">24</h3>
-                <p class="text-body-md text-on-surface-variant mt-2">Items requiring review</p>
-            </div>
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-secondary p-2 bg-secondary-fixed rounded-lg">receipt_long</span>
-                </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Pending Invoices</p>
-                <h3 class="text-display-lg font-display-lg mt-1">158</h3>
-                <p class="text-body-md text-on-surface-variant mt-2">Awaiting action</p>
-            </div>
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-error">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-error p-2 bg-error-container rounded-lg">warning</span>
-                </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Reconciliation Exceptions</p>
-                <h3 class="text-display-lg font-display-lg mt-1 text-error">9</h3>
-                <p class="text-body-md text-error mt-2">Critical issues detected</p>
-            </div>
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-tertiary-container">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-on-tertiary-container p-2 bg-tertiary-fixed rounded-lg">timer</span>
-                </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Overdue AR/AP</p>
-                <h3 class="text-display-lg font-display-lg mt-1">12</h3>
-                <p class="text-body-md text-on-surface-variant mt-2">Over 30 days past due</p>
+    <!-- Local Top Navigation Bar (Full Code Intact) -->
+    <header class="bg-surface dark:bg-surface-container-low w-full h-16 border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-outer-padding z-50 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Dashboard</span>
+        </div>
+        <div class="flex items-center gap-stack-md">
+            <button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200">
+                <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+            </button>
+            <button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200">
+                <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+            </button>
+            <div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+                <img class="w-full h-full object-cover" data-alt="A professional headshot of a financial executive in a minimalist studio setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc">
             </div>
         </div>
+    </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-            <div class="lg:col-span-2 space-y-gutter">
-                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
-                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-                        <h3 class="font-headline-sm text-headline-sm">Pending Journal Entries</h3>
-                        <button class="text-primary font-bold text-body-md hover:underline">View all</button>
+    <!-- Dynamic Page Scrollable Body -->
+    <main class="flex-grow p-outer-padding overflow-y-auto">
+        <div class="max-w-[1600px] mx-auto w-full flex flex-col gap-gutter">
+
+            <!-- Hero Stats Row -->
+            <section class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+                <!-- Card 1 -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col gap-stack-sm card-shadow">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">My Draft Journals</span>
+                    <span class="font-headline-md text-headline-md text-primary">6 Pending</span>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col gap-stack-sm card-shadow">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Invoices Scanned (OCR)</span>
+                    <span class="font-headline-md text-headline-md text-primary">14 Items</span>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col gap-stack-sm card-shadow">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Unreconciled Bank Lines</span>
+                    <span class="font-headline-md text-headline-md text-primary">22 Rows</span>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col gap-stack-sm card-shadow">
+                    <span class="font-label-md text-label-md text-secondary uppercase tracking-wider">Total Accounts Payable</span>
+                    <div class="mt-auto border-2 border-primary p-2 flex items-center justify-center rounded-lg">
+                        <span class="font-currency-display text-currency-display text-primary tracking-tight">₦3,420,500.00</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content Grid -->
+            <section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter items-start">
+                <!-- Column 1: Processing Queue -->
+                <div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden card-shadow">
+                    <div class="p-card-padding border-b border-outline-variant flex justify-between items-center">
+                        <h2 class="font-headline-sm text-headline-sm text-primary">Daily Transaction Processing Queue</h2>
+                        <button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-body-md hover:opacity-90 active:scale-95 transition-all">
+                            Process All
+                        </button>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-surface-container-high text-on-surface-variant">
-                            <tr>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Journal ID</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Description</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase text-right">Amount</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Status</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Actions</th>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                            <tr class="bg-surface-container-low">
+                                <th class="px-card-padding py-3 font-label-md text-label-md text-secondary uppercase">Date</th>
+                                <th class="px-card-padding py-3 font-label-md text-label-md text-secondary uppercase">Description</th>
+                                <th class="px-card-padding py-3 font-label-md text-label-md text-secondary uppercase text-right">Amount (₦)</th>
+                                <th class="px-card-padding py-3 font-label-md text-label-md text-secondary uppercase">Status</th>
                             </tr>
                             </thead>
                             <tbody class="divide-y divide-outline-variant">
-                            <tr class="hover:bg-surface-container-low transition-colors" data-id="GJ-2024-081">
-                                <td class="px-6 py-4 font-mono-label text-mono-label">GJ-2024-081</td>
-                                <td class="px-6 py-4 text-body-md">Monthly Payroll Accrual</td>
-                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">$42,500.00</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-label-caps uppercase">Draft</span></td>
-                                <td class="px-6 py-4"><button class="action-approve text-primary hover:text-secondary"><span class="material-symbols-outlined">verified_user</span></button></td>
+                            <tr class="hover:bg-surface transition-colors cursor-pointer">
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Oct 24, 2024</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Lagos Office Utilities Payment</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface text-right font-medium">₦145,200.00</td>
+                                <td class="px-card-padding py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-container text-on-secondary-container">PENDING</span>
+                                </td>
                             </tr>
-                            <tr class="hover:bg-surface-container-low transition-colors" data-id="GJ-2024-082">
-                                <td class="px-6 py-4 font-mono-label text-mono-label">GJ-2024-082</td>
-                                <td class="px-6 py-4 text-body-md">Office Supply Depreciation</td>
-                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">$1,240.15</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded text-label-caps uppercase">Pending</span></td>
-                                <td class="px-6 py-4"><button class="action-approve text-primary hover:text-secondary"><span class="material-symbols-outlined">verified_user</span></button></td>
+                            <tr class="hover:bg-surface transition-colors cursor-pointer">
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Oct 23, 2024</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Vendor: Zenith Supplies Ltd</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface text-right font-medium">₦890,000.00</td>
+                                <td class="px-card-padding py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">MATCHED</span>
+                                </td>
                             </tr>
-                            <tr class="hover:bg-surface-container-low transition-colors" data-id="GJ-2024-083">
-                                <td class="px-6 py-4 font-mono-label text-mono-label">GJ-2024-083</td>
-                                <td class="px-6 py-4 text-body-md">Deferred Revenue Recognition</td>
-                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">$12,000.00</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 bg-surface-container-highest text-on-surface-variant rounded text-label-caps uppercase">Pending</span></td>
-                                <td class="px-6 py-4"><button class="action-approve text-primary hover:text-secondary"><span class="material-symbols-outlined">verified_user</span></button></td>
+                            <tr class="hover:bg-surface transition-colors cursor-pointer">
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Oct 23, 2024</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Fleet Maintenance - Oct</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface text-right font-medium">₦42,500.00</td>
+                                <td class="px-card-padding py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-secondary-container text-on-secondary-container">PENDING</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface transition-colors cursor-pointer">
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Oct 22, 2024</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Client Reimbursement #772</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface text-right font-medium">₦12,800.00</td>
+                                <td class="px-card-padding py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">EXCEPTION</span>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-surface transition-colors cursor-pointer">
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Oct 22, 2024</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface">Software Subscription - Cloud</td>
+                                <td class="px-card-padding py-4 font-body-md text-on-surface text-right font-medium">₦215,000.00</td>
+                                <td class="px-card-padding py-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">MATCHED</span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
-                </section>
-
-                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
-                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-                        <h3 class="font-headline-sm text-headline-sm">Automated Invoice Pipeline</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-surface-container-high text-on-surface-variant">
-                            <tr>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Invoice ID</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Current Stage</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Aging</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Flag</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant">
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">INV-88921</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 bg-primary rounded-full mr-2"></div>
-                                        <span class="text-body-md">L2 Audit Review</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-body-md">2 Days</td>
-                                <td class="px-6 py-4"><span class="material-symbols-outlined text-outline">flag</span></td>
-                            </tr>
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">INV-88922</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-                                        <span class="text-body-md">Dept Head Approval</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-body-md">4 Days</td>
-                                <td class="px-6 py-4"><span class="material-symbols-outlined text-error">priority_high</span></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            </div>
-
-            <div class="space-y-gutter">
-                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                    <h3 class="font-headline-sm text-headline-sm mb-4 flex items-center">
-                        <span class="material-symbols-outlined text-error mr-2">error</span>
-                        Urgent Exceptions
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="p-3 bg-error-container text-on-error-container rounded-lg border border-red-200">
-                            <p class="font-bold text-body-md">Bank ID Discrepancy</p>
-                            <p class="text-sm">Batch #TX-901 reconciliation failed due to routing mismatch.</p>
-                            <button class="mt-2 text-sm underline font-bold">Investigate</button>
-                        </div>
-                        <div class="p-3 bg-surface-container-high rounded-lg border border-outline-variant">
-                            <p class="font-bold text-body-md text-on-surface">Credit Card Unmatched</p>
-                            <p class="text-sm text-on-surface-variant">14 entries in Amex statement don't match ERP.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-headline-sm text-headline-sm">Aging Summary</h3>
-                        <div class="flex bg-surface-container-high p-1 rounded-lg">
-                            <button class="px-3 py-1 text-label-caps uppercase rounded bg-primary text-on-primary transition-all" id="arBtn" onclick="toggleAging('ar')">AR</button>
-                            <button class="px-3 py-1 text-label-caps uppercase rounded text-on-surface-variant hover:bg-surface-container-high transition-all" id="apBtn" onclick="toggleAging('ap')">AP</button>
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-end">
-                            <span class="text-body-md text-on-surface-variant">Current</span>
-                            <span class="font-bold text-headline-sm" id="val-current">$458,200</span>
-                        </div>
-                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                            <div class="bg-primary h-full" id="bar-current" style="width: 75%"></div>
-                        </div>
-                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
-                            <span class="text-body-md text-on-surface-variant">31-60 Days Overdue</span>
-                            <span class="font-bold text-body-md" id="val-overdue">$82,400</span>
-                        </div>
-                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                            <div class="bg-yellow-500 h-full" id="bar-overdue" style="width: 15%"></div>
-                        </div>
-                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
-                            <span class="text-body-md text-on-surface-variant">90+ Days Delinquent</span>
-                            <span class="font-bold text-body-md text-error" id="val-delinquent">$12,050</span>
-                        </div>
-                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                            <div class="bg-error h-full" id="bar-delinquent" style="width: 5%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full mt-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center justify-center hover:bg-opacity-90 transition-all">
-                        <span class="material-symbols-outlined mr-2">description</span>
-                        <span id="aging-btn-text" class="">Generate AR Aging Report</span>
-                    </button>
-                </section>
-
-                <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-label-caps text-label-caps uppercase text-on-surface-variant">Q4 Fiscal Forecast</h3>
-                        <span class="material-symbols-outlined text-on-surface-variant text-sm">open_in_new</span>
-                    </div>
-                    <svg class="w-full h-[120px]" preserveAspectRatio="none" viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="forecastFill" x1="0" x2="0" y1="0" y2="1">
-                                <stop offset="0%" stop-color="#16a34a" stop-opacity="0.25"/>
-                                <stop offset="100%" stop-color="#16a34a" stop-opacity="0"/>
-                            </linearGradient>
-                        </defs>
-                        <polyline fill="none" points="0,95 50,88 100,70 150,75 200,50 250,35 300,20" stroke="#16a34a" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
-                        <polygon fill="url(#forecastFill)" points="0,95 50,88 100,70 150,75 200,50 250,35 300,20 300,120 0,120"/>
-                    </svg>
-                    <div class="mt-3 flex items-center text-green-600">
-                        <span class="material-symbols-outlined text-sm mr-1">trending_up</span>
-                        <span class="text-body-md font-bold">Projected +4.2% Growth</span>
+                    <div class="p-card-padding border-t border-outline-variant text-center">
+                        <button class="font-label-md text-label-md text-primary hover:underline uppercase">View Full Transaction Queue</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</main>
 
+                <!-- Column 2: Return Toggles -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col gap-gutter card-shadow">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-error">assignment_return</span>
+                        <h2 class="font-headline-sm text-headline-sm text-primary">Recent Return Toggles</h2>
+                    </div>
+                    <p class="font-body-md text-secondary">
+                        Journals rejected by the CFO office requiring immediate correction and re-submission.
+                    </p>
+                    <div class="flex flex-col gap-4">
+                        <!-- Toggle 1 -->
+                        <div class="border border-outline-variant rounded-lg p-4 bg-error-container/10 flex flex-col gap-2 relative">
+                            <div class="flex justify-between items-start">
+                                <span class="font-label-md text-label-md text-error uppercase font-bold">Rejected by CFO</span>
+                                <span class="font-label-md text-label-md text-secondary">2h ago</span>
+                            </div>
+                            <h3 class="font-body-lg text-body-lg font-bold text-primary">JN-2024-883</h3>
+                            <p class="font-body-sm text-body-sm text-secondary italic">"Missing supporting documentation for the VAT calculation."</p>
+                            <button class="mt-2 bg-primary text-on-primary py-2 rounded font-bold text-label-md hover:bg-on-surface-variant transition-colors">FIX &amp; RESUBMIT</button>
+                        </div>
+                        <!-- Toggle 2 -->
+                        <div class="border border-outline-variant rounded-lg p-4 bg-surface-container flex flex-col gap-2">
+                            <div class="flex justify-between items-start">
+                                <span class="font-label-md text-label-md text-on-secondary-container uppercase font-bold">Returned</span>
+                                <span class="font-label-md text-label-md text-secondary">5h ago</span>
+                            </div>
+                            <h3 class="font-body-lg text-body-lg font-bold text-primary">JN-2024-881</h3>
+                            <p class="font-body-sm text-body-sm text-secondary italic">"Account code 4001 should be 4002 for this region."</p>
+                            <button class="mt-2 bg-white border border-outline text-primary py-2 rounded font-bold text-label-md hover:bg-surface-container-high transition-colors">REVIEW COMMENTS</button>
+                        </div>
+                    </div>
+                    <div class="mt-auto pt-4 border-t border-outline-variant">
+                        <div class="flex items-center justify-between text-secondary">
+                            <span class="font-body-sm text-body-sm">Total Flagged Items</span>
+                            <span class="font-label-md text-label-md font-bold text-primary">02</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- Simple Script for Table Row Interaction -->
 <script>
-    // Aging Toggle Logic
-    function toggleAging(type) {
-        const arBtn = document.getElementById('arBtn');
-        const apBtn = document.getElementById('apBtn');
-        const btnText = document.getElementById('aging-btn-text');
-
-        // Elements to update
-        const valCurrent = document.getElementById('val-current');
-        const valOverdue = document.getElementById('val-overdue');
-        const valDelinquent = document.getElementById('val-delinquent');
-
-        const barCurrent = document.getElementById('bar-current');
-        const barOverdue = document.getElementById('bar-overdue');
-        const barDelinquent = document.getElementById('bar-delinquent');
-
-        if (type === 'ar') {
-            arBtn.classList.add('bg-primary', 'text-on-primary');
-            arBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
-            apBtn.classList.remove('bg-primary', 'text-on-primary');
-            apBtn.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
-
-            btnText.textContent = "Generate AR Aging Report";
-            valCurrent.textContent = "$458,200";
-            valOverdue.textContent = "$82,400";
-            valDelinquent.textContent = "$12,050";
-
-            barCurrent.style.width = "75%";
-            barOverdue.style.width = "15%";
-            barDelinquent.style.width = "5%";
-        } else {
-            apBtn.classList.add('bg-primary', 'text-on-primary');
-            apBtn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container-high');
-            arBtn.classList.remove('bg-primary', 'text-on-primary');
-            arBtn.classList.add('text-on-surface-variant', 'hover:bg-surface-container-high');
-
-            btnText.textContent = "Generate AP Aging Report";
-            valCurrent.textContent = "$312,000";
-            valOverdue.textContent = "$45,600";
-            valDelinquent.textContent = "$8,900";
-
-            barCurrent.style.width = "60%";
-            barOverdue.style.width = "25%";
-            barDelinquent.style.width = "10%";
-        }
-    }
-
-    // Table Action Interactivity
-    document.querySelectorAll('.action-approve').forEach(button => {
-        button.addEventListener('click', function(e) {
-            const row = e.target.closest('tr');
-            const ref = row.getAttribute('data-id');
-
-            // Visual feedback
-            this.innerHTML = '<span class="material-symbols-outlined text-green-600">check_circle</span>';
-            this.classList.remove('text-primary');
-            this.disabled = true;
-
-            row.classList.add('opacity-50');
-            row.style.pointerEvents = 'none';
-
-            console.log(`Approved Journal Entry: ${ref}`);
-
-            // Simulate removal or completion
-            setTimeout(() => {
-                row.style.transition = 'opacity 0.5s ease';
-                row.style.opacity = '0';
-                setTimeout(() => row.remove(), 500);
-            }, 1000);
+    document.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('click', () => {
+            row.classList.toggle('bg-surface-container');
         });
     });
-
-    // Initialize tooltips or other micro-interactions if needed
-    console.log("Accounting Management System (AMS) Accountant Dashboard Initialized.");
 </script>
-
 </body>
 </html>

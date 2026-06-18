@@ -1,328 +1,347 @@
 <!DOCTYPE html>
-<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" style="">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Auditor</title>
+    <title>Auditor Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "on-surface": "#191c1e",
-                        "tertiary-container": "#410002",
-                        "on-surface-variant": "#45464d",
-                        "on-primary-fixed": "#131b2e",
-                        "primary-fixed": "#dae2fd",
-                        "on-secondary": "#ffffff",
-                        "outline-variant": "#c6c6cd",
-                        "surface-container-high": "#e6e8ea",
-                        "on-primary-container": "#7c839b",
-                        "on-tertiary-fixed": "#410002",
-                        "secondary-fixed": "#d8e2ff",
-                        "surface-bright": "#f7f9fb",
-                        "on-error-container": "#93000a",
-                        "surface-tint": "#565e74",
-                        "tertiary-fixed": "#ffdad6",
-                        "surface": "#f7f9fb",
-                        "error": "#ba1a1a",
-                        "primary-container": "#131b2e",
-                        "on-primary-fixed-variant": "#3f465c",
-                        "outline": "#76777d",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container": "#eceef0",
-                        "secondary-container": "#2170e4",
-                        "inverse-primary": "#bec6e0",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-error": "#ffffff",
-                        "inverse-surface": "#2d3133",
-                        "on-tertiary-container": "#f63a35",
-                        "on-background": "#191c1e",
-                        "primary-fixed-dim": "#bec6e0",
-                        "on-secondary-fixed-variant": "#004395",
-                        "tertiary-fixed-dim": "#ffb4ab",
-                        "on-secondary-fixed": "#001a42",
-                        "surface-container-low": "#f2f4f6",
-                        "error-container": "#ffdad6",
-                        "background": "#f7f9fb",
-                        "tertiary": "#000000",
-                        "primary": "#000000",
-                        "surface-dim": "#d8dadc",
-                        "secondary": "#0058be",
-                        "inverse-on-surface": "#eff1f3",
-                        "on-tertiary": "#ffffff",
-                        "surface-variant": "#e0e3e5",
-                        "on-primary": "#ffffff",
-                        "secondary-fixed-dim": "#adc6ff",
-                        "on-secondary-container": "#fefcff",
-                        "on-tertiary-fixed-variant": "#93000b"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "spacing": {
-                        "margin-page": "32px",
-                        "stack-sm": "8px",
-                        "stack-md": "16px",
-                        "sidebar-width": "260px",
-                        "gutter": "24px",
-                        "padding-card": "24px",
-                        "unit": "4px"
-                    },
-                    "fontFamily": {
-                        "mono-label": ["JetBrains Mono"],
-                        "headline-sm": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "label-caps": ["Inter"],
-                        "data-tabular": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "body-md": ["Inter"]
-                    },
-                    "fontSize": {
-                        "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
-                    }
-                },
-            },
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#131b2e",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-secondary-container": "#54647a",
+                      "on-primary-fixed": "#1b1b1b",
+                      "secondary-container": "#d0e1fb",
+                      "outline-variant": "#cfc4c5",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-bright": "#f7f9fb",
+                      "on-background": "#191c1e",
+                      "on-primary-container": "#848484",
+                      "surface-container": "#eceef0",
+                      "on-secondary": "#ffffff",
+                      "surface-tint": "#5e5e5e",
+                      "primary-fixed": "#e2e2e2",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#191c1e",
+                      "primary": "#000000",
+                      "secondary-fixed": "#d3e4fe",
+                      "outline": "#7e7576",
+                      "surface-dim": "#d8dadc",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed": "#131b2e",
+                      "background": "#f7f9fb",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "surface": "#f7f9fb",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-error": "#ffffff",
+                      "on-tertiary-container": "#7c839b",
+                      "on-surface-variant": "#4c4546",
+                      "on-primary-fixed-variant": "#474747",
+                      "inverse-primary": "#c6c6c6",
+                      "surface-container-low": "#f2f4f6",
+                      "tertiary-fixed-dim": "#bec6e0",
+                      "on-tertiary-fixed-variant": "#3f465c",
+                      "surface-container-high": "#e6e8ea",
+                      "primary-fixed-dim": "#c6c6c6",
+                      "surface-variant": "#e0e3e5",
+                      "secondary": "#505f76",
+                      "surface-container-highest": "#e0e3e5",
+                      "tertiary-fixed": "#dae2fd",
+                      "primary-container": "#1b1b1b",
+                      "on-secondary-fixed": "#0b1c30",
+                      "tertiary": "#000000",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#2d3133"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-padding": "24px",
+                      "gutter": "24px",
+                      "stack-sm": "8px",
+                      "stack-md": "16px",
+                      "outer-padding": "32px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Hanken Grotesk"],
+                      "headline-sm": ["Hanken Grotesk"],
+                      "body-md": ["Hanken Grotesk"],
+                      "body-lg": ["Hanken Grotesk"],
+                      "currency-display": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "label-md": ["JetBrains Mono"],
+                      "body-sm": ["Hanken Grotesk"]
+              }
+            }
+          }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .sidebar-active { background-color: #d8e2ff; color: #004395; font-weight: 700; border-radius: 0.25rem; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        input[type="text"], select { border-color: #76777d; }
-        input[type="text"]:focus, select:focus { outline: none; ring: 2px; ring-color: #0058be; }
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .audit-table-row:hover {
+            background-color: #f8fafc;
+        }
+        .glossy-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
     </style>
 </head>
-<body class="text-on-surface">
+<body class="text-on-surface flex h-screen overflow-hidden">
 
-<aside th:replace="~{layouts/auditorLayout :: sidebar}"></aside>
+<!-- ── Sidebar ─────────────────────────────────────────────────── -->
+<div th:replace="~{layouts/auditorLayout :: sidebar}"></div>
 
-<main class="ml-sidebar-width min-h-screen flex flex-col">
+<!-- ── Main content column ──────────────────────────────────────── -->
+<div class="flex-1 flex flex-col overflow-hidden">
 
-    <header th:replace="~{layouts/auditorLayout :: header}"></header>
+    <!-- Top Navigation Bar -->
+    <nav class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-outer-padding h-16 sticky top-0 z-40 shrink-0">
+        <div class="flex items-center gap-4">
+            <span class="font-headline-sm text-headline-sm font-bold text-primary">DASHBOARD</span>
+        </div>
+        <div class="flex items-center gap-stack-md">
+            <button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container transition-colors p-2 rounded-full">notifications</button>
+            <button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container transition-colors p-2 rounded-full">settings</button>
+            <button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container transition-colors p-2 rounded-full">account_circle</button>
+        </div>
+    </nav>
 
-    <div class="p-margin-page space-y-gutter">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
-            <div>
-                <h1 class="font-display-lg text-display-lg text-on-surface">Audit Trail Explorer</h1>
-                <p class="text-body-lg text-on-surface-variant mt-1">Monitoring 12,842 entries with real-time integrity verification.</p>
-            </div>
-            <div class="flex items-center gap-stack-sm">
-                <div class="bg-surface-container-high p-1 rounded flex items-center" id="viewToggleContainer">
-                    <button class="px-4 py-1.5 rounded text-label-caps font-bold transition-all bg-surface-container-lowest shadow-sm text-primary" id="toggleStandard">STANDARD</button>
-                    <button class="px-4 py-1.5 rounded text-label-caps font-bold transition-all text-on-surface-variant hover:text-primary" id="toggleForensic">FORENSIC</button>
+    <!-- Scrollable Page Body -->
+    <main class="flex-1 overflow-y-auto p-outer-padding max-w-[1600px] mx-auto w-full">
+
+        <!-- Dashboard Header -->
+        <header class="mb-gutter">
+            <h1 class="font-headline-lg text-headline-lg text-primary">Compliance Oversight Hub</h1>
+            <p class="font-body-lg text-body-lg text-on-secondary-container max-w-2xl mt-2">
+                Scrutinize data mutation records, monitor forensic risks, and verify ledger immutability.
+            </p>
+        </header>
+
+        <!-- Metric Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-gutter">
+            <!-- Metric 1 -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding">
+                <div class="flex flex-col gap-1">
+                    <span class="font-label-md text-label-md text-on-secondary-container uppercase">Ledger Mutations Processed</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="text-[40px] font-bold leading-none text-primary">14,882</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">+3.2% from last cycle</p>
                 </div>
-                <button class="flex items-center gap-2 px-6 py-2.5 bg-on-surface text-surface rounded font-bold hover:opacity-90 transition-opacity">
-                    <span class="material-symbols-outlined text-[20px]">ios_share</span>
-                    <span class="font-label-caps">EXPORT REPORT</span>
-                </button>
+            </div>
+            <!-- Metric 2 -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding">
+                <div class="flex flex-col gap-1">
+                    <span class="font-label-md text-label-md text-on-secondary-container uppercase">Flagged Anomalies</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="text-[40px] font-bold leading-none text-error">27</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">4 escalated to review</p>
+                </div>
+            </div>
+            <!-- Metric 3 -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding">
+                <div class="flex flex-col gap-1">
+                    <span class="font-label-md text-label-md text-on-secondary-container uppercase">Immutable Records</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="text-[40px] font-bold leading-none text-primary">99.97%</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Checksum integrity verified</p>
+                </div>
+            </div>
+            <!-- Metric 4 -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding">
+                <div class="flex flex-col gap-1">
+                    <span class="font-label-md text-label-md text-on-secondary-container uppercase">Active Sessions</span>
+                    <div class="flex items-baseline gap-2 mt-2">
+                        <span class="text-[40px] font-bold leading-none text-primary">142</span>
+                    </div>
+                    <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Across 6 regions</p>
+                </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter bg-surface-container-lowest p-stack-md rounded border border-outline-variant" id="filterRibbon">
-            <div class="space-y-1">
-                <label class="text-label-caps text-on-surface-variant block">DATE RANGE</label>
-                <div class="relative">
-                    <input class="w-full border border-outline rounded px-3 py-2 text-body-md focus:border-secondary cursor-pointer" readonly="" type="text" value="Last 24 Hours">
-                    <span class="material-symbols-outlined absolute right-2 top-2 text-on-surface-variant">calendar_today</span>
+        <!-- Main Grid: Audit Table + Side Panels -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+
+            <!-- Column 1: Audit Trail Table (2/3) -->
+            <div class="lg:col-span-2 space-y-gutter">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+                    <div class="p-card-padding flex items-center justify-between border-b border-outline-variant">
+                        <h2 class="font-headline-sm text-headline-sm text-primary">Mutation Audit Trail</h2>
+                        <button class="font-label-md text-label-md uppercase text-on-secondary-container hover:text-primary transition-colors">Export CSV</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface-container">
+                            <tr>
+                                <th class="p-4 font-label-md text-label-md text-on-secondary-container uppercase">Timestamp</th>
+                                <th class="p-4 font-label-md text-label-md text-on-secondary-container uppercase">Record ID</th>
+                                <th class="p-4 font-label-md text-label-md text-on-secondary-container uppercase">Event Type</th>
+                                <th class="p-4 font-label-md text-label-md text-on-secondary-container uppercase text-right">Risk Score</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="audit-table-row border-b border-surface-variant transition-colors">
+                                <td class="p-4 font-label-md">2024-10-24 11:02:33</td>
+                                <td class="p-4 text-primary font-bold">TXN-7821</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded bg-error-container text-on-error-container text-[11px] font-bold uppercase">Unauthorised Write</span></td>
+                                <td class="p-4 text-right font-bold text-error">8.9</td>
+                            </tr>
+                            <tr class="audit-table-row border-b border-surface-variant transition-colors">
+                                <td class="p-4 font-label-md">2024-10-24 10:44:01</td>
+                                <td class="p-4 text-primary font-bold">GL-ENTRY-14</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant text-[11px] font-bold uppercase">Read Access</span></td>
+                                <td class="p-4 text-right font-bold">1.2</td>
+                            </tr>
+                            <tr class="audit-table-row border-b border-surface-variant transition-colors">
+                                <td class="p-4 font-label-md">2024-10-24 09:15:44</td>
+                                <td class="p-4 text-primary font-bold">INV-3302</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase">Schema Mutation</span></td>
+                                <td class="p-4 text-right font-bold">2.1</td>
+                            </tr>
+                            <tr class="audit-table-row border-b border-surface-variant transition-colors" style="cursor: pointer;">
+                                <td class="p-4 font-label-md">2024-10-24 07:30:12</td>
+                                <td class="p-4 text-primary font-bold">LED-004-SYS</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded bg-error-container text-on-error-container text-[11px] font-bold uppercase">Checksum Mismatch</span></td>
+                                <td class="p-4 text-right font-bold text-error">9.8</td>
+                            </tr>
+                            <tr class="audit-table-row border-b border-surface-variant transition-colors">
+                                <td class="p-4 font-label-md">2024-10-24 06:15:55</td>
+                                <td class="p-4 text-primary font-bold">TXN-4412</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded bg-surface-container text-on-surface-variant text-[11px] font-bold uppercase">Audit Gap</span></td>
+                                <td class="p-4 text-right font-bold">4.5</td>
+                            </tr>
+                            <tr class="audit-table-row border-b border-surface-variant transition-colors">
+                                <td class="p-4 font-label-md">2024-10-24 05:01:23</td>
+                                <td class="p-4 text-primary font-bold">GL-ENTRY-09</td>
+                                <td class="p-4"><span class="px-2 py-1 rounded bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase">Manual Override</span></td>
+                                <td class="p-4 text-right font-bold">6.0</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Geo-Access Heatmap -->
+                <div class="h-64 rounded-xl border border-outline-variant relative overflow-hidden bg-surface-dim">
+                    <div class="absolute inset-0 p-card-padding flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent">
+                        <span class="font-label-md text-label-md text-white/80 uppercase">Geo-Access Heatmap</span>
+                        <h3 class="font-headline-sm text-headline-sm text-white">Anomalous Connection Attempts</h3>
+                    </div>
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur rounded p-2 text-primary font-label-md flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+                        LIVE UPLINK
+                    </div>
                 </div>
             </div>
-            <div class="space-y-1">
-                <label class="text-label-caps text-on-surface-variant block">USER MODULE</label>
-                <select class="w-full border border-outline rounded px-3 py-2 text-body-md focus:border-secondary">
-                    <option>All Systems</option>
-                    <option>Ledger Prime</option>
-                    <option>Treasury Vault</option>
-                </select>
+
+            <!-- Column 2: SSO Session and Compliance (1/3) -->
+            <div class="space-y-gutter">
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding">
+                    <div class="mb-stack-md flex items-center justify-between">
+                        <h2 class="font-headline-sm text-headline-sm text-primary">SSO &amp; Delegation</h2>
+                        <span class="material-symbols-outlined text-on-secondary-container">verified_user</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="p-3 border border-surface-variant rounded-lg flex gap-3 items-start">
+                            <div class="bg-surface-container p-2 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 20px;">login</span>
+                            </div>
+                            <div>
+                                <p class="font-body-md text-body-md font-bold text-primary">O. Adeyemi</p>
+                                <p class="font-body-sm text-body-sm text-on-secondary-container">Session initiated via Microsoft SSO</p>
+                                <p class="font-label-md text-label-md mt-1 text-on-surface-variant">Lagos, NG · 4 mins ago</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border border-surface-variant rounded-lg flex gap-3 items-start bg-error/5">
+                            <div class="bg-error-container p-2 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-error" style="font-size: 20px;">assignment_ind</span>
+                            </div>
+                            <div>
+                                <p class="font-body-md text-body-md font-bold text-primary">Delegation Escalation</p>
+                                <p class="font-body-sm text-body-sm text-on-secondary-container">Admin rights delegated to "Temp_Support"</p>
+                                <p class="font-label-md text-label-md mt-1 text-error font-bold uppercase">Unverified Action</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border border-surface-variant rounded-lg flex gap-3 items-start">
+                            <div class="bg-surface-container p-2 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 20px;">shield</span>
+                            </div>
+                            <div>
+                                <p class="font-body-md text-body-md font-bold text-primary">Token Refresh</p>
+                                <p class="font-body-sm text-body-sm text-on-secondary-container">System-wide JWKS rotation complete</p>
+                                <p class="font-label-md text-label-md mt-1 text-on-surface-variant">Internal · 2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border border-surface-variant rounded-lg flex gap-3 items-start">
+                            <div class="bg-surface-container p-2 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 20px;">person_off</span>
+                            </div>
+                            <div>
+                                <p class="font-body-md text-body-md font-bold text-primary">F. Ibrahim</p>
+                                <p class="font-body-sm text-body-sm text-on-secondary-container">Session terminated (Inactivity timeout)</p>
+                                <p class="font-label-md text-label-md mt-1 text-on-surface-variant">Abuja, NG · 3 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-stack-md py-stack-md border border-outline-variant font-label-md text-label-md uppercase font-bold text-primary hover:bg-surface-container transition-all rounded-lg">
+                        View Detailed Audit Log
+                    </button>
+                </div>
+
+                <!-- Compliance Health Card -->
+                <div class="bg-primary text-on-primary rounded-xl p-card-padding">
+                    <h4 class="font-label-md text-label-md text-primary-fixed uppercase mb-2">Compliance Score</h4>
+                    <div class="flex items-end justify-between">
+                        <span class="text-[48px] font-bold leading-none">99.2%</span>
+                        <span class="font-body-sm mb-1">+0.4% from Oct</span>
+                    </div>
+                    <div class="w-full bg-on-primary-fixed-variant h-1 rounded-full mt-4 overflow-hidden">
+                        <div class="bg-white h-full" style="width: 99.2%"></div>
+                    </div>
+                    <p class="font-body-sm text-body-sm mt-4 text-primary-fixed">Your organization currently meets all regulatory requirements for the CBN Financial Oversight Mandate.</p>
+                </div>
             </div>
-            <div class="space-y-1">
-                <label class="text-label-caps text-on-surface-variant block">ACTION TYPE</label>
-                <select class="w-full border border-outline rounded px-3 py-2 text-body-md focus:border-secondary">
-                    <option>All Actions</option>
-                    <option>Override</option>
-                    <option>Deletion</option>
-                </select>
-            </div>
-            <div class="flex items-end">
-                <button class="w-full py-2 bg-secondary text-on-secondary font-bold rounded hover:bg-opacity-90 transition-all" id="applyFiltersBtn">Apply Filters</button>
-            </div>
+
         </div>
-
-        <div class="grid grid-cols-12 gap-gutter">
-            <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded border border-outline-variant overflow-hidden flex flex-col">
-                <div class="p-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-                    <h3 class="font-headline-sm text-headline-sm flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">list_alt</span> Master Ledger Logs
-                    </h3>
-                    <div class="flex gap-2">
-                        <span class="px-2 py-1 bg-error-container text-on-error-container text-mono-label font-mono-label rounded">4 UNRESOLVED</span>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse">
-                        <thead>
-                        <tr class="bg-surface-container-high text-left">
-                            <th class="px-6 py-4 text-label-caps text-on-surface-variant">TIMESTAMP</th>
-                            <th class="px-6 py-4 text-label-caps text-on-surface-variant">ENTITY</th>
-                            <th class="px-6 py-4 text-label-caps text-on-surface-variant">ACTION</th>
-                            <th class="px-6 py-4 text-label-caps text-on-surface-variant">SYSTEM ID</th>
-                            <th class="px-6 py-4 text-label-caps text-on-surface-variant">STATUS</th>
-                        </tr>
-                        </thead>
-                        <tbody class="divide-y divide-outline-variant" id="logsTbody">
-                        <tr class="hover:bg-secondary-fixed transition-colors">
-                            <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-12 09:44:12</td>
-                            <td class="px-6 py-4 font-body-md text-body-md font-bold">Override Manager</td>
-                            <td class="px-6 py-4">
-                                <span class="flex items-center gap-2 text-error font-bold text-body-md">
-                                    <span class="material-symbols-outlined text-[18px]">warning</span> OVERRIDE
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 font-mono-label text-mono-label">#992-X-AM</td>
-                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container text-xs font-bold">CRITICAL</span></td>
-                        </tr>
-                        <tr class="hover:bg-secondary-fixed transition-colors">
-                            <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-12 09:41:05</td>
-                            <td class="px-6 py-4 font-body-md text-body-md font-bold">System Admin</td>
-                            <td class="px-6 py-4">
-                                <span class="flex items-center gap-2 text-on-surface font-bold text-body-md">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span> DELETE
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 font-mono-label text-mono-label">#001-Z-DB</td>
-                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant text-xs font-bold">FLAGGED</span></td>
-                        </tr>
-                        <tr class="hover:bg-secondary-fixed transition-colors">
-                            <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-12 09:38:59</td>
-                            <td class="px-6 py-4 font-body-md text-body-md font-bold">Audit Automator</td>
-                            <td class="px-6 py-4">
-                                <span class="flex items-center gap-2 text-secondary font-bold text-body-md">
-                                    <span class="material-symbols-outlined text-[18px]">check_circle</span> APPROVE
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 font-mono-label text-mono-label">#102-K-AP</td>
-                            <td class="px-6 py-4"><span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-xs font-bold">VERIFIED</span></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="p-4 border-t border-outline-variant bg-surface-container-low text-center">
-                    <button class="text-secondary font-bold text-label-caps hover:underline">VIEW ALL HISTORICAL DATA</button>
-                </div>
-            </div>
-
-            <div class="col-span-12 lg:col-span-4 space-y-gutter">
-                <div class="bg-primary-container text-on-primary-container p-padding-card rounded-xl border border-outline relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h4 class="text-label-caps font-bold tracking-widest text-on-primary-fixed">INTEGRITY SCORE</h4>
-                        <div class="mt-4 flex items-baseline gap-2">
-                            <span class="text-display-lg font-display-lg text-white" id="integrityScore">99.99%</span>
-                            <span class="text-secondary-fixed font-bold text-body-md">+0.02%</span>
-                        </div>
-                        <p class="text-body-md text-on-primary-fixed-variant mt-2">Chain validation successful. 4,200 blocks verified in last 60s.</p>
-                        <div class="mt-6 w-full bg-white/10 h-1.5 rounded-full">
-                            <div class="bg-secondary-fixed h-full rounded-full w-[99.98%] transition-all duration-1000" id="integrityBar" style="width: 99.99%;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-surface-container-lowest border border-outline-variant rounded p-stack-md">
-                    <h4 class="text-label-caps font-bold text-on-surface-variant mb-4 uppercase tracking-wider">Compliance Exceptions</h4>
-                    <div class="space-y-3">
-                        <div class="p-3 border-l-4 border-error bg-surface-container-low rounded-r">
-                            <p class="text-body-md font-bold">Unauthorized Deletion</p>
-                            <p class="text-mono-label text-on-surface-variant mt-1">Ref: #DB-X-99 | 09:41 AM</p>
-                        </div>
-                        <div class="p-3 border-l-4 border-secondary bg-surface-container-low rounded-r">
-                            <p class="text-body-md font-bold">Manual Override Triggered</p>
-                            <p class="text-mono-label text-on-surface-variant mt-1">Ref: #AM-Y-22 | 09:44 AM</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-on-surface text-surface p-padding-card rounded border border-outline shadow-xl">
-                    <h4 class="text-label-caps font-bold text-surface-variant mb-6 border-b border-outline-variant pb-2">IMMUTABLE LEDGER HASH-CHAIN</h4>
-                    <div class="space-y-6 relative before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-px before:bg-outline-variant">
-                        <div class="relative pl-8">
-                            <div class="absolute left-0 top-1 w-5 h-5 bg-secondary border-4 border-on-surface rounded-full"></div>
-                            <p class="text-mono-label font-bold text-secondary">BLOCK_HASH_GEN</p>
-                            <p class="text-xs text-on-primary-container mt-0.5">0x7F2A...4D91 | Confirmed</p>
-                        </div>
-                        <div class="relative pl-8">
-                            <div class="absolute left-0 top-1 w-5 h-5 bg-surface-container-highest border-4 border-on-surface rounded-full"></div>
-                            <p class="text-mono-label font-bold text-surface-variant">SYNC_COMPLETE</p>
-                            <p class="text-xs text-on-primary-container mt-0.5">Node Cluster Alpha-7 | 09:45 AM</p>
-                        </div>
-                        <div class="relative pl-8">
-                            <div class="absolute left-0 top-1 w-5 h-5 bg-error border-4 border-on-surface rounded-full animate-pulse"></div>
-                            <p class="text-mono-label font-bold text-error">PENDING_LEDGER_WRITE</p>
-                            <p class="text-xs text-on-primary-container mt-0.5">Awaiting Node Consensus</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+    </main>
+</div>
 
 <script>
-    // Toggle Logic for Standard/Forensic View Modals
-    const btnStandard = document.getElementById('toggleStandard');
-    const btnForensic = document.getElementById('toggleForensic');
-
-    const setToggleState = (activeBtn, inactiveBtn) => {
-        activeBtn.classList.add('bg-surface-container-lowest', 'shadow-sm', 'text-primary');
-        activeBtn.classList.remove('text-on-surface-variant');
-        inactiveBtn.classList.remove('bg-surface-container-lowest', 'shadow-sm', 'text-primary');
-        inactiveBtn.classList.add('text-on-surface-variant');
-    };
-
-    btnStandard.addEventListener('click', () => setToggleState(btnStandard, btnForensic));
-    btnForensic.addEventListener('click', () => setToggleState(btnForensic, btnStandard));
-
-    // Filter Ribbon Action Simulated Feedback
-    const applyFiltersBtn = document.getElementById('applyFiltersBtn');
-    applyFiltersBtn.addEventListener('click', () => {
-        applyFiltersBtn.textContent = 'Filtering...';
-        applyFiltersBtn.disabled = true;
-        applyFiltersBtn.classList.add('opacity-50');
-
-        setTimeout(() => {
-            applyFiltersBtn.textContent = 'Apply Filters';
-            applyFiltersBtn.disabled = false;
-            applyFiltersBtn.classList.remove('opacity-50');
-
-            // Visual table flash reset callback updates
-            const table = document.getElementById('logsTbody');
-            table.style.opacity = '0.5';
-            setTimeout(() => table.style.opacity = '1', 200);
-        }, 800);
+    document.querySelectorAll('.audit-table-row').forEach(row => {
+        row.addEventListener('mouseenter', () => { row.style.cursor = 'pointer'; });
     });
-
-    // Dynamic Integrity Real-time Score Simulation Calculation
     setInterval(() => {
-        const scoreEl = document.getElementById('integrityScore');
-        const barEl = document.getElementById('integrityBar');
-        const randomVal = (99.95 + Math.random() * 0.04).toFixed(2);
-        scoreEl.textContent = `${randomVal}%`;
-        barEl.style.width = `${randomVal}%`;
-    }, 5000);
+        const scores = document.querySelectorAll('td.text-right.font-bold');
+        scores.forEach(score => {
+            if (Math.random() > 0.8) {
+                score.classList.add('animate-pulse');
+                setTimeout(() => score.classList.remove('animate-pulse'), 1000);
+            }
+        });
+    }, 3000);
 </script>
 
 </body>

@@ -6,32 +6,41 @@
 <body>
 <div xmlns:th="http://www.thymeleaf.org">
 
-    <aside th:fragment="sidebar" class="w-sidebar-width h-screen fixed left-0 top-0 border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md">
+    <aside th:fragment="sidebar" class="w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50">
         <div class="px-6 pb-8">
             <img alt="Accounting Management System" class="w-[48px] h-[48px] rounded-lg mb-4" th:src="@{/images/logoams.png}">
             <div>
-                <h1 class="font-headline-sm text-headline-sm text-on-surface">AMS</h1>
-                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Finance Admin</p>
+                <h1 class="font-headline-sm text-headline-sm text-on-surface font-bold">AMS</h1>
+                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider">Finance Admin</p>
             </div>
         </div>
         <nav class="flex-1 px-2 space-y-1">
-            <a class="flex items-center px-4 py-3 bg-secondary-fixed text-on-secondary-fixed-variant font-bold rounded-lg mx-2 my-1 transition-all" href="#">
+            <a class="flex items-center px-4 py-3 bg-secondary-fixed text-on-secondary-fixed-variant font-bold rounded-lg mx-2 my-1 transition-all" th:href="@{/financeAdmin/dashboard}">
                 <span class="material-symbols-outlined mr-3">dashboard</span>
                 <span class="font-body-md text-body-md">Dashboard</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" href="#">
-                <span class="material-symbols-outlined mr-3">group</span>
-                <span class="font-body-md text-body-md">User Management</span>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/financeAdmin/organizationSetup}">
+                <span class="material-symbols-outlined mr-3">corporate_fare</span>
+                <span class="font-body-md text-body-md">Organization Setup</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" href="#">
-                <span class="material-symbols-outlined mr-3">history_edu</span>
-                <span class="font-body-md text-body-md">Audit Logs</span>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/financeAdmin/chartOfAccounts}">
+                <span class="material-symbols-outlined mr-3">account_tree</span>
+                <span class="font-body-md text-body-md">Chart of Accounts</span>
             </a>
-            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" href="#">
-                <span class="material-symbols-outlined mr-3">security</span>
-                <span class="font-body-md text-body-md">Risk Models</span>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/financeAdmin/fiscalConfiguration}">
+                <span class="material-symbols-outlined mr-3">calendar_month</span>
+                <span class="font-body-md text-body-md">Fiscal Config</span>
+            </a>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/financeAdmin/moduleControls}">
+                <span class="material-symbols-outlined mr-3">tune</span>
+                <span class="font-body-md text-body-md">Module Controls</span>
+            </a>
+            <a class="flex items-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg mx-2 my-1 transition-all" th:href="@{/financeAdmin/taxJurisdictions}">
+                <span class="material-symbols-outlined mr-3">percent</span>
+                <span class="font-body-md text-body-md">Tax Jurisdictions</span>
             </a>
         </nav>
+
         <div class="px-4 mt-auto space-y-4">
             <div class="pt-4 border-t border-outline-variant">
                 <div class="flex items-center p-2 hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors">
@@ -45,13 +54,6 @@
             </div>
         </div>
     </aside>
-
-    <header th:fragment="header" class="flex justify-between items-center w-full px-margin-page py-stack-md bg-surface border-b border-outline-variant sticky top-0 z-10">
-        <h2 class="font-headline-md text-headline-md font-bold text-on-background">Financial Governance</h2>
-        <div class="flex items-center space-x-6">
-            <nav class="hidden lg:flex items-center space-x-8 mr-8"></nav>
-        </div>
-    </header>
 
 </div>
 </body>

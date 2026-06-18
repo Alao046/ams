@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>CFO Approval Hub</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f7f9fb",
+                        "surface-dim": "#d8dadc",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#d3e4fe",
+                        "outline": "#7e7576",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed": "#131b2e",
+                        "background": "#f7f9fb",
+                        "primary": "#000000",
+                        "on-surface": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#5e5e5e",
+                        "primary-fixed": "#e2e2e2",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "on-primary-container": "#848484",
+                        "on-background": "#191c1e",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "tertiary-container": "#131b2e",
+                        "inverse-on-surface": "#eff1f3",
+                        "secondary-container": "#d0e1fb",
+                        "outline-variant": "#cfc4c5",
+                        "on-secondary-container": "#54647a",
+                        "on-primary-fixed": "#1b1b1b",
+                        "tertiary": "#000000",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary-container": "#1b1b1b",
+                        "on-secondary-fixed": "#0b1c30",
+                        "tertiary-fixed": "#dae2fd",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "secondary": "#505f76",
+                        "surface-variant": "#e0e3e5",
+                        "on-surface-variant": "#4c4546",
+                        "on-primary-fixed-variant": "#474747",
+                        "inverse-primary": "#c6c6c6",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-error": "#ffffff",
+                        "on-tertiary-container": "#7c839b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "outer-padding": "32px",
+                        "card-padding": "24px",
+                        "gutter": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "currency-display": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "label-md": ["JetBrains Mono"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "currency-display": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Hanken Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fine-border {
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="text-on-background min-h-screen flex">
+
+<div th:replace="~{layouts/cfoLayout :: sidebar}"></div>
+
+<div class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
+
+    <nav class="sticky top-0 z-40 bg-background flex justify-between items-center w-full px-outer-padding py-6">
+        <div class="flex flex-col">
+            <h1 class="font-headline-md text-headline-md font-bold text-primary">Approval Hub</h1>
+            <p class="font-body-md text-body-md text-secondary">Review pending journal adjustments, high-value purchase commitments, and overrides requiring executive mandate.</p>
+        </div>
+        <div class="flex items-center gap-stack-md">
+            <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors group relative">
+                <span class="material-symbols-outlined text-secondary group-hover:text-primary" data-icon="notifications">notifications</span>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+            </button>
+            <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors group">
+                <span class="material-symbols-outlined text-secondary group-hover:text-primary" data-icon="settings">settings</span>
+            </button>
+            <div class="ml-2 w-10 h-10 rounded-full border border-outline-variant bg-surface-container-high overflow-hidden">
+                <img class="w-full h-full object-cover" alt="Profile Picture" th:src="@{/images/avatar.png}">
+            </div>
+        </div>
+    </nav>
+
+    <main class="px-outer-padding pb-outer-padding space-y-gutter">
+
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="font-label-md text-label-md text-secondary uppercase">Journals Pending Review</span>
+                    <span class="material-symbols-outlined text-secondary text-[20px]" data-icon="history">history</span>
+                </div>
+                <div>
+                    <h2 class="font-currency-display text-currency-display text-primary">6</h2>
+                    <p class="font-body-sm text-body-sm text-secondary mt-1">Requires Executive Sign-off</p>
+                </div>
+            </div>
+            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="font-label-md text-label-md text-secondary uppercase">Invoice Risk Exposure</span>
+                    <span class="material-symbols-outlined text-error text-[20px]" data-icon="warning">warning</span>
+                </div>
+                <div>
+                    <h2 class="font-currency-display text-currency-display text-error">₦8,450,000.00</h2>
+                    <p class="font-body-sm text-body-sm text-secondary mt-1">High-value exposure pool</p>
+                </div>
+            </div>
+            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="font-label-md text-label-md text-secondary uppercase">System Segregation Check</span>
+                    <span class="material-symbols-outlined text-secondary text-[20px]" data-icon="verified_user">verified_user</span>
+                </div>
+                <div>
+                    <h2 class="font-currency-display text-currency-display text-primary">100%</h2>
+                    <p class="font-body-sm text-body-sm text-on-tertiary-container bg-tertiary-fixed px-2 py-0.5 rounded-full inline-block mt-1">Compliant</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-surface-container-lowest p-4 rounded-xl fine-border flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+            <div class="flex flex-wrap gap-2 bg-surface p-1 rounded-lg border border-slate-100 self-start">
+                <button class="px-4 py-2 bg-white text-primary font-body-md font-bold rounded-md shadow-sm border border-slate-200/50">All Pending (6)</button>
+                <button class="px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors">Journals</button>
+                <button class="px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors">Vendor Bills</button>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]" data-icon="search">search</span>
+                    <input class="pl-9 pr-4 py-2 w-full sm:w-64 bg-surface border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filter queue..." type="text">
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-surface-container-lowest rounded-xl fine-border overflow-hidden">
+            <div class="p-card-padding flex justify-between items-center border-b border-slate-100">
+                <h3 class="font-headline-sm text-headline-sm text-primary">Authorization Queue</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                    <tr class="bg-surface text-secondary font-label-md text-label-md uppercase tracking-wider border-b border-slate-100">
+                        <th class="px-card-padding py-4">Submission Timestamp</th>
+                        <th class="px-card-padding py-4">Originating User</th>
+                        <th class="px-card-padding py-4">Transaction Type</th>
+                        <th class="px-card-padding py-4">Corporate Branch</th>
+                        <th class="px-card-padding py-4 text-right">Exposure (₦)</th>
+                        <th class="px-card-padding py-4 text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
+                        <td class="px-card-padding py-5 font-body-md text-body-md text-primary">Oct 24, 2026 · 14:22</td>
+                        <td class="px-card-padding py-5">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-xs">EO</div>
+                                <span class="font-body-md text-body-md text-primary">E. Okoro</span>
+                            </div>
+                        </td>
+                        <td class="px-card-padding py-5">
+                            <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">Adjusting Journal Entry</span>
+                        </td>
+                        <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">Lagos HQ</td>
+                        <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">₦4,200,000.00</td>
+                        <td class="px-card-padding py-5 text-right">
+                            <div class="flex items-center justify-end gap-4">
+                                <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
+                                <button class="bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve &amp; Post</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
+                        <td class="px-card-padding py-5 font-body-md text-body-md text-primary">Oct 24, 2026 · 15:45</td>
+                        <td class="px-card-padding py-5">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">AB</div>
+                                <span class="font-body-md text-body-md text-primary">A. Balogun</span>
+                            </div>
+                        </td>
+                        <td class="px-card-padding py-5">
+                            <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">Asset Disposal Override</span>
+                        </td>
+                        <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">Abuja North</td>
+                        <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">₦1,150,000.00</td>
+                        <td class="px-card-padding py-5 text-right">
+                            <div class="flex items-center justify-end gap-4">
+                                <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
+                                <button class="bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve &amp; Post</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
+                        <td class="px-card-padding py-5 font-body-md text-body-md text-primary">Oct 24, 2026 · 16:10</td>
+                        <td class="px-card-padding py-5">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold text-xs">CN</div>
+                                <span class="font-body-md text-body-md text-primary">C. Nwosu</span>
+                            </div>
+                        </td>
+                        <td class="px-card-padding py-5">
+                            <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">Accrual Reversal</span>
+                        </td>
+                        <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">Port Harcourt</td>
+                        <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">₦3,100,000.00</td>
+                        <td class="px-card-padding py-5 text-right">
+                            <div class="flex items-center justify-end gap-4">
+                                <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
+                                <button class="bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve &amp; Post</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="px-card-padding py-4 bg-surface-container-low flex justify-between items-center border-t border-slate-100">
+                <span class="font-body-sm text-body-sm text-secondary">Showing 3 of 6 pending authorizations</span>
+                <div class="flex gap-2">
+                    <button class="p-1.5 border border-outline-variant rounded bg-white hover:bg-surface-container-low transition-colors disabled:opacity-30" disabled>
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                    </button>
+                    <button class="p-1.5 border border-outline-variant rounded bg-white hover:bg-surface-container-low transition-colors">
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    document.querySelectorAll('.hover\\:shadow-sm').forEach(card => {
+        card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-2px)'; });
+        card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0px)'; });
+        card.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
+    });
+
+    const notifyBtn = document.querySelector('[data-icon="notifications"]').parentElement;
+    notifyBtn.addEventListener('click', () => {
+        const dot = notifyBtn.querySelector('.bg-error');
+        if (dot) dot.style.display = 'none';
+    });
+</script>
+</body>
+</html>

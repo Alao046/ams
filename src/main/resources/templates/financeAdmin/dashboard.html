@@ -1,304 +1,270 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Finance Admin Dashboard</title>
+    <title>Finance Admin Dashboard | Financial AMS</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
-            border-radius: 10px;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&family=JetBrains+Mono:wght@500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     "colors": {
-                        "on-surface": "#191c1e",
-                        "tertiary-container": "#410002",
-                        "on-surface-variant": "#45464d",
-                        "on-primary-fixed": "#131b2e",
-                        "primary-fixed": "#dae2fd",
-                        "on-secondary": "#ffffff",
-                        "outline-variant": "#c6c6cd",
-                        "surface-container-high": "#e6e8ea",
-                        "on-primary-container": "#7c839b",
-                        "on-tertiary-fixed": "#410002",
-                        "secondary-fixed": "#d8e2ff",
-                        "surface-bright": "#f7f9fb",
-                        "on-error-container": "#93000a",
-                        "surface-tint": "#565e74",
-                        "tertiary-fixed": "#ffdad6",
-                        "surface": "#f7f9fb",
-                        "error": "#ba1a1a",
-                        "primary-container": "#131b2e",
-                        "on-primary-fixed-variant": "#3f465c",
-                        "outline": "#76777d",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container": "#eceef0",
-                        "secondary-container": "#2170e4",
-                        "inverse-primary": "#bec6e0",
-                        "surface-container-highest": "#e0e3e5",
                         "on-error": "#ffffff",
-                        "inverse-surface": "#2d3133",
-                        "on-tertiary-container": "#f63a35",
-                        "on-background": "#191c1e",
-                        "primary-fixed-dim": "#bec6e0",
-                        "on-secondary-fixed-variant": "#004395",
-                        "tertiary-fixed-dim": "#ffb4ab",
-                        "on-secondary-fixed": "#001a42",
-                        "surface-container-low": "#f2f4f6",
-                        "error-container": "#ffdad6",
-                        "background": "#f7f9fb",
-                        "tertiary": "#000000",
                         "primary": "#000000",
-                        "surface-dim": "#d8dadc",
-                        "secondary": "#0058be",
-                        "inverse-on-surface": "#eff1f3",
+                        "background": "#f7f9fb",
+                        "on-tertiary-container": "#7c839b",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-fixed-variant": "#3f465c",
+                        "on-error-container": "#93000a",
                         "on-tertiary": "#ffffff",
                         "surface-variant": "#e0e3e5",
+                        "on-primary-fixed-variant": "#474747",
+                        "outline-variant": "#cfc4c5",
+                        "secondary-fixed": "#d3e4fe",
+                        "secondary": "#505f76",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed": "#0b1c30",
+                        "on-primary-fixed": "#1b1b1b",
+                        "surface-container-low": "#f2f4f6",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "on-surface": "#191c1e",
+                        "surface-bright": "#f7f9fb",
+                        "on-primary-container": "#848484",
+                        "tertiary-container": "#131b2e",
+                        "surface-tint": "#5e5e5e",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#bec6e0",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#c6c6c6",
+                        "on-surface-variant": "#4c4546",
+                        "tertiary": "#000000",
+                        "outline": "#7e7576",
+                        "inverse-surface": "#2d3133",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#c6c6c6",
+                        "on-tertiary-fixed": "#131b2e",
+                        "tertiary-fixed": "#dae2fd",
+                        "secondary-container": "#d0e1fb",
                         "on-primary": "#ffffff",
-                        "secondary-fixed-dim": "#adc6ff",
-                        "on-secondary-container": "#fefcff",
-                        "on-tertiary-fixed-variant": "#93000b"
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#54647a",
+                        "on-background": "#191c1e",
+                        "primary-container": "#1b1b1b",
+                        "surface": "#f7f9fb",
+                        "primary-fixed": "#e2e2e2",
+                        "surface-container": "#eceef0",
+                        "on-secondary-fixed-variant": "#38485d"
                     },
                     "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
                     },
                     "spacing": {
-                        "margin-page": "32px",
                         "stack-sm": "8px",
-                        "stack-md": "16px",
-                        "sidebar-width": "260px",
+                        "outer-padding": "32px",
                         "gutter": "24px",
-                        "padding-card": "24px",
-                        "unit": "4px"
+                        "card-padding": "24px",
+                        "stack-md": "16px"
                     },
                     "fontFamily": {
-                        "mono-label": ["JetBrains Mono"],
-                        "headline-sm": ["Inter"],
-                        "display-lg": ["Inter"],
-                        "headline-md": ["Inter"],
-                        "label-caps": ["Inter"],
-                        "data-tabular": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "body-md": ["Inter"]
+                        "label-md": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "currency-display": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "body-sm": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"]
                     },
                     "fontSize": {
-                        "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                        "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
                         "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
                     }
                 },
             },
         }
     </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body class="bg-background text-on-surface">
+<body class="text-on-background font-body-md overflow-hidden bg-background">
 
-<aside th:replace="~{layouts/financeAdminLayout :: sidebar}"></aside>
+<div class="flex h-screen w-full overflow-hidden">
+    <aside th:replace="~{layouts/financeAdminLayout :: sidebar}"></aside>
 
-<main class="ml-sidebar-width min-h-screen">
+    <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
 
-    <header th:replace="~{layouts/financeAdminLayout :: header}"></header>
-
-    <div class="p-margin-page space-y-gutter overflow-y-auto max-h-[calc(100vh-73px)] custom-scrollbar">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-primary p-2 bg-primary-fixed rounded-lg">rule</span>
+        <!-- Local Top Navigation Bar (Full Code Intact) -->
+        <header class="bg-surface dark:bg-surface-container-low w-full h-16 border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-outer-padding z-50 shrink-0">
+            <div class="flex items-center gap-4">
+                <span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Dashboard</span>
+            </div>
+            <div class="flex items-center gap-stack-md">
+                <button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200">
+                    <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+                </button>
+                <button class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200">
+                    <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+                </button>
+                <div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+                    <img class="w-full h-full object-cover" data-alt="A professional headshot of a financial executive in a minimalist studio setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc">
                 </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">COA Hierarchy</p>
-                <h3 class="text-display-lg font-display-lg mt-1">100%</h3>
-                <p class="text-body-md text-on-surface-variant mt-2">Active structure aligned</p>
             </div>
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-secondary p-2 bg-secondary-fixed rounded-lg">percent</span>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-outer-padding">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-gutter">
+                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding flex flex-col justify-between">
+                    <div class="text-secondary font-label-md text-label-md uppercase tracking-wider mb-2">Active Entities</div>
+                    <div class="font-headline-lg text-headline-lg text-primary">3</div>
+                    <div class="mt-4 flex items-center text-xs text-secondary">
+                        <span class="material-symbols-outlined text-[16px] mr-1">domain</span> Global Scope
+                    </div>
                 </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Tax Component Status</p>
-                <h3 class="text-display-lg font-display-lg mt-1">85%</h3>
-                <p class="text-body-md text-on-surface-variant mt-2">Rates synchronized</p>
-            </div>
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-error">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-error p-2 bg-error-container rounded-lg">bolt</span>
+                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding flex flex-col justify-between">
+                    <div class="text-secondary font-label-md text-label-md uppercase tracking-wider mb-2">Configured Branch Nodes</div>
+                    <div class="font-headline-lg text-headline-lg text-primary">8</div>
+                    <div class="mt-4 flex items-center text-xs text-secondary">
+                        <span class="material-symbols-outlined text-[16px] mr-1">hub</span> Regional Units
+                    </div>
                 </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Automation Pipelines</p>
-                <h3 class="text-display-lg font-display-lg mt-1 text-error">94%</h3>
-                <p class="text-body-md text-error mt-2">2 Engine tasks stuck</p>
-            </div>
-            <div class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm border-l-4 border-l-tertiary-container">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="material-symbols-outlined text-on-tertiary-container p-2 bg-tertiary-fixed rounded-lg">hub</span>
+                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding flex flex-col justify-between">
+                    <div class="text-secondary font-label-md text-label-md uppercase tracking-wider mb-2">Keycloak Users</div>
+                    <div class="font-headline-lg text-headline-lg text-primary">42</div>
+                    <div class="mt-4 flex items-center text-xs text-secondary">
+                        <span class="material-symbols-outlined text-[16px] mr-1">person_outline</span> Identity Vault
+                    </div>
                 </div>
-                <p class="text-on-surface-variant font-label-caps uppercase">Federation Realms</p>
-                <h3 class="text-display-lg font-display-lg mt-1">89%</h3>
-                <p class="text-body-md text-on-surface-variant mt-2">Identity syncing operational</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-            <div class="lg:col-span-2 space-y-gutter">
-                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
-                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-                        <h3 class="font-headline-sm text-headline-sm">System Activity Logs</h3>
-                        <button class="text-primary font-bold text-body-md hover:underline">View all</button>
+                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding flex flex-col justify-between">
+                    <div class="text-secondary font-label-md text-label-md uppercase tracking-wider mb-2">Active System Modules</div>
+                    <div class="font-headline-lg text-headline-lg text-primary">12</div>
+                    <div class="mt-4 flex items-center text-xs text-secondary">
+                        <span class="material-symbols-outlined text-[16px] mr-1">extension</span> Framework Core
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-surface-container-high text-on-surface-variant">
-                            <tr>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Timestamp</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Administrator</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Action</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Status</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase text-right">IP Address</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant">
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-24 14:22:01</td>
-                                <td class="px-6 py-4 text-body-md">Sarah Mitchell</td>
-                                <td class="px-6 py-4 text-body-md font-mono-label">Update_COA_Hierarchy</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 bg-secondary-fixed text-on-secondary-fixed-variant rounded text-label-caps uppercase">Success</span></td>
-                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">192.168.1.104</td>
-                            </tr>
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4 font-mono-label text-mono-label">2024-05-24 14:18:55</td>
-                                <td class="px-6 py-4 text-body-md">Robert Kane</td>
-                                <td class="px-6 py-4 text-body-md font-mono-label">Auth_Override_Fail</td>
-                                <td class="px-6 py-4"><span class="px-2 py-1 bg-error-container text-on-error-container rounded text-label-caps uppercase">Blocked</span></td>
-                                <td class="px-6 py-4 text-body-md font-data-tabular text-right">10.0.4.22</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
-                    <div class="px-padding-card py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-                        <h3 class="font-headline-sm text-headline-sm">Active Engine Workflows</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-surface-container-high text-on-surface-variant">
-                            <tr>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Process ID</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Current State</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Duration</th>
-                                <th class="px-6 py-3 font-label-caps text-label-caps uppercase">Flag</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-outline-variant">
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">PROC-991A</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 bg-primary rounded-full mr-2"></div>
-                                        <span class="text-body-md">Batch Verification Execution</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-body-md">1.2 Hours</td>
-                                <td class="px-6 py-4"><span class="material-symbols-outlined text-outline">flag</span></td>
-                            </tr>
-                            <tr class="hover:bg-surface-container-low transition-colors">
-                                <td class="px-6 py-4 font-mono-label text-mono-label text-secondary">PROC-884C</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-                                        <span class="text-body-md">Consolidated Report Compile</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-body-md">4.5 Hours</td>
-                                <td class="px-6 py-4"><span class="material-symbols-outlined text-error">priority_high</span></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+                </div>
             </div>
 
-            <div class="space-y-gutter">
-                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                    <h3 class="font-headline-sm text-headline-sm mb-4 flex items-center">
-                        <span class="material-symbols-outlined text-error mr-2">report</span>
-                        Oversight Alerts
-                    </h3>
-                    <div class="space-y-3">
-                        <div class="p-3 bg-error-container text-on-error-container rounded-lg border border-red-200">
-                            <p class="font-bold text-body-md">Unauthorized Policy Override</p>
-                            <p class="text-sm">Admin user 'J. Miller' attempted to modify escalation thresholds.</p>
-                            <button class="mt-2 text-sm underline font-bold">Investigate</button>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+                <div class="lg:col-span-2 bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="font-headline-sm text-headline-sm text-primary">System Initialization Checklist</h3>
+                        <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-md text-[10px] uppercase">Phase 1 Complete</span>
+                    </div>
+                    <div class="space-y-stack-md">
+                        <div class="group flex items-start gap-4 p-4 rounded-lg border border-surface-container-high hover:border-primary transition-colors cursor-pointer">
+                            <div class="mt-1"><span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">check_circle</span></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <h4 class="font-body-md text-body-md font-bold text-primary">Chart of Accounts Setup</h4>
+                                    <span class="text-label-md font-label-md text-secondary">100%</span>
+                                </div>
+                                <div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-full"></div>
+                                </div>
+                                <p class="text-body-sm text-secondary mt-3">All accounts for Fiscal 2024 have been mapped to the central ledger including subsidiary branches.</p>
+                            </div>
                         </div>
-                        <div class="p-3 bg-surface-container-high rounded-lg border border-outline-variant">
-                            <p class="font-bold text-body-md text-on-surface">Bulk Data Modification</p>
-                            <p class="text-sm text-on-surface-variant">Detected mass deletion of historical reconciliation records (12k+ rows).</p>
+                        <div class="group flex items-start gap-4 p-4 rounded-lg border border-surface-container-high hover:border-primary transition-colors cursor-pointer">
+                            <div class="mt-1"><span class="material-symbols-outlined text-secondary">pending</span></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <h4 class="font-body-md text-body-md font-bold text-primary">Fiscal Period Definitions</h4>
+                                    <span class="text-label-md font-label-md text-secondary">65%</span>
+                                </div>
+                                <div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-[65%]"></div>
+                                </div>
+                                <p class="text-body-sm text-secondary mt-3">Monthly closing schedules and tax reconciliation windows are being finalized by HQ.</p>
+                            </div>
+                        </div>
+                        <div class="group flex items-start gap-4 p-4 rounded-lg border border-surface-container-high hover:border-primary transition-colors cursor-pointer">
+                            <div class="mt-1"><span class="material-symbols-outlined text-secondary">radio_button_unchecked</span></div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-center mb-1">
+                                    <h4 class="font-body-md text-body-md font-bold text-primary">Naira (₦) Currency Precision Check</h4>
+                                    <span class="text-label-md font-label-md text-secondary">0%</span>
+                                </div>
+                                <div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+                                    <div class="bg-primary h-full w-0"></div>
+                                </div>
+                                <p class="text-body-sm text-secondary mt-3">Validate rounding rules for large volume ₦ transactions across high-frequency modules.</p>
+                            </div>
                         </div>
                     </div>
-                </section>
+                    <div class="mt-8 flex justify-end gap-3">
+                        <button class="px-6 py-2 border border-surface-container-highest rounded-lg font-body-md text-body-md hover:bg-surface-container-low transition-colors">Export Log</button>
+                        <button class="px-6 py-2 bg-primary text-on-primary rounded-lg font-bold font-body-md text-body-md active:scale-95 transition-transform">Continue Setup</button>
+                    </div>
+                </div>
 
-                <section class="bg-surface-container-lowest p-padding-card rounded-xl border border-outline-variant shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-headline-sm text-headline-sm">Workflow Health</h3>
+                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding">
+                    <div class="flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-primary">history</span>
+                        <h3 class="font-headline-sm text-headline-sm text-primary">Administrative Audit Stream</h3>
                     </div>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-end">
-                            <span class="text-body-md text-on-surface-variant">Active Instances</span>
-                            <span class="font-bold text-headline-sm" id="val-current">142</span>
+                    <div class="relative pl-6 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-surface-container-highest">
+                        <div class="relative">
+                            <div class="absolute -left-[20px] top-1 w-[10px] h-[10px] rounded-full bg-primary ring-4 ring-surface-container-lowest"></div>
+                            <div class="flex flex-col">
+                                <span class="text-label-md font-label-md text-secondary uppercase mb-1">2 mins ago</span>
+                                <p class="text-body-md text-primary font-bold">New Entity Provisioned</p>
+                                <p class="text-body-sm text-secondary">Lagos North Central Branch added to ₦ ledger.</p>
+                                <p class="text-xs text-primary/60 font-label-md mt-1 italic">By: admin_root_01</p>
+                            </div>
                         </div>
-                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                            <div class="bg-primary h-full" style="width: 82%"></div>
+                        <div class="relative">
+                            <div class="absolute -left-[20px] top-1 w-[10px] h-[10px] rounded-full bg-surface-container-highest ring-4 ring-surface-container-lowest"></div>
+                            <div class="flex flex-col">
+                                <span class="text-label-md font-label-md text-secondary uppercase mb-1">1 hour ago</span>
+                                <p class="text-body-md text-primary font-bold">Keycloak Policy Update</p>
+                                <p class="text-body-sm text-secondary">Password complexity requirement increased for finance roles.</p>
+                                <p class="text-xs text-primary/60 font-label-md mt-1 italic">By: sys_auth_bot</p>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
-                            <span class="text-body-md text-on-surface-variant">Stuck Transitions</span>
-                            <span class="font-bold text-body-md" id="val-overdue">08</span>
-                        </div>
-                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                            <div class="bg-yellow-500 h-full" style="width: 13%"></div>
-                        </div>
-                        <div class="flex justify-between items-end pt-2 border-t border-outline-variant">
-                            <span class="text-body-md text-on-surface-variant">Failed Pipelines</span>
-                            <span class="font-bold text-body-md text-error" id="val-delinquent">02</span>
-                        </div>
-                        <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                            <div class="bg-error h-full" style="width: 5%"></div>
+                        <div class="relative">
+                            <div class="absolute -left-[20px] top-1 w-[10px] h-[10px] rounded-full bg-surface-container-highest ring-4 ring-surface-container-lowest"></div>
+                            <div class="flex flex-col">
+                                <span class="text-label-md font-label-md text-secondary uppercase mb-1">4 hours ago</span>
+                                <p class="text-body-md text-primary font-bold">Module Deployed</p>
+                                <p class="text-body-sm text-secondary">'Inventory Reconciliation' module v2.4.1 activated.</p>
+                                <p class="text-xs text-primary/60 font-label-md mt-1 italic">By: admin_root_01</p>
+                            </div>
                         </div>
                     </div>
-                    <button class="w-full mt-8 py-3 bg-primary text-on-primary rounded-lg font-bold flex items-center justify-center hover:bg-opacity-90 transition-all">
-                        <span class="material-symbols-outlined mr-2">reorder</span>
-                        <span>View System Tasks</span>
+                    <button class="w-full mt-10 py-3 border border-surface-container-highest rounded-lg font-label-md text-label-md uppercase tracking-widest text-secondary hover:text-primary transition-colors flex items-center justify-center gap-2">
+                        View Full Audit Log
+                        <span class="material-symbols-outlined text-[18px]">arrow_right_alt</span>
                     </button>
-                </section>
+                </div>
             </div>
-        </div>
+        </main>
     </div>
-</main>
+</div>
 
+<script>
+    document.querySelectorAll('.active\\:scale-95').forEach(el => {
+        el.addEventListener('mousedown', () => el.classList.add('opacity-80'));
+        el.addEventListener('mouseup', () => el.classList.remove('opacity-80'));
+    });
+</script>
 </body>
 </html>
