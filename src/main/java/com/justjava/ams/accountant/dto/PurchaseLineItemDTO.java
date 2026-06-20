@@ -1,0 +1,22 @@
+package com.justjava.ams.accountant.dto;
+
+import lombok.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class PurchaseLineItemDTO {
+
+    private Long id;
+    private Long purchaseInvoiceId;
+    private String description;
+    private BigDecimal quantity;
+    private BigDecimal unitPrice;
+    private BigDecimal lineTotal;
+    private String notes;
+    private LocalDateTime createdAt;
+}
+

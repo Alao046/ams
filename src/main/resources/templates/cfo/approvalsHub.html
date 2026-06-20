@@ -296,5 +296,80 @@
         if (dot) dot.style.display = 'none';
     });
 </script>
+<script>
+    // Dynamic approvals list: fetch pending journals for org 1 and render into table
+    document.addEventListener('DOMContentLoaded', function () {
+        const orgId = 1; // TODO: replace with dynamic org from server/session
+        const tbody = document.querySelector('table tbody');
+
+        function formatCurrency(amount) {
+            try {
+                return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
+            } catch (e) {
+                return amount;
+            }
+        }
+
+        function renderRows(data) {
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-surface-container-lowest/50 transition-colors';
+
+                const submitted = new Date(item.submittedAt || item.createdAt).toLocaleString();
+                const userName = item.createdBy || 'Unknown';
+                const type = 'Adjusting Journal Entry';
+                const branch = item.branchId || 'Main';
+                const exposure = item.totalDebits || 0;
+
+                tr.innerHTML = `
+                    <td class="px-card-padding py-5 font-body-md text-body-md text-primary">${submitted}</td>
+                    <td class="px-card-padding py-5">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-xs">${(userName||'U').slice(0,2).toUpperCase()}</div>
+                            <span class="font-body-md text-body-md text-primary">${userName}</span>
+                        </div>
+                    </td>
+                    <td class="px-card-padding py-5"><span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">${type}</span></td>
+                    <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">${branch}</td>
+                    <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">${formatCurrency(exposure)}</td>
+                    <td class="px-card-padding py-5 text-right">
+                        <div class="flex items-center justify-end gap-4">
+                            <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
+                            <button data-id="${item.id}" class="approve-btn bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve & Post</button>
+                        </div>
+                    </td>`;
+
+                tbody.appendChild(tr);
+            });
+
+            // attach handlers
+            document.querySelectorAll('.approve-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.getAttribute('data-id');
+                    try {
+                        const res = await fetch(`/api/cfo/manual-journals/${id}/approve`, { method: 'PUT', headers: { 'X-User-Name': 'cfo' } });
+                        if (res.ok) {
+                            e.currentTarget.textContent = 'Posted';
+                            e.currentTarget.disabled = true;
+                        } else {
+                            alert('Failed to approve: ' + res.statusText);
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error approving journal');
+                    }
+                });
+            });
+        }
+
+        // initial load
+        fetch(`/api/cfo/manual-journals/org/${orgId}/pending`)
+            .then(r => r.json())
+            .then(data => renderRows(data))
+            .catch(err => console.error('Failed loading pending journals', err));
+    });
+</script>
 </body>
 </html>

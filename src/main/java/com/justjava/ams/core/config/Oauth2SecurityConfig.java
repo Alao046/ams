@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AnonymousConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
@@ -13,32 +12,53 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 @Configuration
 public class Oauth2SecurityConfig {
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http, ClientRegistrationRepository repo) throws Exception {
         log.debug("Configuring OAuth2 security for AMS");
 
         http.securityMatcher("/**")
-                .anonymous(AnonymousConfigurer::disable)
+                // REMOVED: .anonymous(disable) - Keep enabled so unauthenticated users can see index
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .csrf(CsrfConfigurer::disable)
                 .oauth2Login(oauth2 -> oauth2
-                        // Remove .loginPage("/login") — let Spring handle it
                         .authorizationEndpoint(Customizer.withDefaults())
                         .tokenEndpoint(Customizer.withDefaults())
                         .userInfoEndpoint(Customizer.withDefaults())
                         .successHandler(authenticationSuccessHandler())
                 )
                 .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/", "/index").permitAll();  // public landing
+
+                    authorize.requestMatchers("/", "/index").permitAll();
                     authorize.requestMatchers("/api/**").permitAll();
-                    authorize.requestMatchers("/static/**").permitAll();
+                    authorize.requestMatchers("/static/**", "/css/**", "/js/**").permitAll();
                     authorize.requestMatchers("/images/**").permitAll();
                     authorize.requestMatchers("/favicon.ico").permitAll();
+
+                    authorize.requestMatchers("/admin/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isAdmin()));
+
+                    authorize.requestMatchers("/financeAdmin/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isFinanceAdmin()));
+
+                    authorize.requestMatchers("/accountant/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isAccountant()));
+
+                    authorize.requestMatchers("/cfo/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isCfo()));
+
+                    authorize.requestMatchers("/auditor/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isAuditor()));
+
+
                     authorize.anyRequest().authenticated();
                 })
                 .logout(logout -> logout

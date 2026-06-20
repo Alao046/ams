@@ -301,13 +301,22 @@
         </section>
     </main>
 
+    <!-- Message Divs -->
+    <div id="successMsg" class="fixed top-20 right-4 bg-green-100 text-green-800 px-4 py-3 rounded-lg shadow-lg hidden" style="z-index: 1000;">
+        <span id="successText"></span>
+    </div>
+    <div id="errorMsg" class="fixed top-20 right-4 bg-red-100 text-red-800 px-4 py-3 rounded-lg shadow-lg hidden" style="z-index: 1000;">
+        <span id="errorText"></span>
+    </div>
+
     <!-- Page Actions (Sticky Footer balanced with Sidebar layout context) -->
     <div class="fixed bottom-0 right-0 bg-white/80 backdrop-blur-md border-t border-slate-200 px-outer-padding py-4 z-30 left-auto w-[calc(100%-280px)]">
         <div class="max-w-7xl mx-auto flex justify-end gap-4">
-            <button class="px-6 py-3 bg-white border border-slate-200 text-primary font-bold rounded-lg hover:bg-slate-50 transition-colors active:scale-95">
+            <input type="hidden" id="journalId" value="">
+            <button id="saveDraftBtn" class="px-6 py-3 bg-white border border-slate-200 text-primary font-bold rounded-lg hover:bg-slate-50 transition-colors active:scale-95">
                 Save Draft
             </button>
-            <button class="px-6 py-3 bg-black text-white font-bold rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-2">
+            <button id="submitBtn" class="px-6 py-3 bg-black text-white font-bold rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-2">
                 <span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
                 Submit to CFO for Approval
             </button>
@@ -317,6 +326,9 @@
 
 <!-- Interactivity Application Engineering Scripts -->
 <script>
+    let currentJournalId = null;
+    const orgId = 1; // Default org for now
+
     function addRow() {
         const tbody = document.getElementById('journal-lines');
         if(tbody.children.length === 0) return;
@@ -349,13 +361,107 @@
         if (debits > 0 && credits > 0 && diff < 0.01) {
             badge.className = "flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1.5 rounded-full transition-all";
             icon.textContent = "check_circle";
-            text.textContent = "Balanced";
+            text.textContent = "Balanced ✓";
         } else {
             badge.className = "flex items-center gap-2 bg-error-container text-on-error-container px-3 py-1.5 rounded-full transition-all";
             icon.textContent = "error";
             text.textContent = `Unbalanced (Diff: ₦${diff.toLocaleString('en-NG', {minimumFractionDigits: 2})})`;
         }
     }
+
+    function showMessage(msg, isError = false) {
+        const msgDiv = isError ? document.getElementById('errorMsg') : document.getElementById('successMsg');
+        const textSpan = isError ? document.getElementById('errorText') : document.getElementById('successText');
+        textSpan.textContent = msg;
+        msgDiv.classList.remove('hidden');
+        setTimeout(() => msgDiv.classList.add('hidden'), 4000);
+    }
+
+    document.getElementById('saveDraftBtn').addEventListener('click', async function() {
+        const description = document.querySelector('input[placeholder="e.g. Monthly Payroll Accrual"]').value;
+        const journalDate = document.querySelector('input[type="date"]').value;
+
+        if (!description || !journalDate) {
+            showMessage('Please fill in Description and Transaction Date', true);
+            return;
+        }
+
+        this.disabled = true;
+        this.textContent = 'Saving...';
+
+        try {
+            const response = await fetch(`/api/accountant/manual-journals/org/${orgId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    description: description,
+                    journalDate: journalDate
+                })
+            });
+
+            const result = await response.json();
+            if (response.ok && result.data) {
+                currentJournalId = result.data.id;
+                document.getElementById('journalId').value = currentJournalId;
+                showMessage('Journal draft saved successfully');
+            } else {
+                showMessage(result.message || 'Failed to save journal', true);
+            }
+        } catch (error) {
+            showMessage('Error: ' + error.message, true);
+        } finally {
+            this.disabled = false;
+            this.textContent = 'Save Draft';
+        }
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', async function() {
+        if (!currentJournalId) {
+            showMessage('Please save draft first', true);
+            return;
+        }
+
+        const rows = document.querySelectorAll('#journal-lines tr');
+        if (rows.length === 0) {
+            showMessage('Please add at least one journal line', true);
+            return;
+        }
+
+        // Validate balance
+        let debits = 0, credits = 0;
+        rows.forEach(row => {
+            debits += parseFloat(row.cells[1].querySelector('input').value) || 0;
+            credits += parseFloat(row.cells[2].querySelector('input').value) || 0;
+        });
+
+        if (Math.abs(debits - credits) > 0.01) {
+            showMessage('Journal must be balanced (Debits = Credits)', true);
+            return;
+        }
+
+        this.disabled = true;
+        this.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Submitting...';
+
+        try {
+            const response = await fetch(`/api/accountant/manual-journals/${currentJournalId}/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                showMessage('Journal submitted for CFO approval');
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showMessage(result.message || 'Submission failed', true);
+            }
+        } catch (error) {
+            showMessage('Error: ' + error.message, true);
+        } finally {
+            this.disabled = false;
+            this.innerHTML = '<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span> Submit to CFO for Approval';
+        }
+    });
 </script>
 </body>
 </html>
