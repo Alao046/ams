@@ -27,7 +27,26 @@ public class GlobalControllerAdvice {
 
     @ModelAttribute("userName")
     public String addUserName(HttpServletRequest request) {
-        return (String) authenticationManager.get("name");
+        String firstName = claimAsString("given_name");
+        String lastName = claimAsString("family_name");
+        String fullName = (firstName + " " + lastName).trim();
+
+        if (!fullName.isBlank()) {
+            return fullName;
+        }
+
+        String name = claimAsString("name");
+        if (!name.isBlank()) {
+            return name;
+        }
+
+        String username = claimAsString("preferred_username");
+        return !username.isBlank() ? username : "User";
+    }
+
+    private String claimAsString(String claimName) {
+        Object claim = authenticationManager.get(claimName);
+        return claim != null ? claim.toString().trim() : "";
     }
 
 

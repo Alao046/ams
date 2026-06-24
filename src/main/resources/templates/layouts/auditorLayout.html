@@ -45,7 +45,7 @@
             <div class="pt-4 border-t border-outline-variant">
                 <div class="flex items-center p-2 hover:bg-surface-container-high rounded-lg cursor-pointer transition-colors">
                     <span class="material-symbols-outlined text-4xl text-on-surface-variant mr-3">account_circle</span>
-                    <span class="font-body-md text-body-md text-on-surface font-bold">J. Sterling</span>
+                    <span class="font-body-md text-body-md text-on-surface font-bold" th:text="${userName}">User</span>
                 </div>
                 <a class="flex items-center p-2 mt-1 text-error hover:bg-error-container hover:text-on-error-container rounded-lg transition-colors" th:href="@{/users/logout}">
                     <span class="material-symbols-outlined mr-3">logout</span>
