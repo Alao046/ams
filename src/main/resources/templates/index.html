@@ -3,285 +3,1067 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>AMS | Financial Governance &amp; Oversight</title>
+    <title>AMS | Accounting Management System</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script id="tailwind-config">
         tailwind.config = {
           darkMode: "class",
           theme: {
             extend: {
-              "colors": {
-                      "on-surface": "#191c1e",
-                      "tertiary-container": "#410002",
-                      "on-surface-variant": "#45464d",
-                      "on-primary-fixed": "#131b2e",
-                      "primary-fixed": "#dae2fd",
-                      "on-secondary": "#ffffff",
-                      "outline-variant": "#c6c6cd",
-                      "surface-container-high": "#e6e8ea",
-                      "on-primary-container": "#7c839b",
-                      "on-tertiary-fixed": "#410002",
-                      "secondary-fixed": "#d8e2ff",
-                      "surface-bright": "#f7f9fb",
-                      "on-error-container": "#93000a",
-                      "surface-tint": "#565e74",
-                      "tertiary-fixed": "#ffdad6",
-                      "surface": "#f7f9fb",
-                      "error": "#ba1a1a",
-                      "primary-container": "#131b2e",
-                      "on-primary-fixed-variant": "#3f465c",
-                      "outline": "#76777d",
-                      "surface-container-lowest": "#ffffff",
-                      "surface-container": "#eceef0",
-                      "secondary-container": "#2170e4",
-                      "inverse-primary": "#bec6e0",
-                      "surface-container-highest": "#e0e3e5",
-                      "on-error": "#ffffff",
-                      "inverse-surface": "#2d3133",
-                      "on-tertiary-container": "#f63a35",
-                      "on-background": "#191c1e",
-                      "primary-fixed-dim": "#bec6e0",
-                      "on-secondary-fixed-variant": "#004395",
-                      "tertiary-fixed-dim": "#ffb4ab",
-                      "on-secondary-fixed": "#001a42",
-                      "surface-container-low": "#f2f4f6",
-                      "error-container": "#ffdad6",
-                      "background": "#f7f9fb",
-                      "tertiary": "#000000",
-                      "primary": "#000000",
-                      "surface-dim": "#d8dadc",
-                      "secondary": "#0058be",
-                      "inverse-on-surface": "#eff1f3",
-                      "on-tertiary": "#ffffff",
-                      "surface-variant": "#e0e3e5",
-                      "on-primary": "#ffffff",
-                      "secondary-fixed-dim": "#adc6ff",
-                      "on-secondary-container": "#fefcff",
-                      "on-tertiary-fixed-variant": "#93000b"
+              colors: {
+                "on-surface": "#191c1e",
+                "tertiary-container": "#410002",
+                "on-surface-variant": "#45464d",
+                "on-primary-fixed": "#131b2e",
+                "primary-fixed": "#dae2fd",
+                "on-secondary": "#ffffff",
+                "outline-variant": "#c6c6cd",
+                "surface-container-high": "#e6e8ea",
+                "on-primary-container": "#7c839b",
+                "on-tertiary-fixed": "#410002",
+                "secondary-fixed": "#d8e2ff",
+                "surface-bright": "#f7f9fb",
+                "on-error-container": "#93000a",
+                "surface-tint": "#565e74",
+                "tertiary-fixed": "#ffdad6",
+                "surface": "#f7f9fb",
+                "error": "#ba1a1a",
+                "primary-container": "#131b2e",
+                "on-primary-fixed-variant": "#3f465c",
+                "outline": "#76777d",
+                "surface-container-lowest": "#ffffff",
+                "surface-container": "#eceef0",
+                "secondary-container": "#2170e4",
+                "inverse-primary": "#bec6e0",
+                "surface-container-highest": "#e0e3e5",
+                "on-error": "#ffffff",
+                "inverse-surface": "#2d3133",
+                "on-tertiary-container": "#f63a35",
+                "on-background": "#191c1e",
+                "primary-fixed-dim": "#bec6e0",
+                "on-secondary-fixed-variant": "#004395",
+                "tertiary-fixed-dim": "#ffb4ab",
+                "on-secondary-fixed": "#001a42",
+                "surface-container-low": "#f2f4f6",
+                "error-container": "#ffdad6",
+                "background": "#f7f9fb",
+                "tertiary": "#000000",
+                "primary": "#000000",
+                "surface-dim": "#d8dadc",
+                "secondary": "#0058be",
+                "inverse-on-surface": "#eff1f3",
+                "on-tertiary": "#ffffff",
+                "surface-variant": "#e0e3e5",
+                "on-primary": "#ffffff",
+                "secondary-fixed-dim": "#adc6ff",
+                "on-secondary-container": "#fefcff",
+                "on-tertiary-fixed-variant": "#93000b"
               },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
+              borderRadius: {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "2xl": "1rem",
+                "full": "9999px"
               },
-              "spacing": {
-                      "margin-page": "32px",
-                      "stack-sm": "8px",
-                      "stack-md": "16px",
-                      "sidebar-width": "260px",
-                      "gutter": "24px",
-                      "padding-card": "24px",
-                      "unit": "4px"
-              },
-              "fontFamily": {
-                      "mono-label": ["JetBrains Mono"],
-                      "headline-sm": ["Inter"],
-                      "display-lg": ["Inter"],
-                      "headline-md": ["Inter"],
-                      "label-caps": ["Inter"],
-                      "data-tabular": ["Inter"],
-                      "body-lg": ["Inter"],
-                      "body-md": ["Inter"]
-              },
-              "fontSize": {
-                      "mono-label": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
-                      "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
-                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
-                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
-                      "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
-                      "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
-                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+              fontFamily: {
+                "mono": ["JetBrains Mono", "monospace"],
+                "sans": ["Inter", "sans-serif"]
               }
-            },
-          },
+            }
+          }
         }
     </script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; color: #191c1e; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(226, 232, 240, 0.5); }
-        .hero-pattern { background-image: radial-gradient(#76777d 0.5px, transparent 0.5px); background-size: 24px 24px; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; color: #191c1e; margin: 0; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+
+        /* Grid pattern for hero */
+        .grid-pattern {
+            background-image:
+                linear-gradient(rgba(118,119,125,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(118,119,125,0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Navigation */
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: #45464d;
+            text-decoration: none;
+            transition: color 0.2s;
+            letter-spacing: 0.01em;
+        }
+        .nav-link:hover { color: #000; }
+
+        /* Hero */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #131b2e;
+            color: #bec6e0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 2px;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #0058be;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .hero-title {
+            font-size: clamp(40px, 5vw, 64px);
+            font-weight: 800;
+            line-height: 1.06;
+            letter-spacing: -0.03em;
+            color: #191c1e;
+        }
+        .hero-title .accent { color: #0058be; }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #000;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 13px 28px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s;
+            border: 2px solid transparent;
+        }
+        .btn-primary:hover { background: #0058be; transform: translateY(-1px); }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: #191c1e;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 11px 28px;
+            border-radius: 4px;
+            text-decoration: none;
+            border: 2px solid #c6c6cd;
+            transition: border-color 0.2s, transform 0.15s;
+        }
+        .btn-secondary:hover { border-color: #0058be; color: #0058be; transform: translateY(-1px); }
+
+        /* Dashboard mockup */
+        .dashboard-shell {
+            background: #fff;
+            border: 1px solid #c6c6cd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.06);
+        }
+        .dash-titlebar {
+            background: #131b2e;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dash-sidebar { background: #0d1424; width: 200px; flex-shrink: 0; padding: 16px 0; }
+        .dash-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 16px;
+            font-size: 12px;
+            color: #7c839b;
+            cursor: pointer;
+        }
+        .dash-nav-item.active { background: rgba(0,88,190,0.2); color: #adc6ff; border-left: 3px solid #0058be; }
+        .dash-main { flex: 1; background: #f7f9fb; padding: 20px; overflow: hidden; }
+        .dash-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+        .dash-kpi {
+            background: #fff;
+            border: 1px solid #e0e3e5;
+            border-radius: 6px;
+            padding: 14px;
+        }
+        .dash-kpi-label { font-size: 10px; color: #76777d; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .dash-kpi-value { font-size: 20px; font-weight: 700; color: #191c1e; }
+        .dash-kpi-delta { font-size: 10px; color: #1b6b2f; font-weight: 600; margin-top: 2px; }
+        .dash-kpi-delta.neg { color: #ba1a1a; }
+        .dash-chart-area {
+            background: #fff;
+            border: 1px solid #e0e3e5;
+            border-radius: 6px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .dash-chart-label { font-size: 11px; font-weight: 600; color: #191c1e; margin-bottom: 12px; }
+        .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
+        .bar { flex: 1; border-radius: 2px 2px 0 0; transition: opacity 0.2s; }
+        .dash-table-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f2f4f6;
+            font-size: 11px;
+            color: #45464d;
+            gap: 8px;
+        }
+        .status-badge {
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+        .status-posted { background: #e3f2ea; color: #1b6b2f; }
+        .status-pending { background: #fff8e1; color: #7a5800; }
+        .status-review { background: #e8f0fe; color: #004395; }
+
+        /* Module cards */
+        .module-card {
+            background: #fff;
+            border: 1px solid #e0e3e5;
+            border-radius: 6px;
+            padding: 28px;
+            transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+        }
+        .module-card:hover {
+            border-color: #0058be;
+            box-shadow: 0 4px 20px rgba(0,88,190,0.08);
+            transform: translateY(-2px);
+        }
+        .module-icon {
+            width: 44px;
+            height: 44px;
+            background: #131b2e;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            color: #bec6e0;
+        }
+
+        /* Workflow steps */
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: #131b2e;
+            color: #adc6ff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Compliance strip */
+        .compliance-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            border: 1px solid #c6c6cd;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #191c1e;
+        }
+        .compliance-pill .check { color: #1b6b2f; }
+
+        /* Stats strip */
+        .stat-divider { width: 1px; background: #c6c6cd; height: 48px; }
+
+        /* Section label */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #0058be;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .section-title {
+            font-size: clamp(28px, 3.5vw, 42px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: #191c1e;
+        }
+
+        /* CTA section */
+        .cta-section {
+            background: #131b2e;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,88,190,0.3) 0%, transparent 70%);
+        }
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -60px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(0,88,190,0.2) 0%, transparent 70%);
+        }
+
+        /* Footer */
+        .footer-link {
+            font-size: 13px;
+            color: #76777d;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-link:hover { color: #191c1e; }
+
+        /* Smooth scroll & motion */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Horizontal scroll for roles on mobile */
+        .roles-scroll { overflow-x: auto; scrollbar-width: none; }
+        .roles-scroll::-webkit-scrollbar { display: none; }
+
+        /* Mobile nav */
+        .mobile-menu { display: none; }
+        @media (max-width: 768px) {
+            .desktop-nav { display: none; }
+            .dash-sidebar { display: none; }
+            .dash-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
-<body class="overflow-x-hidden">
-<!-- Top Navigation -->
-<header class="flex justify-between items-center w-full px-margin-page py-stack-md bg-surface border-b border-outline-variant sticky top-0 z-50">
-    <div class="flex items-center gap-4">
-        <img alt="AMS Logo" class="object-contain" height="48" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6jk4OLMZNS953YrMyMhi72nyDIalN9UE9PrdKl9XryZK_U20-ObKjA1e9IHYeLSTT0jp9bq9V_2GeMKzlpbEC8eoMCw_5CgZKj5-LEQnf4h4KKCMav_h2kIgNOv9ybwn933F4L9_MTsdAa0-AyAsgfDcMczpsRsxlKxh2UDsqztORuSCgLAYBZEA3sLefsfgQw_Z_xGFMsnf5CUbTKZwB0a0pFLn7RKteWM01py_zbZfFqTHQnBKWlnMLGrZiOkTca2NJjlRNU4k" width="48">
-        <span class="font-headline-md text-headline-md font-bold text-on-background">Accounting Management System</span>
-    </div>
-    <nav class="hidden md:flex gap-8 items-center">
-        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Dashboard</a>
-        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Security</a>
-        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Compliance</a>
-        <a class="text-on-surface-variant font-medium hover:text-primary transition-colors font-body-md text-body-md" href="#">Pricing</a>
-    </nav>
-    <div class="flex items-center gap-4">
-        <a href="/oauth2/authorization/keycloak" class="bg-primary text-on-primary px-6 py-2 font-bold transition-all hover:bg-on-surface-variant active:scale-95 rounded-lg">Login</a>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════ -->
+<header id="top-nav" style="position: sticky; top: 0; z-index: 100; background: rgba(247,249,251,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid #c6c6cd;">
+    <div style="padding: 0 20px; height: 64px; display: flex; align-items: center; justify-content: space-between;">
+        <!-- Logo -->
+        <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6jk4OLMZNS953YrMyMhi72nyDIalN9UE9PrdKl9XryZK_U20-ObKjA1e9IHYeLSTT0jp9bq9V_2GeMKzlpbEC8eoMCw_5CgZKj5-LEQnf4h4KKCMav_h2kIgNOv9ybwn933F4L9_MTsdAa0-AyAsgfDcMczpsRsxlKxh2UDsqztORuSCgLAYBZEA3sLefsfgQw_Z_xGFMsnf5CUbTKZwB0a0pFLn7RKteWM01py_zbZfFqTHQnBKWlnMLGrZiOkTca2NJjlRNU4k"
+                 alt="AMS Logo" width="40" height="40" style="object-fit: contain;">
+            <div>
+                <div style="font-size: 16px; font-weight: 700; color: #191c1e; line-height: 1.2;">Accounting Management System</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #76777d; letter-spacing: 0.06em; text-transform: uppercase;">AMS</div>
+            </div>
+        </div>
+
+        <!-- Desktop nav -->
+        <nav class="desktop-nav" style="display: flex; align-items: center; gap: 36px;">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#modules" class="nav-link">Modules</a>
+            <a href="#how-it-works" class="nav-link">How it works</a>
+            <a href="#compliance" class="nav-link">Compliance</a>
+        </nav>
+
+        <!-- Login -->
+        <a href="/oauth2/authorization/keycloak" class="btn-primary" style="padding: 10px 24px; font-size: 13px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">lock</span>
+            Sign in
+        </a>
     </div>
 </header>
-<main>
-    <!-- Hero Section -->
-    <section class="relative min-h-[819px] flex flex-col justify-center items-center text-center px-margin-page py-20 bg-surface-container-lowest">
-        <div class="absolute inset-0 opacity-10 pointer-events-none hero-pattern"></div>
-        <div class="max-w-4xl z-10">
-            <span class="font-mono-label text-mono-label text-primary uppercase tracking-[0.2em] mb-6 block">Enterprise Grade Financial Control</span>
-            <h1 class="font-display-lg text-[56px] leading-[1.1] mb-8 text-on-surface">
-                The Standard in Enterprise <br><span class="text-secondary">Financial Integrity</span>
-            </h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-12">
-                Secure, immutable, and hyper-efficient accounting systems designed for the modern multinational enterprise. Maintain absolute clarity in every transaction.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            </div>
+
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<section class="grid-pattern" style="background-color: #f7f9fb; padding: 80px 20px 0; min-height: 92vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative;">
+    <div style="max-width: 1100px; width: 100%; z-index: 1;">
+        <div style="margin-bottom: 28px;">
+            <span class="hero-badge">
+                <span class="dot"></span>
+                Enterprise Financial Platform
+            </span>
         </div>
-        <!-- Abstract Visual -->
-        <div class="mt-20 w-full max-w-6xl mx-auto glass-card rounded-xl p-4 shadow-2xl overflow-hidden border border-outline-variant">
+
+        <h1 class="hero-title" style="margin: 0 0 24px; font-size: clamp(48px, 6vw, 80px);">
+            One system.<br>
+            Every account.<br>
+            <span class="accent">Total control.</span>
+        </h1>
+
+        <p style="font-size: 20px; font-weight: 400; color: #45464d; line-height: 1.65; max-width: 860px; margin: 0 auto 40px;">
+            AMS consolidates your General Ledger, Accounts Payable, Accounts Receivable, budgeting, tax, and reporting into a single governed platform — with immutable audit trails built in from day one.
+        </p>
+
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <a href="/oauth2/authorization/keycloak" class="btn-primary">
+                Sign in to your account
+                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+            </a>
+            <a href="#features" class="btn-secondary">
+                Explore features
+            </a>
         </div>
-    </section>
-    <!-- Features Grid -->
-    <section class="py-24 px-margin-page bg-surface-container-low">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-16">
-                <h2 class="font-headline-md text-headline-md text-on-surface mb-4">Precision Engineering for Finance</h2>
-                <div class="w-16 h-1 bg-secondary"></div>
+    </div>
+
+    <!-- Dashboard preview mockup -->
+    <div style="max-width: 1100px; width: 100%; margin: 60px auto 0; z-index: 1;" class="reveal">
+        <div class="dashboard-shell">
+            <!-- Title bar -->
+            <div class="dash-titlebar">
+                <div class="dash-dot" style="background:#e05252;"></div>
+                <div class="dash-dot" style="background:#e0b952;"></div>
+                <div class="dash-dot" style="background:#52bb70;"></div>
+                <div style="flex:1;"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#7c839b;">ams.finance / dashboard</span>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-                <!-- Feature 1 -->
-                <div class="bg-surface p-padding-card border border-outline-variant hover:border-secondary transition-all group">
-                    <div class="w-12 h-12 bg-primary-container text-primary-fixed flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+
+            <!-- App layout -->
+            <div style="display: flex; height: 340px;">
+                <!-- Sidebar -->
+                <div class="dash-sidebar">
+                    <div style="padding: 8px 16px 16px; font-family:'JetBrains Mono',monospace; font-size:9px; color:#4a5270; letter-spacing:0.1em; text-transform:uppercase; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom:8px;">General Ledger</div>
+                    <div class="dash-nav-item active">
+                        <span class="material-symbols-outlined" style="font-size:15px;">dashboard</span>
+                        Dashboard
                     </div>
-                    <h3 class="font-headline-sm text-headline-sm mb-4 text-on-surface">Immutable Audit Trails</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant mb-6">
-                        Every entry is cryptographically signed and stored in an immutable ledger, ensuring 100% compliance with global auditing standards.
-                    </p>
-                    <a class="text-secondary font-bold text-label-caps uppercase flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
-                        Learn more <span class="material-symbols-outlined text-sm">chevron_right</span>
-                    </a>
-                </div>
-                <!-- Feature 2 -->
-                <div class="bg-surface p-padding-card border border-outline-variant hover:border-secondary transition-all group">
-                    <div class="w-12 h-12 bg-primary-container text-primary-fixed flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                    <div class="dash-nav-item">
+                        <span class="material-symbols-outlined" style="font-size:15px;">receipt_long</span>
+                        Journals
                     </div>
-                    <h3 class="font-headline-sm text-headline-sm mb-4 text-on-surface">Automated Workflows</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant mb-6">
-                        Reduce manual error with AI-driven reconciliation and automated ledger balancing that operates at the speed of your business.
-                    </p>
-                    <a class="text-secondary font-bold text-label-caps uppercase flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
-                        Learn more <span class="material-symbols-outlined text-sm">chevron_right</span>
-                    </a>
-                </div>
-                <!-- Feature 3 -->
-                <div class="bg-surface p-padding-card border border-outline-variant hover:border-secondary transition-all group">
-                    <div class="w-12 h-12 bg-primary-container text-primary-fixed flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                    <div class="dash-nav-item">
+                        <span class="material-symbols-outlined" style="font-size:15px;">account_balance</span>
+                        Accounts
                     </div>
-                    <h3 class="font-headline-sm text-headline-sm mb-4 text-on-surface">Role-Based Governance</h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant mb-6">
-                        Granular permission sets and multi-sig approval processes designed to prevent fraud and maintain strict corporate oversight.
-                    </p>
-                    <a class="text-secondary font-bold text-label-caps uppercase flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
-                        Learn more <span class="material-symbols-outlined text-sm">chevron_right</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Testimonial Section -->
-    <section class="py-24 px-margin-page bg-surface-container-lowest">
-        <div class="max-w-5xl mx-auto">
-            <div class="bg-primary-container p-12 relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 opacity-10">
-                    <span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">format_quote</span>
-                </div>
-                <div class="relative z-10">
-                    <div class="flex gap-1 mb-8">
-                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
-                        <span class="material-symbols-outlined text-secondary-fixed" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <div style="padding: 12px 16px 6px; font-family:'JetBrains Mono',monospace; font-size:9px; color:#4a5270; letter-spacing:0.1em; text-transform:uppercase; border-top: 1px solid rgba(255,255,255,0.06); margin-top:8px;">Payables</div>
+                    <div class="dash-nav-item">
+                        <span class="material-symbols-outlined" style="font-size:15px;">assignment</span>
+                        Invoices
                     </div>
-                    <blockquote class="font-headline-md text-headline-md text-on-secondary mb-8 leading-relaxed">
-                        "AMS has completely transformed our approach to multi-entity consolidation. The level of transparency and the speed of our month-end close has seen a 40% efficiency gain since implementation. It is, quite simply, the only choice for serious financial leadership."
-                    </blockquote>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary">
-                            <img alt="Jonathan Sterling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA39agjJML7zQMaAztejSVdnHML6dRHC5hvs69W-XUQTIvBtDjZ7mA2HxsE70D3j5b4h2oECGLPK7R8Rna-MgTSsHNia7W8B-IOxeui6ZDLo09_mUPNjHla0AhGv8-EnxrY8uPo6UP1uB9W9lRRg37ZDTwEnQNgnkm-DiyGqaeSvJ0YIV9cnG_CNZHmuh3QcPWi7SQu0cJZ170NVeBwjh7YnyhFbXce7PgmTDk5JgeLMUxhTOIZteLVFcaZx0gcAzZLCTOFsBt6AbA">
-                        </div>
+                    <div class="dash-nav-item">
+                        <span class="material-symbols-outlined" style="font-size:15px;">payments</span>
+                        Payments
+                    </div>
+                    <div style="padding: 12px 16px 6px; font-family:'JetBrains Mono',monospace; font-size:9px; color:#4a5270; letter-spacing:0.1em; text-transform:uppercase; border-top: 1px solid rgba(255,255,255,0.06); margin-top:8px;">Reports</div>
+                    <div class="dash-nav-item">
+                        <span class="material-symbols-outlined" style="font-size:15px;">bar_chart</span>
+                        Analytics
+                    </div>
+                </div>
+
+                <!-- Main content -->
+                <div class="dash-main">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
                         <div>
-                            <p class="text-on-secondary font-bold font-body-lg text-body-lg">Jonathan Sterling</p>
-                            <p class="text-on-primary-container font-mono-label text-mono-label uppercase tracking-widest">Chief Financial Officer, Global Capital Partners</p>
+                            <div style="font-size:13px; font-weight:700; color:#191c1e;">Financial Overview</div>
+                            <div style="font-size:10px; color:#76777d; font-family:'JetBrains Mono',monospace;">Period: June 2026 · FY2026-Q2</div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <div style="background:#131b2e; color:#adc6ff; font-size:10px; font-weight:600; padding:5px 10px; border-radius:3px;">Export</div>
+                            <div style="background:#0058be; color:#fff; font-size:10px; font-weight:600; padding:5px 10px; border-radius:3px;">New Journal</div>
+                        </div>
+                    </div>
+
+                    <!-- KPI strip -->
+                    <div class="dash-kpi-grid">
+                        <div class="dash-kpi">
+                            <div class="dash-kpi-label">Total Revenue</div>
+                            <div class="dash-kpi-value">₦84.2M</div>
+                            <div class="dash-kpi-delta">▲ 12.4% vs last period</div>
+                        </div>
+                        <div class="dash-kpi">
+                            <div class="dash-kpi-label">Total Expenses</div>
+                            <div class="dash-kpi-value">₦51.7M</div>
+                            <div class="dash-kpi-delta neg">▼ 3.1% vs last period</div>
+                        </div>
+                        <div class="dash-kpi">
+                            <div class="dash-kpi-label">Net Profit</div>
+                            <div class="dash-kpi-value">₦32.5M</div>
+                            <div class="dash-kpi-delta">▲ 18.6% vs last period</div>
+                        </div>
+                        <div class="dash-kpi">
+                            <div class="dash-kpi-label">AP Outstanding</div>
+                            <div class="dash-kpi-value">₦9.3M</div>
+                            <div class="dash-kpi-delta">14 invoices pending</div>
+                        </div>
+                    </div>
+
+                    <!-- Chart & table row -->
+                    <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:12px;">
+                        <div class="dash-chart-area">
+                            <div class="dash-chart-label">Revenue vs Expenses — Monthly</div>
+                            <div class="bar-chart">
+                                <div class="bar" style="height:55%;background:#0058be;opacity:0.8;"></div>
+                                <div class="bar" style="height:40%;background:#bec6e0;opacity:0.8;"></div>
+                                <div class="bar" style="height:65%;background:#0058be;opacity:0.8;"></div>
+                                <div class="bar" style="height:45%;background:#bec6e0;opacity:0.8;"></div>
+                                <div class="bar" style="height:72%;background:#0058be;opacity:0.8;"></div>
+                                <div class="bar" style="height:50%;background:#bec6e0;opacity:0.8;"></div>
+                                <div class="bar" style="height:88%;background:#0058be;"></div>
+                                <div class="bar" style="height:62%;background:#bec6e0;"></div>
+                            </div>
+                            <div style="display:flex; gap:12px; margin-top:8px;">
+                                <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:#76777d;"><div style="width:8px;height:8px;background:#0058be;border-radius:1px;"></div>Revenue</div>
+                                <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:#76777d;"><div style="width:8px;height:8px;background:#bec6e0;border-radius:1px;"></div>Expenses</div>
+                            </div>
+                        </div>
+                        <div class="dash-chart-area">
+                            <div class="dash-chart-label">Recent Journal Entries</div>
+                            <div class="dash-table-row">
+                                <div style="flex:1;">JE-2024-0891</div>
+                                <span class="status-badge status-posted">Posted</span>
+                            </div>
+                            <div class="dash-table-row">
+                                <div style="flex:1;">JE-2024-0892</div>
+                                <span class="status-badge status-pending">Pending</span>
+                            </div>
+                            <div class="dash-table-row">
+                                <div style="flex:1;">JE-2024-0893</div>
+                                <span class="status-badge status-review">In Review</span>
+                            </div>
+                            <div class="dash-table-row" style="border-bottom:none;">
+                                <div style="flex:1;">JE-2024-0894</div>
+                                <span class="status-badge status-posted">Posted</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- Stats Section -->
-    <section class="py-16 bg-surface border-y border-outline-variant">
-        <div class="max-w-7xl mx-auto px-margin-page grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="text-center">
-                <p class="font-display-lg text-display-lg text-primary mb-2">$42B+</p>
-                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Assets Audited</p>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     STATS STRIP
+═══════════════════════════════════════════ -->
+<section style="background: #fff; border-top: 1px solid #e0e3e5; border-bottom: 1px solid #e0e3e5; padding: 40px 20px;">
+    <div style="max-width: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-around; gap: 24px; flex-wrap: wrap;">
+        <div style="text-align:center;">
+            <div style="font-size: 36px; font-weight: 800; letter-spacing: -0.03em; color: #191c1e;">35+</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size: 10px; text-transform:uppercase; letter-spacing:0.08em; color:#76777d; margin-top:4px;">Functional modules</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div style="text-align:center;">
+            <div style="font-size: 36px; font-weight: 800; letter-spacing: -0.03em; color: #191c1e;">99.9%</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size: 10px; text-transform:uppercase; letter-spacing:0.08em; color:#76777d; margin-top:4px;">Target SLA uptime</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div style="text-align:center;">
+            <div style="font-size: 36px; font-weight: 800; letter-spacing: -0.03em; color: #191c1e;">IFRS</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size: 10px; text-transform:uppercase; letter-spacing:0.08em; color:#76777d; margin-top:4px;">& GAAP ready</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div style="text-align:center;">
+            <div style="font-size: 36px; font-weight: 800; letter-spacing: -0.03em; color: #191c1e;">&lt; 2s</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size: 10px; text-transform:uppercase; letter-spacing:0.08em; color:#76777d; margin-top:4px;">Transaction latency</div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FEATURES
+═══════════════════════════════════════════ -->
+<section id="features" style="padding: 96px 32px; background: #f7f9fb;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="margin-bottom: 56px;" class="reveal">
+            <span class="section-label">Core capabilities</span>
+            <h2 class="section-title">Built for financial<br>governance at scale</h2>
+            <p style="font-size: 17px; color: #45464d; line-height: 1.6; max-width: 520px; margin-top: 16px;">
+                Every feature maps to a real control requirement — not a checklist, but the way your finance team actually works.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+
+            <!-- Feature 1 -->
+            <div class="module-card reveal">
+                <div class="module-icon">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">gavel</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Immutable Audit Trails</h3>
+                <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0 0 16px;">
+                    Every create, update, approve, and delete action is permanently logged with user identity, timestamp, and before/after values. Audit logs cannot be modified or deleted — ever.
+                </p>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#0058be; letter-spacing:0.06em; text-transform:uppercase;">US-003 · US-004</div>
             </div>
-            <div class="text-center">
-                <p class="font-display-lg text-display-lg text-primary mb-2">99.99%</p>
-                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Uptime SLA</p>
+
+            <!-- Feature 2 -->
+            <div class="module-card reveal">
+                <div class="module-icon">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">admin_panel_settings</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Role-Based Access Control</h3>
+                <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0 0 16px;">
+                    Granular permissions at module level — create, read, update, delete, approve. Segregation of duties enforced automatically. Nine user roles including Finance Admin, CFO, Auditor, Vendor, and Customer.
+                </p>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#0058be; letter-spacing:0.06em; text-transform:uppercase;">US-001 · US-002</div>
             </div>
-            <div class="text-center">
-                <p class="font-display-lg text-display-lg text-primary mb-2">120+</p>
-                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Countries Supported</p>
+
+            <!-- Feature 3 -->
+            <div class="module-card reveal">
+                <div class="module-icon">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">domain</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Multi-Company & Multi-Branch</h3>
+                <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0 0 16px;">
+                    Run multiple legal entities and branches in one instance. Full data isolation between companies in all reports. Consolidated financial statements generated across entities.
+                </p>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#0058be; letter-spacing:0.06em; text-transform:uppercase;">US-002 · US-019</div>
             </div>
-            <div class="text-center">
-                <p class="font-display-lg text-display-lg text-primary mb-2">Zero</p>
-                <p class="font-label-caps text-label-caps text-on-surface-variant uppercase">Integrity Failures</p>
+
+            <!-- Feature 4 -->
+            <div class="module-card reveal">
+                <div class="module-icon">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">schema</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Configurable Approval Workflows</h3>
+                <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0 0 16px;">
+                    Multi-step, role-based approval chains for journals, invoices, expenses, and payments. Time-bound delegation, escalation rules, and full decision audit trail included.
+                </p>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#0058be; letter-spacing:0.06em; text-transform:uppercase;">US-011 · US-024 · US-005</div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="module-card reveal">
+                <div class="module-icon">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">insights</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Financial Reports & Dashboards</h3>
+                <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0 0 16px;">
+                    Income statement, balance sheet, cash flow, trial balance, and GL detail — all drill-down capable. Custom report templates, KPI dashboards, and comparative period analysis.
+                </p>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#0058be; letter-spacing:0.06em; text-transform:uppercase;">US-016 · US-017 · US-018</div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="module-card reveal">
+                <div class="module-icon">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1; font-size:22px;">api</span>
+                </div>
+                <h3 style="font-size: 17px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">API & File-Based Integration</h3>
+                <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0 0 16px;">
+                    Secure REST APIs for journals, invoices, payments, and master data. CSV file import/export with configurable templates. Bank statement import in CSV, OFX, and via API.
+                </p>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#0058be; letter-spacing:0.06em; text-transform:uppercase;">US-006 · US-035</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     MODULES OVERVIEW
+═══════════════════════════════════════════ -->
+<section id="modules" style="padding: 96px 32px; background: #131b2e;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="margin-bottom: 56px;" class="reveal">
+            <span class="section-label" style="color: #adc6ff;">Full module coverage</span>
+            <h2 class="section-title" style="color: #fff;">Everything your finance<br>team needs, unified.</h2>
+            <p style="font-size: 17px; color: #7c839b; line-height: 1.6; max-width: 500px; margin-top: 16px;">
+                From the chart of accounts to tax compliance and vendor portals — all modules governed by the same access controls and audit system.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden;" class="reveal">
+
+            <!-- Module items -->
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">account_tree</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">General Ledger</div>
+                <div style="font-size:11px; color:#4a5270;">COA, journals, periods</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">assignment</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Accounts Payable</div>
+                <div style="font-size:11px; color:#4a5270;">Vendors, invoices, payments</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">request_quote</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Accounts Receivable</div>
+                <div style="font-size:11px; color:#4a5270;">Customers, invoicing, collections</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">account_balance</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Cash & Bank</div>
+                <div style="font-size:11px; color:#4a5270;">Reconciliation, cashbook</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">business_center</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Fixed Assets</div>
+                <div style="font-size:11px; color:#4a5270;">Register, depreciation, disposal</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">receipt</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Expense Management</div>
+                <div style="font-size:11px; color:#4a5270;">Submission, policy, approvals</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">trending_up</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Budgeting & Forecast</div>
+                <div style="font-size:11px; color:#4a5270;">Variance, scenarios, alerts</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">calculate</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Tax Management</div>
+                <div style="font-size:11px; color:#4a5270;">VAT/GST, WHT, filing</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">bar_chart</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Reporting & Analytics</div>
+                <div style="font-size:11px; color:#4a5270;">P&L, balance sheet, KPIs</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04); border-bottom:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">folder_open</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Document Management</div>
+                <div style="font-size:11px; color:#4a5270;">Upload, version control, OCR</div>
+            </div>
+            <div style="background:#0d1424; padding:20px; border-right:1px solid rgba(255,255,255,0.04);">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#0058be; display:block; margin-bottom:8px;">hub</span>
+                <div style="font-size:13px; font-weight:600; color:#e0e3e5; margin-bottom:4px;">Webhooks & Portals</div>
+                <div style="font-size:11px; color:#4a5270;">Vendor & customer portals</div>
+            </div>
+            <div style="background:#0d1424; padding:20px;">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#4a5270; display:block; margin-bottom:8px;">more_horiz</span>
+                <div style="font-size:13px; font-weight:600; color:#4a5270; margin-bottom:4px;">Optional Modules</div>
+                <div style="font-size:11px; color:#4a5270;">Payroll, OCR, analytics...</div>
             </div>
         </div>
-    </section>
-</main>
-<!-- Footer -->
-<footer class="bg-surface-container-lowest border-t border-outline-variant py-stack-md">
-    <div class="px-margin-page max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-        <div class="flex flex-col gap-2">
-            <p class="font-label-caps text-label-caps font-bold text-on-surface">ACCOUNTING MANAGEMENT SYSTEM</p>
-            <p class="font-body-md text-body-md text-on-surface-variant">© 2026 Accounting Management System. All rights reserved.</p>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     HOW IT WORKS
+═══════════════════════════════════════════ -->
+<section id="how-it-works" style="padding: 96px 32px; background: #fff;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        <div style="margin-bottom: 60px; text-align: center;" class="reveal">
+            <span class="section-label">How it works</span>
+            <h2 class="section-title">From setup to close,<br>every step is governed.</h2>
         </div>
-        <div class="flex flex-wrap gap-x-8 gap-y-4 justify-center">
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Privacy Policy</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Terms of Service</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">System Status</a>
-            <a class="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md" href="#">Security Architecture</a>
+
+        <div style="display: flex; flex-direction: column; gap: 0;" class="reveal">
+
+            <!-- Step 1 -->
+            <div style="display: flex; gap: 32px; padding: 36px 0; border-bottom: 1px solid #e0e3e5; align-items: flex-start;">
+                <div class="step-number">01</div>
+                <div style="flex: 1;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Configure your entities, COA, and roles</h3>
+                    <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0; max-width: 560px;">
+                        Set up your companies, branches, fiscal year, chart of accounts, and user roles. Assign granular permissions — down to individual modules and actions — before any transaction is created.
+                    </p>
+                </div>
+                <div style="flex-shrink:0; display:flex; gap:8px; flex-wrap:wrap; max-width:200px;">
+                    <span style="background:#eceef0; color:#45464d; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">Multi-company</span>
+                    <span style="background:#eceef0; color:#45464d; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">RBAC</span>
+                    <span style="background:#eceef0; color:#45464d; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">COA</span>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div style="display: flex; gap: 32px; padding: 36px 0; border-bottom: 1px solid #e0e3e5; align-items: flex-start;">
+                <div class="step-number">02</div>
+                <div style="flex: 1;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Record and approve financial transactions</h3>
+                    <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0; max-width: 560px;">
+                        Create manual journals, capture vendor invoices, issue customer invoices, record payments, and manage expenses — all routed through configurable approval workflows before posting.
+                    </p>
+                </div>
+                <div style="flex-shrink:0; display:flex; gap:8px; flex-wrap:wrap; max-width:200px;">
+                    <span style="background:#e8f0fe; color:#004395; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">Journals</span>
+                    <span style="background:#e8f0fe; color:#004395; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">AP / AR</span>
+                    <span style="background:#e8f0fe; color:#004395; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">Workflows</span>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div style="display: flex; gap: 32px; padding: 36px 0; border-bottom: 1px solid #e0e3e5; align-items: flex-start;">
+                <div class="step-number">03</div>
+                <div style="flex: 1;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Close periods and run reconciliations</h3>
+                    <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0; max-width: 560px;">
+                        Lock accounting periods to prevent backdating. Reconcile bank statements automatically. Generate the trial balance and validate debits equal credits before any report is produced.
+                    </p>
+                </div>
+                <div style="flex-shrink:0; display:flex; gap:8px; flex-wrap:wrap; max-width:200px;">
+                    <span style="background:#e3f2ea; color:#1b6b2f; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">Period lock</span>
+                    <span style="background:#e3f2ea; color:#1b6b2f; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">Bank recon</span>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div style="display: flex; gap: 32px; padding: 36px 0; align-items: flex-start;">
+                <div class="step-number">04</div>
+                <div style="flex: 1;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: #191c1e; margin: 0 0 10px;">Report, audit, and stay compliant</h3>
+                    <p style="font-size: 14px; color: #45464d; line-height: 1.65; margin: 0; max-width: 560px;">
+                        Generate IFRS/GAAP-aligned P&L, balance sheet, and cash flow reports. Export data for external auditors. Every action in the system — from login to ledger post — is in the immutable log.
+                    </p>
+                </div>
+                <div style="flex-shrink:0; display:flex; gap:8px; flex-wrap:wrap; max-width:200px;">
+                    <span style="background:#131b2e; color:#adc6ff; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">IFRS / GAAP</span>
+                    <span style="background:#131b2e; color:#adc6ff; font-size:10px; font-weight:600; padding:3px 8px; border-radius:2px; font-family:'JetBrains Mono',monospace;">Audit trail</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     USER ROLES
+═══════════════════════════════════════════ -->
+<section style="padding: 96px 32px; background: #f2f4f6;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="margin-bottom: 48px;" class="reveal">
+            <span class="section-label">Designed for your team</span>
+            <h2 class="section-title">Every role, exactly<br>what they need.</h2>
+        </div>
+
+        <div class="roles-scroll reveal" style="display: flex; gap: 12px; padding-bottom: 8px;">
+
+            <div style="flex-shrink:0; width:200px; background:#fff; border:1px solid #e0e3e5; border-radius:6px; padding:20px;">
+                <div style="width:36px;height:36px;background:#131b2e;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:#adc6ff;font-variation-settings:'FILL' 1;">manage_accounts</span>
+                </div>
+                <div style="font-size:13px;font-weight:700;color:#191c1e;margin-bottom:6px;">Finance Admin</div>
+                <div style="font-size:12px;color:#45464d;line-height:1.5;">Configures system, COA, master data, and manages finance operations.</div>
+            </div>
+
+            <div style="flex-shrink:0; width:200px; background:#fff; border:1px solid #e0e3e5; border-radius:6px; padding:20px;">
+                <div style="width:36px;height:36px;background:#131b2e;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:#adc6ff;font-variation-settings:'FILL' 1;">edit_note</span>
+                </div>
+                <div style="font-size:13px;font-weight:700;color:#191c1e;margin-bottom:6px;">Accountant</div>
+                <div style="font-size:12px;color:#45464d;line-height:1.5;">Records daily transactions, journal entries, and reconciliations.</div>
+            </div>
+
+            <div style="flex-shrink:0; width:200px; background:#fff; border:1px solid #e0e3e5; border-radius:6px; padding:20px;">
+                <div style="width:36px;height:36px;background:#131b2e;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:#adc6ff;font-variation-settings:'FILL' 1;">trending_up</span>
+                </div>
+                <div style="font-size:13px;font-weight:700;color:#191c1e;margin-bottom:6px;">CFO / Finance Manager</div>
+                <div style="font-size:12px;color:#45464d;line-height:1.5;">Approves high-value transactions, reviews dashboards and reports.</div>
+            </div>
+
+            <div style="flex-shrink:0; width:200px; background:#fff; border:1px solid #e0e3e5; border-radius:6px; padding:20px;">
+                <div style="width:36px;height:36px;background:#131b2e;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:#adc6ff;font-variation-settings:'FILL' 1;">verified</span>
+                </div>
+                <div style="font-size:13px;font-weight:700;color:#191c1e;margin-bottom:6px;">Auditor</div>
+                <div style="font-size:12px;color:#45464d;line-height:1.5;">Read-only access to transactions, audit logs, and compliance reports.</div>
+            </div>
+
+            <div style="flex-shrink:0; width:200px; background:#fff; border:1px solid #e0e3e5; border-radius:6px; padding:20px;">
+                <div style="width:36px;height:36px;background:#131b2e;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:#adc6ff;font-variation-settings:'FILL' 1;">local_shipping</span>
+                </div>
+                <div style="font-size:13px;font-weight:700;color:#191c1e;margin-bottom:6px;">Vendor (Portal)</div>
+                <div style="font-size:12px;color:#45464d;line-height:1.5;">Submits invoices and views payment status via the vendor portal.</div>
+            </div>
+
+            <div style="flex-shrink:0; width:200px; background:#fff; border:1px solid #e0e3e5; border-radius:6px; padding:20px;">
+                <div style="width:36px;height:36px;background:#131b2e;border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;color:#adc6ff;font-variation-settings:'FILL' 1;">person</span>
+                </div>
+                <div style="font-size:13px;font-weight:700;color:#191c1e;margin-bottom:6px;">Customer (Portal)</div>
+                <div style="font-size:12px;color:#45464d;line-height:1.5;">Views invoices and makes payments via the customer portal.</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     COMPLIANCE
+═══════════════════════════════════════════ -->
+<section id="compliance" style="padding: 80px 32px; background: #fff; border-top: 1px solid #e0e3e5;">
+    <div style="max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 48px;" class="reveal">
+        <div style="flex: 1; min-width: 280px;">
+            <span class="section-label">Compliance & security</span>
+            <h2 class="section-title" style="font-size: clamp(24px, 3vw, 36px);">Standards you can present to your auditors.</h2>
+            <p style="font-size: 15px; color: #45464d; line-height: 1.65; margin-top: 16px; max-width: 420px;">
+                AMS is built to satisfy internal and external audit requirements from the first transaction. No post-hoc compliance layer — governance is structural.
+            </p>
+        </div>
+        <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 12px;">
+            <div class="compliance-pill">
+                <span class="material-symbols-outlined check" style="font-size:18px;font-variation-settings:'FILL' 1;">check_circle</span>
+                IFRS-aligned financial reporting
+            </div>
+            <div class="compliance-pill">
+                <span class="material-symbols-outlined check" style="font-size:18px;font-variation-settings:'FILL' 1;">check_circle</span>
+                GAAP-compliant accounting rules
+            </div>
+            <div class="compliance-pill">
+                <span class="material-symbols-outlined check" style="font-size:18px;font-variation-settings:'FILL' 1;">check_circle</span>
+                Immutable, tamper-proof audit log
+            </div>
+            <div class="compliance-pill">
+                <span class="material-symbols-outlined check" style="font-size:18px;font-variation-settings:'FILL' 1;">check_circle</span>
+                Data encrypted at rest and in transit
+            </div>
+            <div class="compliance-pill">
+                <span class="material-symbols-outlined check" style="font-size:18px;font-variation-settings:'FILL' 1;">check_circle</span>
+                Segregation of duties enforced at system level
+            </div>
+            <div class="compliance-pill">
+                <span class="material-symbols-outlined check" style="font-size:18px;font-variation-settings:'FILL' 1;">check_circle</span>
+                SSO + 2FA supported
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     CTA
+═══════════════════════════════════════════ -->
+<section class="cta-section" style="padding: 100px 32px;">
+    <div style="max-width: 700px; margin: 0 auto; text-align: center; position: relative; z-index: 1;" class="reveal">
+        <span class="section-label" style="color: #adc6ff;">Ready to get started</span>
+        <h2 style="font-size: clamp(32px, 4vw, 52px); font-weight: 800; letter-spacing: -0.03em; color: #fff; line-height: 1.1; margin: 0 0 20px;">
+            Your finance data.<br>Finally in one place.
+        </h2>
+        <p style="font-size: 17px; color: #7c839b; line-height: 1.65; margin: 0 auto 40px; max-width: 480px;">
+            Sign in with your organization credentials to access the platform. Contact your Finance Admin if you need access.
+        </p>
+        <a href="/oauth2/authorization/keycloak" class="btn-primary" style="font-size: 15px; padding: 15px 36px; background: #0058be;">
+            <span class="material-symbols-outlined" style="font-size:20px;">lock_open</span>
+            Sign in to AMS
+            <span class="material-symbols-outlined" style="font-size:20px;">arrow_forward</span>
+        </a>
+    </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer style="background: #0d1424; padding: 48px 32px 32px; border-top: 1px solid rgba(255,255,255,0.06);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <!-- Top row -->
+        <div style="display: flex; flex-wrap: wrap; gap: 48px; padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+            <!-- Brand -->
+            <div style="flex: 1; min-width: 220px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6jk4OLMZNS953YrMyMhi72nyDIalN9UE9PrdKl9XryZK_U20-ObKjA1e9IHYeLSTT0jp9bq9V_2GeMKzlpbEC8eoMCw_5CgZKj5-LEQnf4h4KKCMav_h2kIgNOv9ybwn933F4L9_MTsdAa0-AyAsgfDcMczpsRsxlKxh2UDsqztORuSCgLAYBZEA3sLefsfgQw_Z_xGFMsnf5CUbTKZwB0a0pFLn7RKteWM01py_zbZfFqTHQnBKWlnMLGrZiOkTca2NJjlRNU4k"
+                         alt="AMS Logo" width="32" height="32" style="object-fit:contain;opacity:0.8;">
+                    <span style="font-size:13px; font-weight:700; color:#e0e3e5;">Accounting Management System</span>
+                </div>
+                <p style="font-size:13px; color:#4a5270; line-height:1.6; max-width:260px;">
+                    Enterprise-grade financial governance. Every transaction. Every entity. Every audit.
+                </p>
+            </div>
+            <!-- Links -->
+            <div style="flex-shrink:0;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#4a5270; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Platform</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <a href="#features" class="footer-link">Features</a>
+                    <a href="#modules" class="footer-link">Modules</a>
+                    <a href="#how-it-works" class="footer-link">How it works</a>
+                    <a href="#compliance" class="footer-link">Compliance</a>
+                </div>
+            </div>
+            <div style="flex-shrink:0;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#4a5270; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">Legal</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="#" class="footer-link">Data Processing</a>
+                </div>
+            </div>
+            <div style="flex-shrink:0;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#4a5270; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">System</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <a href="#" class="footer-link">System Status</a>
+                    <a href="#" class="footer-link">Security</a>
+                    <a href="#" class="footer-link">API Docs</a>
+                </div>
+            </div>
+        </div>
+        <!-- Bottom row -->
+        <div style="padding-top: 24px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#4a5270; margin:0;">
+                © 2026 Accounting Management System · All rights reserved
+            </p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#4a5270; margin:0;">
+                CONFIDENTIAL · Document v1.0
+            </p>
         </div>
     </div>
 </footer>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('button').forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                button.style.transform = 'translateY(-1px)';
-            });
-            button.addEventListener('mouseleave', () => {
-                button.style.transform = 'translateY(0)';
-            });
-        });
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const targetId = this.getAttribute('href');
-                if(targetId === '#') return;
-                e.preventDefault();
-                document.querySelector(targetId).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
+
+<script>
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            e.preventDefault();
+            const target = document.querySelector(targetId);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
+    });
+
+    // Scroll reveal
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Nav scroll tint
+    const nav = document.getElementById('top-nav');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+            nav.style.boxShadow = '0 1px 12px rgba(0,0,0,0.08)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
     });
 </script>
 </body>

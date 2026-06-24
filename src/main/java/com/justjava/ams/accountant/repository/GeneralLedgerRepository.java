@@ -13,8 +13,10 @@ import java.util.List;
 @Repository
 public interface GeneralLedgerRepository extends JpaRepository<GeneralLedger, Long> {
     List<GeneralLedger> findByAccountIdOrderByTransactionDateDesc(Long accountId);
+    List<GeneralLedger> findByJournalNumber(String journalNumber);
     List<GeneralLedger> findByJournalNumberAndStatus(String journalNumber, GeneralLedger.TransactionStatus status);
     List<GeneralLedger> findByTransactionDateBetween(LocalDate startDate, LocalDate endDate);
+    boolean existsByAccountIdAndStatus(Long accountId, GeneralLedger.TransactionStatus status);
 
     // Bank reconciliation queries
     @Query("SELECT gl FROM GeneralLedger gl WHERE gl.transactionDate = :txDate AND gl.amount = :amount")

@@ -103,6 +103,8 @@
             display: inline-block;
             vertical-align: middle;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
     </style>
 </head>
 <body class="text-on-background font-body-md overflow-hidden bg-background">
@@ -112,6 +114,7 @@
 
     <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
 
+        <!-- Top Navigation Bar -->
         <header class="bg-surface dark:bg-surface-container-low w-full h-16 border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-outer-padding z-50 shrink-0">
             <div class="flex items-center gap-4">
                 <span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Chart of Accounts</span>
@@ -124,24 +127,48 @@
                     <span class="material-symbols-outlined text-on-surface-variant">settings</span>
                 </button>
                 <div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
-                    <img class="w-full h-full object-cover" data-alt="A professional headshot of a financial executive in a minimalist studio setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc">
+                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc" alt="User avatar">
                 </div>
             </div>
         </header>
 
+        <!-- Page-level alert panel -->
+        <div id="pageAlert" class="hidden mx-outer-padding mt-4 shrink-0">
+            <div id="pageAlertInner" class="flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold">
+                <span id="pageAlertIcon" class="material-symbols-outlined text-[18px] mt-0.5"></span>
+                <span id="pageAlertMsg"></span>
+            </div>
+        </div>
+
         <main class="flex-1 overflow-y-auto p-outer-padding">
+
+            <!-- Organization selector row -->
+            <div class="mb-gutter flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <label class="font-body-sm font-semibold text-on-surface shrink-0" for="orgSelector">Organization</label>
+                <div class="relative w-full sm:w-72">
+                    <select id="orgSelector" class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-2.5 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer">
+                        <option value="">Loading organizations...</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                </div>
+                <span id="orgSelectorHint" class="text-body-sm text-secondary italic hidden">
+                    Select an organization to load accounts
+                    <a href="/financeAdmin/organizationSetup" class="font-semibold underline">Create one</a>
+                </span>
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
 
+                <!-- Accounts Table -->
                 <section class="lg:col-span-2">
                     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm h-full flex flex-col">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                             <div>
                                 <h3 class="font-headline-sm text-headline-sm text-primary">General Ledger Accounts</h3>
-                                <p class="text-secondary font-body-sm uppercase tracking-wider mt-1">Corporate Framework & Account Classifications (US-008)</p>
+                                <p class="text-secondary font-body-sm uppercase tracking-wider mt-1">Account Classifications</p>
                             </div>
                             <div class="relative w-full sm:w-64">
-                                <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-2 pl-4 pr-10 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/50" placeholder="Search account..." type="search">
+                                <input id="searchInput" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-2 pl-4 pr-10 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/50" placeholder="Search code, name, type..." type="search">
                                 <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
                             </div>
                         </div>
@@ -153,411 +180,622 @@
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest">Code</th>
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest">Account Name</th>
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Type</th>
+                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Subtype</th>
+                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Normal Bal.</th>
+                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-right">Balance</th>
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Status</th>
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-right">Actions</th>
                                 </tr>
                                 </thead>
-                                <tbody class="divide-y divide-surface-container-high">
-                                <tr id="acc-1001" class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer"
-                                    data-code="1001" data-name="Cash" data-type="Asset" data-description="Cash on hand and demand deposits" data-active="true">
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">1001</td>
-                                    <td class="py-5 px-4 font-body-md font-bold text-primary">Cash</td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">
-                                            Asset
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button onclick="editAccount(1001); event.stopPropagation();" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="showConfirmModal('Delete this account? It cannot be recovered if used in transactions.', 1001); event.stopPropagation();" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="acc-1010" class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer"
-                                    data-code="1010" data-name="Bank" data-type="Asset" data-description="Bank account balances" data-active="true">
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">1010</td>
-                                    <td class="py-5 px-4 font-body-md font-bold text-primary">Bank</td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">
-                                            Asset
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button onclick="editAccount(1010); event.stopPropagation();" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="showConfirmModal('Delete this account? It cannot be recovered if used in transactions.', 1010); event.stopPropagation();" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="acc-2010" class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer"
-                                    data-code="2010" data-name="Accounts Payable" data-type="Liability" data-description="Short-term vendor payables" data-active="true">
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">2010</td>
-                                    <td class="py-5 px-4 font-body-md font-bold text-primary">Accounts Payable</td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tertiary-fixed text-on-tertiary-fixed-variant border border-outline-variant">
-                                            Liability
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button onclick="editAccount(2010); event.stopPropagation();" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="showConfirmModal('Delete this account? It cannot be recovered if used in transactions.', 2010); event.stopPropagation();" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="acc-4010" class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer"
-                                    data-code="4010" data-name="Sales Revenue" data-type="Income" data-description="Operating income from sales" data-active="true">
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">4010</td>
-                                    <td class="py-5 px-4 font-body-md font-bold text-primary">Sales Revenue</td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-fixed text-on-secondary-fixed-variant border border-outline-variant">
-                                            Income
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button onclick="editAccount(4010); event.stopPropagation();" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="showConfirmModal('Delete this account? It cannot be recovered if used in transactions.', 4010); event.stopPropagation();" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="acc-5010" class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer"
-                                    data-code="5010" data-name="Cost of Goods Sold" data-type="Expense" data-description="Direct costs of producing goods" data-active="true">
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">5010</td>
-                                    <td class="py-5 px-4 font-body-md font-bold text-primary">Cost of Goods Sold</td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-error-container text-on-error-container border border-outline-variant">
-                                            Expense
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-center">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 border border-green-200">
-                                            Active
-                                        </span>
-                                    </td>
-                                    <td class="py-5 px-4 text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <button onclick="editAccount(5010); event.stopPropagation();" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                            </button>
-                                            <button onclick="showConfirmModal('Delete this account? It cannot be recovered if used in transactions.', 5010); event.stopPropagation();" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <tbody id="accountsTableBody" class="divide-y divide-surface-container-high">
+                                <!-- Rows rendered dynamically -->
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="mt-8 pt-6 border-t border-surface-container-highest flex items-center justify-between">
-                            <p class="text-secondary font-body-sm">Showing 5 registered ledger definitions</p>
-                            <div class="flex gap-2">
-                                <button class="p-1.5 rounded-md border border-surface-container-highest hover:bg-surface-container-low disabled:opacity-50" disabled>
-                                    <span class="material-symbols-outlined">chevron_left</span>
-                                </button>
-                                <button class="p-1.5 rounded-md border border-surface-container-highest hover:bg-surface-container-low">
-                                    <span class="material-symbols-outlined">chevron_right</span>
-                                </button>
-                            </div>
+                            <p id="accountCountDisplay" class="text-secondary font-body-sm">Select an organization above</p>
                         </div>
                     </div>
                 </section>
 
+                <!-- Create / Edit Form -->
                 <aside class="lg:col-span-1">
                     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
-                        <div class="mb-8">
+                        <div class="mb-6">
                             <h3 id="formTitle" class="font-headline-sm text-headline-sm text-primary">Add New Account</h3>
                             <p class="text-secondary font-body-sm mt-1">Configure structural bookkeeping properties inside the parent enterprise ruleset.</p>
                         </div>
 
-                        <form class="space-y-6" id="accForm">
-                            <input type="hidden" id="formMode" name="mode" value="create">
-                            <input type="hidden" id="accountId" name="accountId" value="">
+                        <!-- Form inline error -->
+                        <div id="accFormError" class="hidden mb-4 flex items-start gap-2 px-3 py-2 rounded-lg bg-error-container border border-error text-on-error-container text-body-sm font-semibold">
+                            <span class="material-symbols-outlined text-[16px] mt-0.5">error</span>
+                            <span id="accFormErrorMsg"></span>
+                        </div>
 
+                        <form class="space-y-5" id="accForm">
+                            <input type="hidden" id="formMode" value="create">
+                            <input type="hidden" id="accountId" value="">
+
+                            <!-- Account Code (disabled in edit mode) -->
                             <div>
                                 <label class="block font-body-sm font-semibold text-on-surface mb-2" for="accountCode">
                                     Account Code <span class="text-error">*</span>
                                 </label>
-                                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40 font-label-md" id="accountCode" name="accountCode" placeholder="e.g. 1001" type="text" required>
+                                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40 font-label-md disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-container-low" id="accountCode" placeholder="e.g. 1001" type="text" required>
                             </div>
 
+                            <!-- Account Name -->
                             <div>
                                 <label class="block font-body-sm font-semibold text-on-surface mb-2" for="accountName">
                                     Account Name <span class="text-error">*</span>
                                 </label>
-                                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40" id="accountName" name="accountName" placeholder="e.g. Cash" type="text" required>
+                                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40" id="accountName" placeholder="e.g. Cash" type="text" required>
                             </div>
 
+                            <!-- Account Type -->
                             <div>
-                                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="accountType">Account Classification <span class="text-error">*</span></label>
+                                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="accountType">
+                                    Account Type <span class="text-error">*</span>
+                                </label>
                                 <div class="relative">
-                                    <select class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer" id="accountType" name="accountType" required>
-                                        <option disabled selected value="">Select Account Classification</option>
-                                        <option value="ASSET">Asset</option>
-                                        <option value="LIABILITY">Liability</option>
-                                        <option value="EQUITY">Equity</option>
-                                        <option value="INCOME">Income</option>
-                                        <option value="EXPENSE">Expense</option>
+                                    <select class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer" id="accountType" required>
+                                        <option disabled selected value="">Select type...</option>
+                                        <option value="ASSET">ASSET</option>
+                                        <option value="LIABILITY">LIABILITY</option>
+                                        <option value="EQUITY">EQUITY</option>
+                                        <option value="REVENUE">REVENUE</option>
+                                        <option value="EXPENSE">EXPENSE</option>
                                     </select>
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
                                 </div>
                             </div>
 
+                            <!-- Account Subtype -->
+                            <div>
+                                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="accountSubtype">
+                                    Account Subtype <span class="text-error">*</span>
+                                </label>
+                                <div class="relative">
+                                    <select class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer" id="accountSubtype" required>
+                                        <option disabled selected value="">Select subtype...</option>
+                                        <option value="CURRENT_ASSET">CURRENT_ASSET</option>
+                                        <option value="FIXED_ASSET">FIXED_ASSET</option>
+                                        <option value="CURRENT_LIABILITY">CURRENT_LIABILITY</option>
+                                        <option value="LONG_TERM_LIABILITY">LONG_TERM_LIABILITY</option>
+                                        <option value="RETAINED_EARNINGS">RETAINED_EARNINGS</option>
+                                        <option value="REVENUE">REVENUE</option>
+                                        <option value="COST_OF_GOODS_SOLD">COST_OF_GOODS_SOLD</option>
+                                        <option value="OPERATING_EXPENSE">OPERATING_EXPENSE</option>
+                                        <option value="OTHER_INCOME">OTHER_INCOME</option>
+                                        <option value="OTHER_EXPENSE">OTHER_EXPENSE</option>
+                                    </select>
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                                </div>
+                            </div>
+
+                            <!-- Normal Balance -->
+                            <div>
+                                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="normalBalance">
+                                    Normal Balance <span class="text-error">*</span>
+                                </label>
+                                <div class="relative">
+                                    <select class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer" id="normalBalance" required>
+                                        <option disabled selected value="">Select normal balance...</option>
+                                        <option value="DEBIT">DEBIT</option>
+                                        <option value="CREDIT">CREDIT</option>
+                                    </select>
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
                             <div>
                                 <label class="block font-body-sm font-semibold text-on-surface mb-2" for="description">Description</label>
-                                <textarea id="description" name="description" rows="3" class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40"></textarea>
+                                <textarea id="description" rows="2" class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40" placeholder="Optional description..."></textarea>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <label class="inline-flex items-center gap-3">
-                                    <input id="active" name="active" type="checkbox" checked class="accent-primary">
-                                    <span class="font-body-md">Active</span>
-                                </label>
+                            <!-- Active (edit mode only) -->
+                            <div id="activeRow" class="hidden flex items-center gap-3">
+                                <input type="checkbox" id="activeCheck" checked class="w-4 h-4 rounded border-surface-container-highest accent-primary cursor-pointer">
+                                <label for="activeCheck" class="font-body-sm font-semibold text-on-surface cursor-pointer">Active</label>
                             </div>
 
-                            <div class="flex items-center gap-3">
-                                <button id="submitBtn" type="submit" class="px-5 bg-surface-container text-on-background font-body-md font-semibold py-3.5 rounded-lg hover:bg-surface-container-high active:scale-[0.98] transition-all flex items-center justify-center">
-                                    <span class="material-symbols-outlined">account_tree</span>
-                                    &nbsp;Create Account
+                            <div class="flex items-center gap-3 pt-2">
+                                <button id="submitBtn" type="submit" class="flex-1 bg-primary text-on-primary font-body-md font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">account_tree</span>
+                                    Create Account
                                 </button>
-                                <button type="button" onclick="resetForm()" class="px-5 bg-transparent border border-surface-container-highest text-on-background font-body-md font-semibold py-3.5 rounded-lg hover:bg-surface-container-low active:scale-[0.98] transition-all">Reset</button>
+                                <button type="button" id="resetBtn" class="px-4 border border-surface-container-highest text-on-surface font-body-md font-semibold py-3 rounded-lg hover:bg-surface-container-low transition-colors">
+                                    Reset
+                                </button>
                             </div>
                         </form>
-
-                        <div id="accFormError" class="hidden mt-4 text-sm text-red-700"></div>
-                        <div id="accFormSuccess" class="hidden mt-4 text-sm text-green-700"></div>
                     </div>
                 </aside>
 
             </div>
-
-            <!-- Confirm modal -->
-            <div id="confirmModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding max-w-md w-full shadow-xl">
-                    <div class="flex items-start gap-4 mb-4">
-                        <div class="p-2 rounded-full bg-error-container text-on-error-container">
-                            <span class="material-symbols-outlined">dangerous</span>
-                        </div>
-                        <div>
-                            <h4 class="font-headline-sm">Confirm</h4>
-                            <p id="confirmMessage" class="text-secondary mt-1">Are you sure?</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-end gap-3">
-                        <button data-cancel class="px-4 py-2 rounded border border-surface-container-highest">Cancel</button>
-                        <button data-confirm class="px-4 py-2 rounded bg-error text-on-error">Delete</button>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-                const currentOrgId = 1; // TODO: replace with dynamic org selection
-                let currentDeleteAccountId = null;
-
-                document.addEventListener('DOMContentLoaded', () => {
-                    loadAccounts();
-                    setupModalHandlers();
-                    document.getElementById('accForm').addEventListener('submit', handleFormSubmit);
-                });
-
-                async function loadAccounts() {
-                    try {
-                        const res = await fetch(`/api/financeAdmin/chartOfAccounts/org/${currentOrgId}`);
-                        if (!res.ok) throw new Error('Failed to load');
-                        const result = await res.json();
-                        const accounts = result.data || [];
-                        const tbody = document.getElementById('accountsTableBody');
-                        if (!tbody) return;
-                        tbody.innerHTML = '';
-
-                        if (accounts.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="5" class="py-5 px-4 text-center text-secondary">No accounts found</td></tr>';
-                            return;
-                        }
-
-                        const typeColorMap = {
-                            'ASSET': 'bg-secondary-container text-on-secondary-container',
-                            'LIABILITY': 'bg-tertiary-fixed text-on-tertiary-fixed-variant',
-                            'EQUITY': 'bg-secondary-fixed text-on-secondary-fixed-variant',
-                            'INCOME': 'bg-secondary-fixed text-on-secondary-fixed-variant',
-                            'EXPENSE': 'bg-error-container text-on-error-container'
-                        };
-
-                        accounts.forEach(account => {
-                            const statusColor = account.active ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200';
-                            const statusText = account.active ? 'Active' : 'Inactive';
-                            const colorClass = typeColorMap[account.classification] || 'bg-secondary-container text-on-secondary-container';
-
-                            const tr = document.createElement('tr');
-                            tr.id = `acc-${account.id}`;
-                            tr.className = 'hover:bg-surface-container-low/50 transition-colors group cursor-pointer';
-                            tr.dataset.id = account.id;
-                            tr.dataset.code = account.code;
-                            tr.dataset.name = account.name;
-                            tr.dataset.type = account.classification;
-                            tr.dataset.description = account.description || '';
-                            tr.dataset.active = account.active;
-
-                            tr.innerHTML = `
-                                <td class="py-5 px-4 font-label-md text-on-secondary-container">${account.code}</td>
-                                <td class="py-5 px-4 font-body-md font-bold text-primary">${account.name}</td>
-                                <td class="py-5 px-4 text-center">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${colorClass} border border-outline-variant">${account.classification}</span>
-                                </td>
-                                <td class="py-5 px-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${statusColor} border">${statusText}</span></td>
-                                <td class="py-5 px-4 text-right">
-                                    <div class="flex justify-end gap-2">
-                                        <button onclick="editAccount(${account.id}); event.stopPropagation();" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-                                        <button onclick="confirmDelete(${account.id}); event.stopPropagation();" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
-                                    </div>
-                                </td>`;
-
-                            tbody.appendChild(tr);
-                        });
-                    } catch (err) {
-                        console.error('Failed to load accounts:', err);
-                        const tbody = document.getElementById('accountsTableBody');
-                        if (tbody) {
-                            tbody.innerHTML = '<tr><td colspan="5" class="py-5 px-4 text-center text-secondary">Unable to load accounts right now.</td></tr>';
-                        }
-                    }
-                }
-
-                function setupModalHandlers() {
-                    document.querySelectorAll('[data-cancel]').forEach(btn => btn.addEventListener('click', () => {
-                        document.getElementById('confirmModal').classList.add('hidden');
-                        currentDeleteAccountId = null;
-                    }));
-
-                    document.querySelectorAll('[data-confirm]').forEach(btn => btn.addEventListener('click', async () => {
-                        if (!currentDeleteAccountId) return;
-                        try {
-                            const res = await fetch(`/api/financeAdmin/chartOfAccounts/${currentDeleteAccountId}`, { method: 'DELETE' });
-                            if (res.ok) {
-                                document.getElementById('confirmModal').classList.add('hidden');
-                                await loadAccounts();
-                            } else {
-                                const data = await res.json();
-                                alert(data.message || 'Error deleting account');
-                            }
-                        } catch (err) {
-                            alert('Network error: ' + err.message);
-                        } finally {
-                            currentDeleteAccountId = null;
-                        }
-                    }));
-                }
-
-                function confirmDelete(accountId) {
-                    currentDeleteAccountId = accountId;
-                    document.getElementById('confirmMessage').textContent = 'Delete this account? It cannot be recovered if used in transactions.';
-                    document.getElementById('confirmModal').classList.remove('hidden');
-                }
-
-                async function handleFormSubmit(e) {
-                    e.preventDefault();
-                    const mode = document.getElementById('formMode').value;
-                    const accountId = document.getElementById('accountId').value;
-                    const accountCode = document.getElementById('accountCode').value.trim();
-                    const accountName = document.getElementById('accountName').value.trim();
-                    const accountType = document.getElementById('accountType').value;
-                    const description = document.getElementById('description').value.trim();
-                    const active = document.getElementById('active').checked;
-
-                    const errorDiv = document.getElementById('accFormError');
-                    const successDiv = document.getElementById('accFormSuccess');
-                    errorDiv.classList.add('hidden'); successDiv.classList.add('hidden');
-                    const btn = document.getElementById('submitBtn');
-                    btn.disabled = true; btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Processing...';
-
-                    try {
-                        const url = mode === 'create' ? `/api/financeAdmin/chartOfAccounts/org/${currentOrgId}` : `/api/financeAdmin/chartOfAccounts/${accountId}`;
-                        const method = mode === 'create' ? 'POST' : 'PUT';
-                        const body = { code: accountCode, name: accountName, classification: accountType, description: description, active: active };
-
-                        const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-                        const data = await res.json();
-                        if (res.ok) {
-                            successDiv.textContent = mode === 'create' ? 'Account created successfully!' : 'Account updated successfully!';
-                            successDiv.classList.remove('hidden');
-                            resetForm();
-                            await loadAccounts();
-                        } else {
-                            errorDiv.textContent = data.message || 'Error saving account';
-                            errorDiv.classList.remove('hidden');
-                        }
-                    } catch (err) {
-                        errorDiv.textContent = 'Network error: ' + err.message; errorDiv.classList.remove('hidden');
-                    } finally {
-                        btn.disabled = false; btn.innerHTML = '<span class="material-symbols-outlined">account_tree</span>&nbsp;Create Account';
-                    }
-                }
-
-                function editAccount(accountId) {
-                    document.getElementById('formMode').value = 'edit';
-                    document.getElementById('accountId').value = accountId;
-                    document.getElementById('formTitle').textContent = 'Edit Account';
-                    const row = document.getElementById(`acc-${accountId}`);
-                    if (!row) return;
-                    document.getElementById('accountCode').value = row.dataset.code;
-                    document.getElementById('accountCode').disabled = true;
-                    document.getElementById('accountName').value = row.dataset.name;
-                    document.getElementById('accountType').value = row.dataset.type;
-                    document.getElementById('description').value = row.dataset.description || '';
-                    document.getElementById('active').checked = row.dataset.active === 'true';
-                    document.getElementById('submitBtn').innerHTML = '<span class="material-symbols-outlined">save</span>&nbsp;Update Account';
-                    document.getElementById('accForm').scrollIntoView({ behavior: 'smooth' });
-                }
-
-                function resetForm() {
-                    document.getElementById('formMode').value = 'create';
-                    document.getElementById('accountId').value = '';
-                    document.getElementById('accForm').reset();
-                    document.getElementById('accountCode').disabled = false;
-                    document.getElementById('formTitle').textContent = 'Add New Account';
-                    document.getElementById('submitBtn').innerHTML = '<span class="material-symbols-outlined">account_tree</span>&nbsp;Create Account';
-                }
-            </script>
-
         </main>
     </div>
 </div>
+
+<!-- ===================== DEACTIVATE CONFIRM MODAL ===================== -->
+<div id="deactivateModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="deactivateOverlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-surface-container-lowest border border-surface-container-highest rounded-xl shadow-2xl w-full max-w-md z-10">
+        <div class="p-6">
+            <div class="flex items-start gap-4 mb-5">
+                <div class="p-2 rounded-full bg-error-container text-on-error-container shrink-0">
+                    <span class="material-symbols-outlined">block</span>
+                </div>
+                <div>
+                    <h4 class="font-headline-sm text-primary">Deactivate Account?</h4>
+                    <p class="text-secondary font-body-sm mt-1">This account will be marked as inactive and hidden from new journal entries. Existing transactions will not be affected.</p>
+                </div>
+            </div>
+
+            <!-- Modal error -->
+            <div id="deactivateModalError" class="hidden mb-4 flex items-start gap-2 px-3 py-2 rounded-lg bg-error-container border border-error text-on-error-container text-body-sm font-semibold">
+                <span class="material-symbols-outlined text-[16px] mt-0.5">error</span>
+                <span id="deactivateModalErrorMsg"></span>
+            </div>
+
+            <div class="flex gap-3">
+                <button id="cancelDeactivate" class="flex-1 border border-surface-container-highest text-on-surface font-body-md font-semibold py-3 rounded-lg hover:bg-surface-container-low transition-colors">
+                    Cancel
+                </button>
+                <button id="confirmDeactivate" class="flex-1 bg-error text-on-error font-body-md font-bold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">block</span>
+                    Deactivate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===================== SHARED API HELPER =====================
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+        });
+
+        let body = null;
+        const ct = response.headers.get('content-type') || '';
+        if (ct.includes('application/json') && response.status !== 204) {
+            try { body = await response.json(); } catch (_) { body = null; }
+        }
+
+        if (!response.ok) {
+            const fieldErrors = body?.fieldErrors
+                ? Object.values(body.fieldErrors).filter(Boolean).join(' ')
+                : '';
+            const msg = fieldErrors || body?.message || body?.error || `Request failed (${response.status})`;
+            throw new Error(msg);
+        }
+        return body;
+    }
+
+    // ===================== PAGE ALERT =====================
+    function showAlert(msg, type = 'error') {
+        const wrap = document.getElementById('pageAlert');
+        const inner = document.getElementById('pageAlertInner');
+        const icon = document.getElementById('pageAlertIcon');
+        const text = document.getElementById('pageAlertMsg');
+        text.textContent = msg;
+        if (type === 'success') {
+            inner.className = 'flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-secondary-container border-outline-variant text-on-secondary-container';
+            icon.textContent = 'check_circle';
+        } else {
+            inner.className = 'flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-error-container border-error text-on-error-container';
+            icon.textContent = 'error';
+        }
+        wrap.classList.remove('hidden');
+        setTimeout(() => wrap.classList.add('hidden'), 5000);
+    }
+
+    // ===================== HELPERS =====================
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.appendChild(document.createTextNode(str ?? ''));
+        return d.innerHTML;
+    }
+
+    function formatCurrency(value) {
+        const amount = Number(value ?? 0);
+        return new Intl.NumberFormat('en-NG', {
+            style: 'currency',
+            currency: 'NGN',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(Number.isFinite(amount) ? amount : 0);
+    }
+
+    function setFormDisabled(disabled) {
+        document.querySelectorAll('#accForm input, #accForm select, #accForm textarea, #accForm button')
+            .forEach(el => { el.disabled = disabled; });
+        document.getElementById('submitBtn').classList.toggle('opacity-60', disabled);
+        document.getElementById('submitBtn').classList.toggle('cursor-not-allowed', disabled);
+    }
+
+    // ===================== STATE =====================
+    let currentOrgId = null;
+    let allAccounts = [];
+    let pendingDeactivateId = null;
+    let isRequestActive = false;
+
+    // Type badge colour map (backend enum values)
+    const TYPE_COLOR = {
+        'ASSET':     'bg-secondary-container text-on-secondary-container border-outline-variant',
+        'LIABILITY': 'bg-tertiary-fixed text-on-tertiary-fixed-variant border-outline-variant',
+        'EQUITY':    'bg-secondary-fixed text-on-secondary-fixed-variant border-outline-variant',
+        'REVENUE':   'bg-secondary-fixed text-on-secondary-fixed-variant border-outline-variant',
+        'EXPENSE':   'bg-error-container text-on-error-container border-outline-variant',
+    };
+
+    // ===================== ORGANIZATION SELECTOR =====================
+    async function loadOrganizationSelector() {
+        const select = document.getElementById('orgSelector');
+        try {
+            const orgs = await apiJson('/api/organizations') || [];
+            select.innerHTML = '<option value="">-- Select Organization --</option>';
+            orgs.forEach(org => {
+                const opt = document.createElement('option');
+                opt.value = org.id;
+                opt.textContent = org.name;
+                select.appendChild(opt);
+            });
+
+            // Restore from session
+            const stored = sessionStorage.getItem('ams.selectedOrganizationId');
+            if (stored && orgs.find(o => String(o.id) === stored)) {
+                select.value = stored;
+                currentOrgId = parseInt(stored);
+                document.getElementById('orgSelectorHint').classList.add('hidden');
+                setFormDisabled(false);
+                await loadAccounts();
+            } else if (orgs.length > 0) {
+                select.value = orgs[0].id;
+                currentOrgId = orgs[0].id;
+                sessionStorage.setItem('ams.selectedOrganizationId', currentOrgId);
+                document.getElementById('orgSelectorHint').classList.add('hidden');
+                setFormDisabled(false);
+                await loadAccounts();
+            } else {
+                select.innerHTML = '<option value="">No organizations found</option>';
+                currentOrgId = null;
+                allAccounts = [];
+                sessionStorage.removeItem('ams.selectedOrganizationId');
+                resetForm();
+                setFormDisabled(true);
+                document.getElementById('orgSelectorHint').classList.remove('hidden');
+                setTableEmptyState('Create an organization in Organization Setup first.');
+            }
+        } catch (err) {
+            select.innerHTML = '<option value="">Failed to load organizations</option>';
+            setFormDisabled(true);
+            document.getElementById('orgSelectorHint').classList.remove('hidden');
+            showAlert('Could not load organizations: ' + err.message);
+        }
+    }
+
+    document.getElementById('orgSelector').addEventListener('change', async function () {
+        currentOrgId = this.value ? parseInt(this.value) : null;
+        if (currentOrgId) {
+            sessionStorage.setItem('ams.selectedOrganizationId', currentOrgId);
+            resetForm();
+            setFormDisabled(false);
+            document.getElementById('orgSelectorHint').classList.add('hidden');
+            await loadAccounts();
+        } else {
+            allAccounts = [];
+            document.getElementById('searchInput').value = '';
+            resetForm();
+            setFormDisabled(true);
+            document.getElementById('orgSelectorHint').classList.remove('hidden');
+            setTableEmptyState('Select an organization to view accounts.');
+        }
+    });
+
+    // ===================== ACCOUNTS TABLE =====================
+    function setTableLoadingState() {
+        document.getElementById('accountsTableBody').innerHTML = `
+            <tr>
+                <td colspan="8" class="py-10 px-4 text-center">
+                    <div class="flex items-center justify-center gap-2 text-secondary text-body-sm">
+                        <span class="material-symbols-outlined animate-spin text-[20px]">autorenew</span>
+                        Loading accounts...
+                    </div>
+                </td>
+            </tr>`;
+        document.getElementById('accountCountDisplay').textContent = 'Loading...';
+    }
+
+    function setTableEmptyState(msg) {
+        document.getElementById('accountsTableBody').innerHTML = `
+            <tr>
+                <td colspan="8" class="py-12 px-4 text-center">
+                    <div class="flex flex-col items-center gap-3">
+                        <span class="material-symbols-outlined text-[48px] text-outline/40">account_tree</span>
+                        <p class="text-secondary font-body-sm">${escapeHtml(msg)}</p>
+                    </div>
+                </td>
+            </tr>`;
+        document.getElementById('accountCountDisplay').textContent = '0 accounts';
+    }
+
+    async function loadAccounts() {
+        if (!currentOrgId) return;
+        setTableLoadingState();
+        try {
+            allAccounts = await apiJson(`/api/financeAdmin/chartOfAccounts/org/${currentOrgId}`) || [];
+            document.getElementById('searchInput').value = '';
+            renderAccounts(allAccounts);
+        } catch (err) {
+            document.getElementById('accountsTableBody').innerHTML = `
+                <tr><td colspan="8" class="py-8 px-4 text-center text-error text-body-sm font-semibold">${escapeHtml(err.message)}</td></tr>`;
+            document.getElementById('accountCountDisplay').textContent = 'Failed to load';
+        }
+    }
+
+    function renderAccounts(accounts) {
+        const tbody = document.getElementById('accountsTableBody');
+        const countEl = document.getElementById('accountCountDisplay');
+
+        if (accounts.length === 0) {
+            setTableEmptyState('No accounts yet. Use the form to create one.');
+            return;
+        }
+
+        tbody.innerHTML = '';
+        accounts.forEach(account => {
+            const colorClass = TYPE_COLOR[account.accountType] || 'bg-secondary-container text-on-secondary-container border-outline-variant';
+            const isActive = account.active !== false;
+            const statusClass = isActive
+                ? 'bg-green-100 text-green-800 border-green-200'
+                : 'bg-error-container text-on-error-container border-error';
+            const statusLabel = isActive ? 'Active' : 'Inactive';
+            const normalBal = account.normalBalance || '-';
+            const subtype = account.accountSubtype || '-';
+            const balance = formatCurrency(account.balance);
+
+            const tr = document.createElement('tr');
+            tr.id = `acc-${account.id}`;
+            tr.className = 'hover:bg-surface-container-low/50 transition-colors group';
+            // Store all editable fields as dataset
+            tr.dataset.id          = account.id;
+            tr.dataset.accountCode = account.accountCode;
+            tr.dataset.accountName = account.accountName;
+            tr.dataset.accountType = account.accountType;
+            tr.dataset.accountSubtype   = account.accountSubtype || '';
+            tr.dataset.normalBalance    = account.normalBalance || '';
+            tr.dataset.description = account.description || '';
+            tr.dataset.active      = isActive;
+
+            const deactivateButton = isActive
+                ? `<button data-deactivate="${account.id}" class="p-1.5 rounded bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors" title="Deactivate">
+                            <span class="material-symbols-outlined text-[18px]">block</span>
+                        </button>`
+                : '';
+
+            tr.innerHTML = `
+                <td class="py-4 px-4 font-label-md text-on-secondary-container">${escapeHtml(account.accountCode)}</td>
+                <td class="py-4 px-4">
+                    <div class="font-body-md font-bold text-primary">${escapeHtml(account.accountName)}</div>
+                    <div class="text-secondary text-[11px] mt-0.5">${escapeHtml(account.description || 'No description')}</div>
+                </td>
+                <td class="py-4 px-4 text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${colorClass}">${escapeHtml(account.accountType)}</span>
+                </td>
+                <td class="py-4 px-4 text-center">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-low text-on-surface-variant font-label-md text-[11px]">${escapeHtml(subtype)}</span>
+                </td>
+                <td class="py-4 px-4 text-center">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded font-label-md text-[11px] ${normalBal === 'DEBIT' ? 'bg-secondary-container text-on-secondary-container' : 'bg-tertiary-fixed text-on-tertiary-fixed-variant'}">${escapeHtml(normalBal)}</span>
+                </td>
+                <td class="py-4 px-4 text-right font-label-md text-on-secondary-container">${escapeHtml(balance)}</td>
+                <td class="py-4 px-4 text-center">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${statusClass}">${statusLabel}</span>
+                </td>
+                <td class="py-4 px-4 text-right">
+                    <div class="flex justify-end gap-2">
+                        <button data-edit="${account.id}" class="p-1.5 rounded bg-surface-container-high text-on-surface-variant hover:bg-primary hover:text-on-primary transition-colors" title="Edit">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                        </button>
+                        ${deactivateButton}
+                    </div>
+                </td>`;
+            tbody.appendChild(tr);
+        });
+
+        countEl.textContent = `Showing ${accounts.length} account${accounts.length !== 1 ? 's' : ''}`;
+
+        // Wire action buttons
+        tbody.querySelectorAll('[data-edit]').forEach(btn =>
+            btn.addEventListener('click', e => { e.stopPropagation(); editAccount(parseInt(btn.dataset.edit)); })
+        );
+        tbody.querySelectorAll('[data-deactivate]').forEach(btn =>
+            btn.addEventListener('click', e => { e.stopPropagation(); openDeactivateModal(parseInt(btn.dataset.deactivate)); })
+        );
+    }
+
+    // ===================== CLIENT-SIDE SEARCH =====================
+    document.getElementById('searchInput').addEventListener('input', function () {
+        const q = this.value.trim().toLowerCase();
+        if (!q) {
+            renderAccounts(allAccounts);
+            return;
+        }
+        const filtered = allAccounts.filter(a =>
+            (a.accountCode || '').toLowerCase().includes(q) ||
+            (a.accountName || '').toLowerCase().includes(q) ||
+            (a.accountType || '').toLowerCase().includes(q) ||
+            (a.accountSubtype || '').toLowerCase().includes(q) ||
+            (a.normalBalance || '').toLowerCase().includes(q)
+        );
+        renderAccounts(filtered);
+    });
+
+    // ===================== FORM =====================
+    function resetForm() {
+        document.getElementById('formMode').value = 'create';
+        document.getElementById('accountId').value = '';
+        document.getElementById('accForm').reset();
+        document.getElementById('accountCode').disabled = false;
+        document.getElementById('accountCode').classList.remove('opacity-50', 'cursor-not-allowed', 'bg-surface-container-low');
+        document.getElementById('formTitle').textContent = 'Add New Account';
+        document.getElementById('activeRow').classList.add('hidden');
+        document.getElementById('activeCheck').checked = true;
+        document.getElementById('submitBtn').innerHTML = '<span class="material-symbols-outlined text-[18px]">account_tree</span> Create Account';
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('accFormError').classList.add('hidden');
+    }
+
+    function editAccount(accountId) {
+        const row = document.getElementById(`acc-${accountId}`);
+        if (!row) return;
+
+        document.getElementById('formMode').value = 'edit';
+        document.getElementById('accountId').value = accountId;
+        document.getElementById('formTitle').textContent = 'Edit Account';
+
+        // Account code is disabled during edit (not part of update DTO)
+        const codeInput = document.getElementById('accountCode');
+        codeInput.value = row.dataset.accountCode;
+        codeInput.disabled = true;
+        codeInput.classList.add('opacity-50', 'cursor-not-allowed', 'bg-surface-container-low');
+
+        document.getElementById('accountName').value    = row.dataset.accountName;
+        document.getElementById('accountType').value    = row.dataset.accountType;
+        document.getElementById('accountSubtype').value = row.dataset.accountSubtype;
+        document.getElementById('normalBalance').value  = row.dataset.normalBalance;
+        document.getElementById('description').value    = row.dataset.description;
+
+        // Show active toggle in edit mode
+        document.getElementById('activeRow').classList.remove('hidden');
+        document.getElementById('activeCheck').checked = row.dataset.active === 'true';
+
+        document.getElementById('submitBtn').innerHTML = '<span class="material-symbols-outlined text-[18px]">save</span> Update Account';
+        document.getElementById('accFormError').classList.add('hidden');
+
+        // Scroll the form into view
+        document.getElementById('accForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+
+    document.getElementById('accForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (isRequestActive) return;
+
+        const mode        = document.getElementById('formMode').value;
+        const accountId   = document.getElementById('accountId').value;
+        const accountCode = document.getElementById('accountCode').value.trim();
+        const accountName = document.getElementById('accountName').value.trim();
+        const accountType = document.getElementById('accountType').value;
+        const accountSubtype  = document.getElementById('accountSubtype').value;
+        const normalBalance   = document.getElementById('normalBalance').value;
+        const description     = document.getElementById('description').value.trim();
+        const active          = document.getElementById('activeCheck').checked;
+
+        const errorDiv = document.getElementById('accFormError');
+        const errorMsg = document.getElementById('accFormErrorMsg');
+        errorDiv.classList.add('hidden');
+
+        if (!currentOrgId) {
+            errorMsg.textContent = 'Please select an organization first.';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
+        if (!accountName || !accountType || !accountSubtype || !normalBalance || (mode === 'create' && !accountCode)) {
+            errorMsg.textContent = 'Fill all required account fields before saving.';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
+        const btn = document.getElementById('submitBtn');
+        const originalButtonHtml = btn.innerHTML;
+        isRequestActive = true;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Saving...';
+
+        try {
+            if (mode === 'create') {
+                await apiJson(`/api/financeAdmin/chartOfAccounts/org/${currentOrgId}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ accountCode, accountName, description, accountType, accountSubtype, normalBalance })
+                });
+                showAlert('Account created successfully!', 'success');
+            } else {
+                await apiJson(`/api/financeAdmin/chartOfAccounts/${accountId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ accountName, description, accountType, accountSubtype, normalBalance, active })
+                });
+                showAlert('Account updated successfully!', 'success');
+            }
+            resetForm();
+            await loadAccounts();
+        } catch (err) {
+            errorMsg.textContent = err.message;
+            errorDiv.classList.remove('hidden');
+        } finally {
+            isRequestActive = false;
+            btn.disabled = false;
+            if (!document.getElementById('accFormError').classList.contains('hidden')) {
+                btn.innerHTML = originalButtonHtml;
+            }
+        }
+    });
+
+    // ===================== DEACTIVATE MODAL =====================
+    function openDeactivateModal(accountId) {
+        pendingDeactivateId = accountId;
+        document.getElementById('deactivateModalError').classList.add('hidden');
+        document.getElementById('deactivateModal').classList.remove('hidden');
+    }
+
+    function closeDeactivateModal() {
+        pendingDeactivateId = null;
+        document.getElementById('deactivateModal').classList.add('hidden');
+    }
+
+    document.getElementById('cancelDeactivate').addEventListener('click', closeDeactivateModal);
+    document.getElementById('deactivateOverlay').addEventListener('click', closeDeactivateModal);
+
+    document.getElementById('confirmDeactivate').addEventListener('click', async function () {
+        if (!pendingDeactivateId || isRequestActive) return;
+
+        const errorDiv = document.getElementById('deactivateModalError');
+        const errorMsg = document.getElementById('deactivateModalErrorMsg');
+        errorDiv.classList.add('hidden');
+
+        isRequestActive = true;
+        this.disabled = true;
+        this.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Deactivating...';
+
+        try {
+            // DELETE returns 204 No Content; apiJson handles no-body responses correctly.
+            await apiJson(`/api/financeAdmin/chartOfAccounts/${pendingDeactivateId}`, { method: 'DELETE' });
+            closeDeactivateModal();
+            showAlert('Account deactivated successfully.', 'success');
+            await loadAccounts();
+        } catch (err) {
+            errorMsg.textContent = err.message;
+            errorDiv.classList.remove('hidden');
+        } finally {
+            isRequestActive = false;
+            this.disabled = false;
+            this.innerHTML = '<span class="material-symbols-outlined text-[18px]">block</span> Deactivate';
+        }
+    });
+
+    // ===================== INIT =====================
+    document.addEventListener('DOMContentLoaded', async function () {
+        setFormDisabled(true);
+        await loadOrganizationSelector();
+    });
+</script>
 </body>
 </html>

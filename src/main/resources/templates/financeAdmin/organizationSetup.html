@@ -103,6 +103,8 @@
             display: inline-block;
             vertical-align: middle;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
     </style>
 </head>
 <body class="text-on-background font-body-md overflow-hidden bg-background">
@@ -112,7 +114,7 @@
 
     <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden">
 
-        <!-- Local Top Navigation Bar (Full Code Intact) -->
+        <!-- Top Navigation Bar -->
         <header class="bg-surface dark:bg-surface-container-low w-full h-16 border-b border-outline-variant dark:border-on-surface-variant flex justify-between items-center px-outer-padding z-50 shrink-0">
             <div class="flex items-center gap-4">
                 <span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Organization Setup</span>
@@ -125,15 +127,25 @@
                     <span class="material-symbols-outlined text-on-surface-variant">settings</span>
                 </button>
                 <div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
-                    <img class="w-full h-full object-cover" data-alt="A professional headshot of a financial executive in a minimalist studio setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc">
+                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHk8Lbuo4lkDdlodAivlroXp-XDrAXrRT1A5uy3nVz7hcVehNcLSM0jnKFInOaRK3ei7oUUCK2oybbEsvDzLjNHsam5yv9IAdIWdgBt60FzRbeVEljclmlxBNqYUnA9RccE-bzadrFy_G3ZoNQfJGJDN2w8KqqOfXBvmZF0AjMdMu9_Ej-9mZEmWInfEAvIphJAvaXm-_VWfKOrdo1GfzygFoiiZK7ui8wpMBIM8R73T5yLasQQwpSu24TgqgPvm85Tfllpbr0YMc" alt="User avatar">
                 </div>
             </div>
         </header>
 
+        <!-- Page-level alert panel -->
+        <div id="pageAlert" class="hidden mx-outer-padding mt-4 shrink-0">
+            <div id="pageAlertInner" class="flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold">
+                <span id="pageAlertIcon" class="material-symbols-outlined text-[18px] mt-0.5"></span>
+                <span id="pageAlertMsg"></span>
+            </div>
+        </div>
+
         <main class="flex-1 overflow-y-auto p-outer-padding">
 
+            <!-- Top two-column layout: Organizations table + Branch form -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
 
+                <!-- Organizations Table -->
                 <section class="lg:col-span-2">
                     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm h-full flex flex-col">
                         <div class="flex justify-between items-center mb-6">
@@ -141,7 +153,7 @@
                                 <h3 class="font-headline-sm text-headline-sm text-primary">Registered Companies</h3>
                                 <p class="text-secondary font-body-sm uppercase tracking-wider mt-1">Entity Portfolio Registry</p>
                             </div>
-                            <button class="bg-primary text-on-primary font-body-sm font-bold py-2 px-4 rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
+                            <button id="addOrgBtn" class="bg-primary text-on-primary font-body-sm font-bold py-2 px-4 rounded-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
                                 <span class="material-symbols-outlined text-[18px]">add</span>
                                 Add Parent Company
                             </button>
@@ -153,65 +165,23 @@
                                 <tr>
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest">Company Name</th>
                                     <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest">TIN</th>
-                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-right">Base Currency</th>
-                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Active Branches</th>
+                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-right">Reg. Number</th>
+                                    <th class="py-4 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Branches</th>
                                 </tr>
                                 </thead>
-                                <tbody class="divide-y divide-surface-container-high">
-                                <tr class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer">
-                                    <td class="py-5 px-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded bg-surface-container-low border border-outline-variant flex items-center justify-center font-bold text-secondary">NL</div>
-                                            <div>
-                                                <div class="font-body-md font-bold text-primary">Nestoil Limited</div>
-                                                <div class="text-secondary text-[12px]">Lagos, Nigeria</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">23489012-0001</td>
-                                    <td class="py-5 px-4 text-right font-currency-display text-[16px]">NGN (₦)</td>
-                                    <td class="py-5 px-4 text-center">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">
-                                                12 Branches
-                                            </span>
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-surface-container-low/50 transition-colors group cursor-pointer">
-                                    <td class="py-5 px-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded bg-surface-container-low border border-outline-variant flex items-center justify-center font-bold text-secondary">AF</div>
-                                            <div>
-                                                <div class="font-body-md font-bold text-primary">The ALAO Foundation</div>
-                                                <div class="text-secondary text-[12px]">Agege, Nigeria</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-5 px-4 font-label-md text-on-secondary-container">54129834-0002</td>
-                                    <td class="py-5 px-4 text-right font-currency-display text-[16px]">NGN (₦)</td>
-                                    <td class="py-5 px-4 text-center">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">
-                                                5 Branches
-                                            </span>
-                                    </td>
-                                </tr>
+                                <tbody id="organizationsTableBody" class="divide-y divide-surface-container-high">
+                                <!-- Rows rendered dynamically -->
                                 </tbody>
                             </table>
                         </div>
 
                         <div class="mt-8 pt-6 border-t border-surface-container-highest flex items-center justify-between">
-                            <p class="text-secondary font-body-sm">Showing 2 registered enterprise groups</p>
-                            <div class="flex gap-2">
-                                <button class="p-1.5 rounded-md border border-surface-container-highest hover:bg-surface-container-low disabled:opacity-50" disabled>
-                                    <span class="material-symbols-outlined">chevron_left</span>
-                                </button>
-                                <button class="p-1.5 rounded-md border border-surface-container-highest hover:bg-surface-container-low">
-                                    <span class="material-symbols-outlined">chevron_right</span>
-                                </button>
-                            </div>
+                            <p id="orgCountDisplay" class="text-secondary font-body-sm">Loading organizations...</p>
                         </div>
                     </div>
                 </section>
 
+                <!-- Branch Registration Form -->
                 <aside class="lg:col-span-1">
                     <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
                         <div class="mb-8">
@@ -219,14 +189,23 @@
                             <p class="text-secondary font-body-sm mt-1">Register a new operational unit under a parent company.</p>
                         </div>
 
-                        <form action="#" method="POST" class="space-y-6" id="branchRegistrationForm">
+                        <!-- Branch form inline error -->
+                        <div id="branchFormError" class="hidden mb-4 flex items-start gap-2 px-3 py-2 rounded-lg bg-error-container border border-error text-on-error-container text-body-sm font-semibold">
+                            <span class="material-symbols-outlined text-[16px] mt-0.5">error</span>
+                            <span id="branchFormErrorMsg"></span>
+                        </div>
+
+                        <div id="noOrgWarning" class="hidden mb-4 flex items-start gap-2 px-3 py-2 rounded-lg bg-secondary-container border border-outline-variant text-on-secondary-container text-body-sm">
+                            <span class="material-symbols-outlined text-[16px] mt-0.5">info</span>
+                            <span>No organization selected. <a href="/financeAdmin/organizationSetup" class="underline font-semibold">Create one above</a> first.</span>
+                        </div>
+
+                        <form id="branchRegistrationForm" class="space-y-6">
                             <div>
                                 <label class="block font-body-sm font-semibold text-on-surface mb-2" for="parentCompany">Target Company</label>
                                 <div class="relative">
                                     <select class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer" id="parentCompany" name="parentCompany" required>
                                         <option disabled selected value="">Select Parent Enterprise</option>
-                                        <option value="1">Nestoil Limited</option>
-                                        <option value="2">The ALAO Foundation</option>
                                     </select>
                                     <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
                                 </div>
@@ -250,7 +229,7 @@
                             </div>
 
                             <div class="pt-4">
-                                <button class="w-full bg-primary text-on-primary font-body-lg font-bold py-4 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-black/5" type="submit">
+                                <button id="branchSubmitBtn" class="w-full bg-primary text-on-primary font-body-lg font-bold py-4 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-black/5" type="submit">
                                     <span class="material-symbols-outlined">domain_add</span>
                                     Register Branch
                                 </button>
@@ -271,135 +250,515 @@
 
             </div>
 
+            <!-- Branch list for selected organization -->
+            <div id="branchSection" class="hidden mt-gutter">
+                <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="font-headline-sm text-headline-sm text-primary">Branches</h3>
+                            <p id="branchSectionSubtitle" class="text-secondary font-body-sm uppercase tracking-wider mt-1">Operational Units</p>
+                        </div>
+                        <span id="branchCountBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">0 Branches</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-surface border-b border-surface-container-high">
+                            <tr>
+                                <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest">Branch Name</th>
+                                <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest">Code</th>
+                                <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-widest text-center">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody id="branchesTableBody" class="divide-y divide-surface-container-high">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 </div>
 
+<!-- ===================== CREATE ORGANIZATION MODAL ===================== -->
+<div id="createOrgModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Overlay -->
+    <div id="createOrgOverlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+    <!-- Dialog -->
+    <div class="relative bg-surface-container-lowest border border-surface-container-highest rounded-xl shadow-2xl w-full max-w-lg z-10">
+        <div class="flex items-center justify-between p-6 border-b border-surface-container-highest">
+            <div>
+                <h2 class="font-headline-sm text-headline-sm text-primary">Create Organization</h2>
+                <p class="text-secondary font-body-sm mt-0.5">Register a new parent company in AMS</p>
+            </div>
+            <button id="closeCreateOrgModal" class="p-2 rounded-full hover:bg-surface-container-low transition-colors">
+                <span class="material-symbols-outlined text-on-surface-variant">close</span>
+            </button>
+        </div>
+
+        <!-- Modal error -->
+        <div id="orgModalError" class="hidden mx-6 mt-4 flex items-start gap-2 px-3 py-2 rounded-lg bg-error-container border border-error text-on-error-container text-body-sm font-semibold">
+            <span class="material-symbols-outlined text-[16px] mt-0.5">error</span>
+            <span id="orgModalErrorMsg"></span>
+        </div>
+
+        <form id="createOrgForm" class="p-6 space-y-5">
+            <div>
+                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="orgName">Organization Name <span class="text-error">*</span></label>
+                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40" id="orgName" placeholder="e.g. Nestoil Limited" type="text" required>
+            </div>
+
+            <div>
+                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="orgRegNumber">Registration Number <span class="text-error">*</span></label>
+                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40 font-label-md" id="orgRegNumber" placeholder="e.g. REG-001" type="text" required>
+            </div>
+
+            <div>
+                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="orgTaxId">Tax ID (TIN)</label>
+                <input class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline/40 font-label-md" id="orgTaxId" placeholder="e.g. TIN-001" type="text">
+            </div>
+
+            <div>
+                <label class="block font-body-sm font-semibold text-on-surface mb-2" for="orgCountry">Country <span class="text-error">*</span></label>
+                <div class="relative">
+                    <select class="w-full bg-surface-container-lowest border border-surface-container-highest rounded-lg py-3 px-4 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none transition-all cursor-pointer" id="orgCountry" required>
+                        <option value="">Select country...</option>
+                        <option value="Nigeria" selected>Nigeria</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="United States">United States</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-1">
+                <input type="checkbox" id="orgActive" checked class="w-4 h-4 rounded border-surface-container-highest accent-primary cursor-pointer">
+                <label for="orgActive" class="font-body-sm font-semibold text-on-surface cursor-pointer">Active</label>
+            </div>
+
+            <div class="flex gap-3 pt-4 border-t border-surface-container-highest">
+                <button type="button" id="cancelCreateOrg" class="flex-1 border border-surface-container-highest text-on-surface font-body-md font-semibold py-3 rounded-lg hover:bg-surface-container-low transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" id="createOrgSubmitBtn" class="flex-1 bg-primary text-on-primary font-body-md font-bold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">add_business</span>
+                    Create Organization
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
-    // Load organizations and branches on page load
-    document.addEventListener('DOMContentLoaded', async function() {
-        await loadOrganizations();
-        await loadOrganizationsTable();
-    });
-
-    async function loadOrganizations() {
-        try {
-            const response = await fetch('/api/organizations', {
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                const organizations = result.data || [];
-                const select = document.getElementById('parentCompany');
-                select.innerHTML = '<option disabled selected value="">Select Parent Enterprise</option>';
-
-                organizations.forEach(org => {
-                    const option = document.createElement('option');
-                    option.value = org.id;
-                    option.textContent = org.name;
-                    select.appendChild(option);
-                });
+    // ===================== SHARED API HELPER =====================
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...(options.headers || {})
             }
-        } catch (error) {
-            console.error('Error loading organizations:', error);
-        }
-    }
-
-    async function loadOrganizationsTable() {
-        try {
-            const response = await fetch('/api/organizations', {
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                const organizations = result.data || [];
-                const tbody = document.querySelector('tbody');
-                tbody.innerHTML = '';
-
-                if (organizations.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="py-5 px-4 text-center text-secondary">No organizations found</td></tr>';
-                } else {
-                    organizations.forEach(org => {
-                        const tr = document.createElement('tr');
-                        tr.className = 'hover:bg-surface-container-low/50 transition-colors group cursor-pointer';
-                        tr.innerHTML = `
-                            <td class="py-5 px-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded bg-surface-container-low border border-outline-variant flex items-center justify-center font-bold text-secondary">${org.name.substring(0, 2).toUpperCase()}</div>
-                                    <div>
-                                        <div class="font-body-md font-bold text-primary">${org.name}</div>
-                                        <div class="text-secondary text-[12px]">${org.city || 'N/A'}, ${org.country || 'N/A'}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-5 px-4 font-label-md text-on-secondary-container">${org.taxId || '-'}</td>
-                            <td class="py-5 px-4 text-right font-currency-display text-[16px]">NGN (₦)</td>
-                            <td class="py-5 px-4 text-center">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">
-                                    0 Branches
-                                </span>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                }
-
-                // Update count
-                document.getElementById('orgCountDisplay').textContent = organizations.length;
-            }
-        } catch (error) {
-            console.error('Error loading organizations table:', error);
-        }
-    }
-
-    // Handle branch registration form submission
-    document.getElementById('branchRegistrationForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        const btn = this.querySelector('button[type="submit"]');
-        const originalText = btn.innerHTML;
-
-        btn.disabled = true;
-        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Processing...';
-
-        try {
-            const response = await fetch('/api/branches', {
-                method: 'POST',
-                body: JSON.stringify({
-                    organizationId: parseInt(formData.get('parentCompany')),
-                    name: formData.get('branchName'),
-                    code: formData.get('branchCode'),
-                    active: true
-                }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                alert('Branch registered successfully!');
-                this.reset();
-                await loadOrganizationsTable();
-            } else {
-                alert(data.message || 'Error registering branch');
-            }
-        } catch (error) {
-            alert('Network error: ' + error.message);
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
-    });
-
-    // Row selection highlighting
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        row.addEventListener('click', () => {
-            rows.forEach(r => r.classList.remove('bg-surface-container-high', 'border-l-4', 'border-l-primary'));
-            row.classList.add('bg-surface-container-high', 'border-l-4', 'border-l-primary');
         });
+
+        let body = null;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json') && response.status !== 204) {
+            try { body = await response.json(); } catch (_) { body = null; }
+        }
+
+        if (!response.ok) {
+            const msg = body?.message || body?.error || 'An unexpected error occurred.';
+            throw new Error(msg);
+        }
+
+        return body;
+    }
+
+    // ===================== PAGE ALERT =====================
+    function showAlert(msg, type = 'error') {
+        const wrap = document.getElementById('pageAlert');
+        const inner = document.getElementById('pageAlertInner');
+        const icon = document.getElementById('pageAlertIcon');
+        const text = document.getElementById('pageAlertMsg');
+
+        text.textContent = msg;
+
+        if (type === 'success') {
+            inner.className = 'flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-secondary-container border-outline-variant text-on-secondary-container';
+            icon.textContent = 'check_circle';
+        } else {
+            inner.className = 'flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-error-container border-error text-on-error-container';
+            icon.textContent = 'error';
+        }
+
+        wrap.classList.remove('hidden');
+        setTimeout(() => wrap.classList.add('hidden'), 5000);
+    }
+
+    function hideAlert() {
+        document.getElementById('pageAlert').classList.add('hidden');
+    }
+
+    // ===================== STATE =====================
+    let organizations = [];
+    let selectedOrganizationId = null;
+    let isRequestActive = false;
+
+    // ===================== RENDER HELPERS =====================
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.appendChild(document.createTextNode(str ?? ''));
+        return d.innerHTML;
+    }
+
+    function renderOrgRows() {
+        const tbody = document.getElementById('organizationsTableBody');
+        const countEl = document.getElementById('orgCountDisplay');
+
+        if (organizations.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="py-12 px-4 text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <span class="material-symbols-outlined text-[48px] text-outline/40">corporate_fare</span>
+                            <p class="text-secondary font-body-sm">No organizations found. Click <strong>Add Parent Company</strong> to create one.</p>
+                        </div>
+                    </td>
+                </tr>`;
+            countEl.textContent = 'No registered companies yet';
+        } else {
+            tbody.innerHTML = '';
+            organizations.forEach(org => {
+                const initials = escapeHtml(org.name.substring(0, 2).toUpperCase());
+                const isSelected = org.id === selectedOrganizationId;
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-surface-container-low/50 transition-colors cursor-pointer' +
+                    (isSelected ? ' bg-surface-container-high border-l-4 border-l-primary' : '');
+                tr.dataset.orgId = org.id;
+                tr.innerHTML = `
+                    <td class="py-5 px-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded bg-surface-container-low border border-outline-variant flex items-center justify-center font-bold text-secondary">${initials}</div>
+                            <div>
+                                <div class="font-body-md font-bold text-primary">${escapeHtml(org.name)}</div>
+                                <div class="text-secondary text-[12px]">${escapeHtml(org.country || 'N/A')}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-5 px-4 font-label-md text-on-secondary-container">${escapeHtml(org.taxId || '-')}</td>
+                    <td class="py-5 px-4 text-right font-label-md text-on-secondary-container">${escapeHtml(org.registrationNumber || '-')}</td>
+                    <td class="py-5 px-4 text-center" id="branchCount-${org.id}">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">
+                            -- Branches
+                        </span>
+                    </td>`;
+                tr.addEventListener('click', () => selectOrganization(org.id));
+                tbody.appendChild(tr);
+            });
+            countEl.textContent = `Showing ${organizations.length} registered enterprise group${organizations.length !== 1 ? 's' : ''}`;
+        }
+
+        // Sync branch form dropdown
+        const select = document.getElementById('parentCompany');
+        const currentVal = select.value;
+        select.innerHTML = '<option disabled value="">Select Parent Enterprise</option>';
+        organizations.forEach(org => {
+            const opt = document.createElement('option');
+            opt.value = org.id;
+            opt.textContent = org.name;
+            select.appendChild(opt);
+        });
+        if (currentVal && organizations.some(org => String(org.id) === String(currentVal))) {
+            select.value = currentVal;
+        } else if (selectedOrganizationId && organizations.some(org => org.id === selectedOrganizationId)) {
+            select.value = selectedOrganizationId;
+        } else {
+            select.value = '';
+        }
+
+        // Show/hide no-org warning on branch form
+        document.getElementById('noOrgWarning').classList.toggle('hidden', organizations.length > 0);
+    }
+
+    function renderBranchRows(branches) {
+        const tbody = document.getElementById('branchesTableBody');
+        const badge = document.getElementById('branchCountBadge');
+
+        badge.textContent = `${branches.length} Branch${branches.length !== 1 ? 'es' : ''}`;
+
+        updateBranchCountCell(selectedOrganizationId, branches.length);
+
+        if (branches.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="py-8 px-4 text-center">
+                        <div class="flex flex-col items-center gap-2">
+                            <span class="material-symbols-outlined text-[36px] text-outline/40">domain_add</span>
+                            <p class="text-secondary font-body-sm">No branches yet. Use the <strong>Add Branch</strong> form above to register one.</p>
+                        </div>
+                    </td>
+                </tr>`;
+        } else {
+            tbody.innerHTML = '';
+            branches.forEach(branch => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-surface-container-low/50 transition-colors';
+                const activeClass = branch.active
+                    ? 'bg-secondary-container text-on-secondary-container border-outline-variant'
+                    : 'bg-error-container text-on-error-container border-error';
+                const activeLabel = branch.active ? 'Active' : 'Inactive';
+                tr.innerHTML = `
+                    <td class="py-4 px-4">
+                        <div class="font-body-md font-semibold text-primary">${escapeHtml(branch.name)}</div>
+                    </td>
+                    <td class="py-4 px-4 font-label-md text-on-secondary-container">${escapeHtml(branch.code)}</td>
+                    <td class="py-4 px-4 text-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${activeClass}">${activeLabel}</span>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function updateBranchCountCell(orgId, count) {
+        if (!orgId && orgId !== 0) return;
+        const cell = document.getElementById(`branchCount-${orgId}`);
+        if (!cell) return;
+        const label = Number.isFinite(count)
+            ? `${count} Branch${count !== 1 ? 'es' : ''}`
+            : 'Unavailable';
+        cell.innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">${label}</span>`;
+    }
+
+    function setOrgTableLoadingState() {
+        const tbody = document.getElementById('organizationsTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="py-8 px-4 text-center">
+                    <div class="flex items-center justify-center gap-2 text-secondary text-body-sm">
+                        <span class="material-symbols-outlined animate-spin text-[20px]">autorenew</span>
+                        Loading organizations...
+                    </div>
+                </td>
+            </tr>`;
+    }
+
+    function setBranchTableLoadingState() {
+        const tbody = document.getElementById('branchesTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="3" class="py-8 px-4 text-center">
+                    <div class="flex items-center justify-center gap-2 text-secondary text-body-sm">
+                        <span class="material-symbols-outlined animate-spin text-[20px]">autorenew</span>
+                        Loading branches...
+                    </div>
+                </td>
+            </tr>`;
+    }
+
+    // ===================== DATA FETCHING =====================
+    async function loadOrganizations() {
+        setOrgTableLoadingState();
+        try {
+            organizations = await apiJson('/api/organizations') || [];
+            renderOrgRows();
+
+            if (organizations.length === 0) {
+                selectedOrganizationId = null;
+                sessionStorage.removeItem('ams.selectedOrganizationId');
+                document.getElementById('branchSection').classList.add('hidden');
+                document.getElementById('parentCompany').value = '';
+                return;
+            }
+
+            const restoredSelection = organizations.find(org => org.id === selectedOrganizationId);
+            const organizationToSelect = restoredSelection || organizations[0];
+            await selectOrganization(organizationToSelect.id);
+            await loadBranchCounts(organizationToSelect.id);
+
+            if (!restoredSelection && selectedOrganizationId) {
+                sessionStorage.setItem('ams.selectedOrganizationId', organizationToSelect.id);
+            }
+        } catch (err) {
+            document.getElementById('organizationsTableBody').innerHTML = `
+                <tr>
+                    <td colspan="4" class="py-8 px-4 text-center text-error text-body-sm font-semibold">${escapeHtml(err.message)}</td>
+                </tr>`;
+            document.getElementById('orgCountDisplay').textContent = 'Failed to load organizations';
+        }
+    }
+
+    async function loadBranchCounts(exceptOrgId) {
+        await Promise.allSettled(
+            organizations
+                .filter(org => org.id !== exceptOrgId)
+                .map(async org => {
+                    const branches = await apiJson(`/api/branches?organizationId=${org.id}`) || [];
+                    updateBranchCountCell(org.id, branches.length);
+                })
+        );
+    }
+
+    async function selectOrganization(orgId) {
+        selectedOrganizationId = Number(orgId);
+        sessionStorage.setItem('ams.selectedOrganizationId', orgId);
+
+        // Update row highlight
+        document.querySelectorAll('#organizationsTableBody tr').forEach(r => {
+            const isThis = Number(r.dataset.orgId) === selectedOrganizationId;
+            r.classList.toggle('bg-surface-container-high', isThis);
+            r.classList.toggle('border-l-4', isThis);
+            r.classList.toggle('border-l-primary', isThis);
+        });
+
+        // Update branch form selector
+        const select = document.getElementById('parentCompany');
+        select.value = selectedOrganizationId;
+
+        // Show branch section and load branches
+        const org = organizations.find(o => o.id === selectedOrganizationId);
+        if (org) {
+            document.getElementById('branchSectionSubtitle').textContent =
+                `Branches of ${org.name}`;
+        }
+        document.getElementById('branchSection').classList.remove('hidden');
+        await loadBranches(selectedOrganizationId);
+    }
+
+    async function loadBranches(orgId) {
+        setBranchTableLoadingState();
+        try {
+            const branches = await apiJson(`/api/branches?organizationId=${orgId}`) || [];
+            renderBranchRows(branches);
+        } catch (err) {
+            document.getElementById('branchesTableBody').innerHTML = `
+                <tr>
+                    <td colspan="3" class="py-6 px-4 text-center text-error text-body-sm font-semibold">${escapeHtml(err.message)}</td>
+                </tr>`;
+        }
+    }
+
+    // ===================== BRANCH FORM SUBMIT =====================
+    document.getElementById('branchRegistrationForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (isRequestActive) return;
+
+        const orgId = parseInt(document.getElementById('parentCompany').value);
+        const name = document.getElementById('branchName').value.trim();
+        const code = document.getElementById('branchCode').value.trim();
+        const errorDiv = document.getElementById('branchFormError');
+        const errorMsg = document.getElementById('branchFormErrorMsg');
+        const btn = document.getElementById('branchSubmitBtn');
+
+        errorDiv.classList.add('hidden');
+
+        if (!orgId) {
+            errorMsg.textContent = 'Please select a parent company.';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
+        isRequestActive = true;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Registering...';
+
+        try {
+            await apiJson('/api/branches', {
+                method: 'POST',
+                body: JSON.stringify({ organizationId: orgId, name, code, active: true })
+            });
+
+            document.getElementById('branchName').value = '';
+            document.getElementById('branchCode').value = '';
+            document.getElementById('parentCompany').value = orgId;
+            showAlert('Branch registered successfully!', 'success');
+            await loadBranches(orgId);
+        } catch (err) {
+            errorMsg.textContent = err.message;
+            errorDiv.classList.remove('hidden');
+        } finally {
+            isRequestActive = false;
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined">domain_add</span> Register Branch';
+        }
+    });
+
+    // ===================== CREATE ORG MODAL =====================
+    function openCreateOrgModal() {
+        document.getElementById('createOrgForm').reset();
+        document.getElementById('orgModalError').classList.add('hidden');
+        document.getElementById('createOrgModal').classList.remove('hidden');
+    }
+
+    function closeCreateOrgModal() {
+        document.getElementById('createOrgModal').classList.add('hidden');
+    }
+
+    document.getElementById('addOrgBtn').addEventListener('click', openCreateOrgModal);
+    document.getElementById('closeCreateOrgModal').addEventListener('click', closeCreateOrgModal);
+    document.getElementById('cancelCreateOrg').addEventListener('click', closeCreateOrgModal);
+    document.getElementById('createOrgOverlay').addEventListener('click', closeCreateOrgModal);
+
+    document.getElementById('parentCompany').addEventListener('change', async function () {
+        if (this.value) {
+            await selectOrganization(Number(this.value));
+        }
+    });
+
+    document.getElementById('createOrgForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (isRequestActive) return;
+
+        const name = document.getElementById('orgName').value.trim();
+        const registrationNumber = document.getElementById('orgRegNumber').value.trim();
+        const taxId = document.getElementById('orgTaxId').value.trim();
+        const country = document.getElementById('orgCountry').value;
+        const active = document.getElementById('orgActive').checked;
+        const errorDiv = document.getElementById('orgModalError');
+        const errorMsg = document.getElementById('orgModalErrorMsg');
+        const btn = document.getElementById('createOrgSubmitBtn');
+
+        errorDiv.classList.add('hidden');
+
+        isRequestActive = true;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Creating...';
+
+        try {
+            const created = await apiJson('/api/organizations', {
+                method: 'POST',
+                body: JSON.stringify({ name, registrationNumber, taxId: taxId || null, country, active })
+            });
+
+            closeCreateOrgModal();
+            showAlert(`Organization "${name}" created successfully!`, 'success');
+            await loadOrganizations();
+
+            // Select the newly created org
+            if (created?.id) {
+                await selectOrganization(created.id);
+            }
+        } catch (err) {
+            errorMsg.textContent = err.message;
+            errorDiv.classList.remove('hidden');
+        } finally {
+            isRequestActive = false;
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined text-[18px]">add_business</span> Create Organization';
+        }
+    });
+
+    // ===================== INIT =====================
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Restore selected org from session
+        const stored = sessionStorage.getItem('ams.selectedOrganizationId');
+        if (stored) selectedOrganizationId = parseInt(stored);
+
+        await loadOrganizations();
     });
 </script>
 </body>

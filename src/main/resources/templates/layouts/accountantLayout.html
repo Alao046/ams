@@ -3,7 +3,7 @@
 <body>
 <div xmlns:th="http://www.thymeleaf.org">
 
-    <aside th:fragment="sidebar(activeTab)" class="w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50">
+    <aside th:fragment="sidebar(activeTab)" class="sticky top-0 w-[260px] h-screen border-r border-outline-variant bg-surface-container-low flex flex-col py-stack-md shrink-0 z-50 overflow-y-auto self-start">
         <div class="px-6 pb-8">
             <img alt="Accounting Management System" class="w-[48px] h-[48px] rounded-lg mb-4" th:src="@{/images/logoams.png}">
             <div>

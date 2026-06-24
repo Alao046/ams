@@ -1,466 +1,874 @@
-<!DOCTYPE html><html class="light" lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+<!DOCTYPE html>
+<html class="light" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Manual Journal Entry | FinAdmin</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-    <!-- Tailwind CSS -->
+    <title>Manual Journal Entry | AMS Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "tertiary-fixed-dim": "#bec6e0",
-                        "surface-container-lowest": "#ffffff",
-                        "on-primary": "#ffffff",
-                        "primary-fixed-dim": "#c6c6c6",
-                        "secondary-container": "#d0e1fb",
-                        "on-secondary": "#ffffff",
-                        "on-surface": "#191c1e",
-                        "on-secondary-container": "#54647a",
-                        "error-container": "#ffdad6",
-                        "surface-variant": "#e0e3e5",
-                        "on-primary-fixed-variant": "#474747",
-                        "on-surface-variant": "#4c4546",
-                        "outline": "#7e7576",
-                        "on-background": "#191c1e",
-                        "secondary": "#505f76",
-                        "on-tertiary-fixed-variant": "#3f465c",
-                        "surface-container-highest": "#e0e3e5",
-                        "on-tertiary-container": "#7c839b",
-                        "outline-variant": "#cfc4c5",
-                        "inverse-on-surface": "#eff1f3",
-                        "surface-container": "#eceef0",
-                        "secondary-fixed-dim": "#b7c8e1",
-                        "on-primary-container": "#848484",
-                        "surface-container-high": "#e6e8ea",
-                        "error": "#ba1a1a",
-                        "surface-container-low": "#f2f4f6",
-                        "surface-dim": "#d8dadc",
-                        "surface-bright": "#f7f9fb",
-                        "inverse-surface": "#2d3133",
-                        "secondary-fixed": "#d3e4fe",
+                    colors: {
                         "primary": "#000000",
-                        "surface-tint": "#5e5e5e",
-                        "primary-fixed": "#e2e2e2",
-                        "on-error-container": "#93000a",
-                        "on-tertiary": "#ffffff",
-                        "tertiary-container": "#131b2e",
+                        "background": "#f7f9fb",
                         "surface": "#f7f9fb",
-                        "on-secondary-fixed": "#0b1c30",
-                        "on-tertiary-fixed": "#131b2e",
-                        "on-secondary-fixed-variant": "#38485d",
-                        "primary-container": "#1b1b1b",
+                        "surface-container": "#eceef0",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#505f76",
+                        "secondary-container": "#d0e1fb",
+                        "on-secondary-container": "#54647a",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#4c4546",
+                        "on-background": "#191c1e",
+                        "on-primary": "#ffffff",
+                        "outline": "#7e7576",
+                        "outline-variant": "#cfc4c5",
+                        "secondary-fixed": "#d0e4ff",
+                        "on-secondary-fixed-variant": "#3a5070",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
                         "on-error": "#ffffff",
-                        "tertiary": "#000000",
-                        "tertiary-fixed": "#dae2fd",
-                        "on-primary-fixed": "#1b1b1b",
-                        "inverse-primary": "#c6c6c6",
-                        "background": "#f7f9fb"
+                        "on-error-container": "#93000a"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "12px",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
+                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+                    spacing: {
                         "card-padding": "24px",
                         "stack-sm": "8px",
                         "outer-padding": "32px",
                         "stack-md": "16px",
                         "gutter": "24px"
                     },
-                    "fontFamily": {
+                    fontFamily: {
                         "body-sm": ["Hanken Grotesk"],
-                        "headline-lg": ["Hanken Grotesk"],
                         "body-md": ["Hanken Grotesk"],
-                        "currency-display": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-sm": ["Hanken Grotesk"],
                         "headline-md": ["Hanken Grotesk"],
                         "label-md": ["JetBrains Mono"],
-                        "headline-sm": ["Hanken Grotesk"],
-                        "body-lg": ["Hanken Grotesk"]
+                        "currency-display": ["Hanken Grotesk"]
                     },
-                    "fontSize": {
+                    fontSize: {
                         "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
-                        "headline-lg": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
                         "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
-                        "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
-                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
-                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
                         "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
-                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "currency-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
                     }
-                },
-            },
+                }
+            }
         }
     </script>
     <style>
-        body {
-            background-color: #f2f4f6;
-            font-family: 'Hanken Grotesk', sans-serif;
-        }
+        body { background-color: #f2f4f6; font-family: 'Hanken Grotesk', sans-serif; }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
         }
-        input:focus, select:focus {
-            outline: none !important;
-            border-color: #000000 !important;
-            box-shadow: 0 0 0 2px #f2f4f6 !important;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
     </style>
 </head>
-<body class="min-h-screen pb-24 flex">
+<body class="min-h-screen pb-24 flex text-on-background">
 
-<!-- Shared Accountant Navigation Sidebar Component Insertion -->
 <aside th:replace="~{layouts/accountantLayout :: sidebar('manualJournal')}"></aside>
 
-<!-- Structural Application Workspace Content Pane -->
 <div class="flex-grow flex flex-col min-w-0">
-    <!-- TopNavBar Header Template Blueprint -->
-    <header class="bg-surface sticky top-0 z-40 border-b border-outline-variant flex justify-between items-center w-full px-outer-padding py-4 max-w-full">
+    <header class="bg-surface sticky top-0 z-40 border-b border-outline-variant flex justify-between items-center w-full px-outer-padding py-4">
         <div class="flex items-center gap-4">
             <span class="font-headline-sm text-headline-sm font-bold text-primary">Manual Journal Entry</span>
         </div>
-        <div class="flex items-center gap-6">
-            <button class="text-secondary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
-                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-            </button>
-            <button class="text-secondary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-80">
-                <span class="material-symbols-outlined" data-icon="settings">settings</span>
-            </button>
+        <div class="flex items-center gap-4">
+            <div class="relative flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary text-[18px]">domain</span>
+                <select id="orgSelector" class="bg-surface-container border border-outline-variant rounded-lg py-1.5 pl-3 pr-8 text-body-sm text-on-surface focus:ring-1 focus:ring-primary outline-none appearance-none cursor-pointer min-w-[220px]">
+                    <option value="">Loading organizations...</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-secondary text-[16px]">expand_more</span>
+            </div>
             <div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden">
-                <img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate accountant in a minimalist Lagos office. The lighting is soft and natural, emphasizing a clean, modern aesthetic with neutral tones and a slight architectural background of glass and steel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBniQBeAeQhbwAJbll5n5GvWfQKyHW2yHzRVg3NpBDT2G5R2H95Nmpbhp6neQ3IrFO3K_M0ofWt3w6jQEfQ0y4Y6FWOY85AaDinvknLOppIDEiXfsMs8FJ6KTyQC0W2QfLP1z3zoewXUGrleFV2Kev86ra1wwExrddwg5pDUE8G3ATLKbJTh_OVNCOnsQgpnWX_OzFTKTXff01jypxK-UFTwqr-Tql0bHZ9tT0Q4sBGoCwAhUuAyj8qdwiWK5RcOg_h_uPuRIc3FdE">
+                <img class="w-full h-full object-cover" alt="Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBniQBeAeQhbwAJbll5n5GvWfQKyHW2yHzRVg3NpBDT2G5R2H95Nmpbhp6neQ3IrFO3K_M0ofWt3w6jQEfQ0y4Y6FWOY85AaDinvknLOppIDEiXfsMs8FJ6KTyQC0W2QfLP1z3zoewXUGrleFV2Kev86ra1wwExrddwg5pDUE8G3ATLKbJTh_OVNCOnsQgpnWX_OzFTKTXff01jypxK-UFTwqr-Tql0bHZ9tT0Q4sBGoCwAhUuAyj8qdwiWK5RcOg_h_uPuRIc3FdE">
             </div>
         </div>
     </header>
 
     <main class="px-outer-padding py-gutter max-w-7xl mx-auto w-full flex flex-col gap-gutter">
-        <!-- Block 1: Metadata Card -->
+        <div id="pageAlert" class="hidden">
+            <div id="pageAlertInner" class="flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold">
+                <span id="pageAlertIcon" class="material-symbols-outlined text-[18px] mt-0.5"></span>
+                <span id="pageAlertMsg"></span>
+            </div>
+        </div>
+
         <section class="bg-white border border-slate-200 rounded-lg p-card-padding">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="font-headline-sm text-headline-sm text-primary">Journals</h3>
+                    <p class="text-secondary font-body-sm mt-0.5">Select a draft, submitted, approved, or posted journal for the selected organization.</p>
+                </div>
+                <button id="newJournalBtn" class="flex items-center justify-center gap-2 px-4 py-2 bg-black text-white text-body-sm font-bold rounded-lg hover:opacity-90 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    New Journal
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-body-sm">
+                    <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider">Description</th>
+                        <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider">Date</th>
+                        <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider text-center">Status</th>
+                        <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right">Debits</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="journalListBody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <div id="statusPanel" class="hidden items-center gap-3 px-5 py-4 rounded-lg border text-body-sm font-semibold">
+            <span id="statusIcon" class="material-symbols-outlined"></span>
+            <div>
+                <span id="statusLabel" class="font-bold"></span>
+                <span id="statusDetail" class="ml-2 font-normal text-secondary"></span>
+            </div>
+        </div>
+
+        <section class="bg-white border border-slate-200 rounded-lg p-card-padding">
+            <h3 class="font-headline-sm text-headline-sm text-primary mb-4">Journal Header</h3>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
                 <div class="flex flex-col gap-2">
-                    <label class="font-body-sm font-semibold text-on-surface">Entry Description</label>
-                    <input class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black" placeholder="e.g. Monthly Payroll Accrual" type="text">
+                    <label class="font-body-sm font-semibold text-on-surface" for="journalDescription">Entry Description <span class="text-error">*</span></label>
+                    <input id="journalDescription" type="text" placeholder="e.g. Monthly adjustment" class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black">
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label class="font-body-sm font-semibold text-on-surface">Transaction Date</label>
-                    <input class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black" type="date">
+                    <label class="font-body-sm font-semibold text-on-surface" for="journalDate">Transaction Date <span class="text-error">*</span></label>
+                    <input id="journalDate" type="date" class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black">
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label class="font-body-sm font-semibold text-on-surface">Journal Type</label>
-                    <select class="bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black appearance-none">
-                        <option>Standard</option>
-                        <option>Adjusting</option>
-                        <option>Reversing</option>
-                    </select>
+                    <label class="font-body-sm font-semibold text-on-surface" for="branchId">Branch <span class="text-error">*</span></label>
+                    <div class="relative">
+                        <select id="branchId" class="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-body-md focus:border-black appearance-none cursor-pointer">
+                            <option value="">Select branch...</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary text-[18px]">expand_more</span>
+                    </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label class="font-body-sm font-semibold text-on-surface">Base Currency</label>
-                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5">
-                        <span class="font-label-md bg-black text-white px-2 py-0.5 rounded">NGN</span>
-                        <span class="text-body-md text-slate-600">Nigerian Naira</span>
+                    <label class="font-body-sm font-semibold text-on-surface">Status</label>
+                    <div id="headerStatusBadge" class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-body-md text-slate-600">
+                        New draft
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Block 2: Journal Lines Grid -->
         <section class="bg-white border border-slate-200 rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                     <tr class="bg-slate-50 border-b border-slate-200">
-                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Account Code</th>
-                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right">Debit (₦)</th>
-                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right">Credit (₦)</th>
-                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Dept</th>
-                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Project</th>
-                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider">Branch</th>
-                        <th class="px-4 py-3"></th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider min-w-[220px]">Account</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right min-w-[130px]">Debit (NGN)</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right min-w-[130px]">Credit (NGN)</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider min-w-[180px]">Narration</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider min-w-[110px]">Dept</th>
+                        <th class="px-6 py-3 font-label-md text-slate-500 uppercase tracking-wider min-w-[130px]">Project</th>
+                        <th class="px-4 py-3 w-10"></th>
                     </tr>
                     </thead>
-                    <tbody id="journal-lines">
-                    <!-- Default Rows -->
-                    <tr class="border-b border-slate-100 group transition-colors hover:bg-slate-50/50">
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-md focus:ring-0 cursor-pointer">
-                                <option>Select Account...</option>
-                                <option>1001 - Petty Cash</option>
-                                <option>4005 - Professional Fees</option>
-                                <option>2010 - Accrued Liabilities</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4">
-                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
-                        </td>
-                        <td class="px-6 py-4">
-                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
-                        </td>
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
-                                <option>HQ</option>
-                                <option>Operations</option>
-                                <option>Sales</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
-                                <option>General</option>
-                                <option>Expansion-24</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
-                                <option>Lagos</option>
-                                <option>Abuja</option>
-                                <option>Port Harcourt</option>
-                            </select>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <button class="text-slate-300 hover:text-error transition-colors" onclick="this.closest('tr').remove(); updateTotals();">
-                                <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- Repeat Row -->
-                    <tr class="border-b border-slate-100 group transition-colors hover:bg-slate-50/50">
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-md focus:ring-0 cursor-pointer">
-                                <option>Select Account...</option>
-                                <option>1001 - Petty Cash</option>
-                                <option>4005 - Professional Fees</option>
-                                <option>2010 - Accrued Liabilities</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4">
-                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
-                        </td>
-                        <td class="px-6 py-4">
-                            <input class="w-full bg-transparent border-none text-right font-label-md focus:ring-0" onchange="updateTotals()" placeholder="0.00" type="number">
-                        </td>
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
-                                <option>HQ</option>
-                                <option>Operations</option>
-                                <option>Sales</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
-                                <option>General</option>
-                                <option>Expansion-24</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4">
-                            <select class="w-full bg-transparent border-none p-0 text-body-sm focus:ring-0">
-                                <option>Lagos</option>
-                                <option>Abuja</option>
-                                <option>Port Harcourt</option>
-                            </select>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <button class="text-slate-300 hover:text-error transition-colors" onclick="this.closest('tr').remove(); updateTotals();">
-                                <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
+                    <tbody id="journal-lines"></tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 bg-slate-50/30">
-                <button class="flex items-center gap-2 text-body-md font-semibold text-primary hover:underline transition-all" onclick="addRow()">
-                    <span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+            <div id="addLineRow" class="px-6 py-4 bg-slate-50/30 border-t border-slate-100">
+                <button id="addLineBtn" class="flex items-center gap-2 text-body-md font-semibold text-primary hover:underline transition-all">
+                    <span class="material-symbols-outlined text-[20px]">add_circle</span>
                     Add New Line
                 </button>
             </div>
-            <!-- Table Footer: Summary -->
             <div class="p-card-padding border-t border-slate-200 bg-white">
                 <div class="flex flex-col items-end gap-3">
                     <div class="flex items-center gap-12 text-right">
                         <div>
                             <p class="font-label-md text-slate-500 uppercase mb-1">Total Debits</p>
-                            <p class="font-currency-display text-primary">₦ <span id="total-debit">0.00</span></p>
+                            <p class="font-currency-display text-primary">NGN <span id="total-debit">0.00</span></p>
                         </div>
                         <div>
                             <p class="font-label-md text-slate-500 uppercase mb-1">Total Credits</p>
-                            <p class="font-currency-display text-primary">₦ <span id="total-credit">0.00</span></p>
+                            <p class="font-currency-display text-primary">NGN <span id="total-credit">0.00</span></p>
                         </div>
                     </div>
-                    <!-- Equality Validation Indicator -->
-                    <div class="flex items-center gap-2 bg-error-container text-on-error-container px-3 py-1.5 rounded-full transition-all opacity-100" id="balance-badge">
+                    <div id="balance-badge" class="flex items-center gap-2 bg-red-50 text-red-800 border border-red-200 px-3 py-1.5 rounded-full transition-all">
                         <span class="material-symbols-outlined text-[18px]" id="balance-icon">error</span>
-                        <span class="font-label-md" id="balance-text">Unbalanced (Difference: ₦0.00)</span>
+                        <span class="font-label-md" id="balance-text">Unbalanced (Diff: NGN 0.00)</span>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Message Divs -->
-    <div id="successMsg" class="fixed top-20 right-4 bg-green-100 text-green-800 px-4 py-3 rounded-lg shadow-lg hidden" style="z-index: 1000;">
-        <span id="successText"></span>
-    </div>
-    <div id="errorMsg" class="fixed top-20 right-4 bg-red-100 text-red-800 px-4 py-3 rounded-lg shadow-lg hidden" style="z-index: 1000;">
-        <span id="errorText"></span>
-    </div>
-
-    <!-- Page Actions (Sticky Footer balanced with Sidebar layout context) -->
-    <div class="fixed bottom-0 right-0 bg-white/80 backdrop-blur-md border-t border-slate-200 px-outer-padding py-4 z-30 left-auto w-[calc(100%-280px)]">
-        <div class="max-w-7xl mx-auto flex justify-end gap-4">
-            <input type="hidden" id="journalId" value="">
-            <button id="saveDraftBtn" class="px-6 py-3 bg-white border border-slate-200 text-primary font-bold rounded-lg hover:bg-slate-50 transition-colors active:scale-95">
+    <div class="fixed bottom-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-200 px-outer-padding py-4 z-30 left-auto w-[calc(100%-280px)]">
+        <div class="max-w-7xl mx-auto flex justify-end gap-3">
+            <input type="hidden" id="currentJournalId" value="">
+            <input type="hidden" id="currentJournalStatus" value="">
+            <button id="saveDraftBtn" class="px-6 py-3 bg-white border border-slate-200 text-primary font-bold rounded-lg hover:bg-slate-50 transition-colors active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">save</span>
                 Save Draft
             </button>
             <button id="submitBtn" class="px-6 py-3 bg-black text-white font-bold rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
-                Submit to CFO for Approval
+                <span class="material-symbols-outlined text-[18px]">send</span>
+                Submit to CFO
+            </button>
+            <button id="postBtn" class="hidden px-6 py-3 bg-green-700 text-white font-bold rounded-lg hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">send</span>
+                Post to GL
             </button>
         </div>
     </div>
 </div>
 
-<!-- Interactivity Application Engineering Scripts -->
-<script>
-    let currentJournalId = null;
-    const orgId = 1; // Default org for now
+<div id="postModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="postModalOverlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white border border-slate-200 rounded-xl shadow-2xl w-full max-w-md p-6">
+        <div class="flex items-start gap-4 mb-5">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                <span class="material-symbols-outlined text-green-700">send</span>
+            </div>
+            <div>
+                <h3 class="font-headline-sm text-headline-sm text-primary">Post to General Ledger?</h3>
+                <p class="text-secondary font-body-sm mt-1">This posts the approved journal to the General Ledger and creates permanent GL rows.</p>
+            </div>
+        </div>
+        <div id="postModalError" class="hidden mb-4 px-4 py-3 rounded-lg bg-red-50 text-red-800 text-body-sm border border-red-200"></div>
+        <div class="flex gap-3">
+            <button id="confirmPostBtn" class="flex-1 bg-black text-white font-body-md font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">send</span>
+                Post Journal
+            </button>
+            <button id="cancelPostBtn" class="px-5 bg-slate-100 text-primary font-body-md font-semibold py-3 rounded-lg hover:bg-slate-200 active:scale-[0.98] transition-all">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>
 
-    function addRow() {
+<div id="glModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div id="glModalOverlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div class="relative bg-white border border-slate-200 rounded-xl shadow-2xl w-full max-w-2xl p-6 max-h-[80vh] flex flex-col">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="font-headline-sm text-headline-sm text-primary">General Ledger Entries Created</h3>
+                <p class="text-secondary font-body-sm mt-0.5">Journal successfully posted.</p>
+            </div>
+            <button id="closeGlBtn" class="p-2 rounded-full hover:bg-slate-100 transition-colors">
+                <span class="material-symbols-outlined text-secondary">close</span>
+            </button>
+        </div>
+        <div class="overflow-y-auto flex-1">
+            <table class="w-full text-left text-body-sm">
+                <thead class="bg-slate-50 sticky top-0">
+                <tr>
+                    <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider">Journal No.</th>
+                    <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider">Date</th>
+                    <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider">Side</th>
+                    <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider text-right">Amount</th>
+                    <th class="px-4 py-3 font-label-md text-slate-500 uppercase tracking-wider">Description</th>
+                </tr>
+                </thead>
+                <tbody id="glTableBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ORG_KEY = 'ams.selectedOrganizationId';
+    const CURRENT_USER = 'current-user';
+    let currentOrgId = null;
+    let currentJournalId = null;
+    let currentJournalStatus = null;
+    let coaAccounts = [];
+    let branchList = [];
+    let isActionRunning = false;
+    let lineSeq = 0;
+
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            ...options,
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+        });
+        let body = null;
+        const ct = response.headers.get('content-type') || '';
+        if (ct.includes('application/json') && response.status !== 204) {
+            try { body = await response.json(); } catch (_) { body = null; }
+        }
+        if (!response.ok) {
+            const fieldErrors = body?.fieldErrors
+                ? Object.values(body.fieldErrors).filter(Boolean).join(' ')
+                : '';
+            const msg = fieldErrors || body?.message || body?.error || `Request failed (${response.status})`;
+            throw new Error(msg);
+        }
+        return body;
+    }
+
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.appendChild(document.createTextNode(str ?? ''));
+        return d.innerHTML;
+    }
+
+    function formatMoney(value) {
+        return Number(value || 0).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function isoDate(raw) {
+        return raw ? String(raw).substring(0, 10) : '';
+    }
+
+    function formatDate(raw) {
+        if (!raw) return '-';
+        const [year, month, day] = String(raw).substring(0, 10).split('-');
+        if (!year || !month || !day) return '-';
+        return new Intl.DateTimeFormat('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })
+            .format(new Date(Number(year), Number(month) - 1, Number(day)));
+    }
+
+    function showAlert(msg, type = 'error') {
+        const wrap = document.getElementById('pageAlert');
+        const inner = document.getElementById('pageAlertInner');
+        const icon = document.getElementById('pageAlertIcon');
+        document.getElementById('pageAlertMsg').textContent = msg;
+        if (type === 'success') {
+            inner.className = 'flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-green-50 border-green-200 text-green-800';
+            icon.textContent = 'check_circle';
+        } else {
+            inner.className = 'flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-red-50 border-red-200 text-red-800';
+            icon.textContent = 'error';
+        }
+        wrap.classList.remove('hidden');
+        setTimeout(() => wrap.classList.add('hidden'), 5000);
+    }
+
+    async function loadOrganizations() {
+        const sel = document.getElementById('orgSelector');
+        try {
+            const orgs = await apiJson('/api/organizations') || [];
+            sel.innerHTML = '<option value="">-- Select Organization --</option>';
+            orgs.forEach(org => {
+                const opt = document.createElement('option');
+                opt.value = org.id;
+                opt.textContent = org.name;
+                sel.appendChild(opt);
+            });
+            if (!orgs.length) {
+                renderJournalListEmpty('No organizations found. Set up an organization first.');
+                setEditorDisabled(true);
+                return;
+            }
+            const stored = sessionStorage.getItem(ORG_KEY);
+            const selected = orgs.find(o => String(o.id) === String(stored)) || orgs[0];
+            sel.value = selected.id;
+            await onOrgChange(selected.id);
+        } catch (err) {
+            sel.innerHTML = '<option value="">Failed to load organizations</option>';
+            setEditorDisabled(true);
+            showAlert('Could not load organizations: ' + err.message);
+        }
+    }
+
+    async function onOrgChange(orgId) {
+        currentOrgId = orgId ? Number(orgId) : null;
+        if (!currentOrgId) {
+            setEditorDisabled(true);
+            renderJournalListEmpty('Select an organization to load journals.');
+            return;
+        }
+        sessionStorage.setItem(ORG_KEY, currentOrgId);
+        startNewJournal();
+        await Promise.all([loadCOA(), loadBranches(), loadJournalList()]);
+        setEditorDisabled(false);
+    }
+
+    document.getElementById('orgSelector').addEventListener('change', e => onOrgChange(e.target.value));
+
+    async function loadCOA() {
+        coaAccounts = await apiJson(`/api/accountant/chart-of-accounts/org/${currentOrgId}`) || [];
+        rebuildAccountDropdowns();
+    }
+
+    function coaOptions() {
+        return '<option value="">Select account...</option>' + coaAccounts.map(a =>
+            `<option value="${escapeHtml(a.id)}">${escapeHtml(a.accountCode)} - ${escapeHtml(a.accountName)}</option>`
+        ).join('');
+    }
+
+    function rebuildAccountDropdowns() {
+        document.querySelectorAll('.account-select').forEach(sel => {
+            const previous = sel.value;
+            sel.innerHTML = coaOptions();
+            if (previous) sel.value = previous;
+        });
+    }
+
+    async function loadBranches() {
+        branchList = await apiJson(`/api/branches?organizationId=${currentOrgId}`) || [];
+        const branchSel = document.getElementById('branchId');
+        branchSel.innerHTML = '<option value="">Select branch...</option>' + branchList.map(b =>
+            `<option value="${escapeHtml(b.id)}" data-code="${escapeHtml(b.code || '')}">${escapeHtml(b.name)}${b.code ? ' (' + escapeHtml(b.code) + ')' : ''}</option>`
+        ).join('');
+    }
+
+    function selectedBranchCode() {
+        const option = document.getElementById('branchId').selectedOptions[0];
+        return option ? option.dataset.code || '' : '';
+    }
+
+    async function loadJournalList() {
+        const tbody = document.getElementById('journalListBody');
+        tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-secondary font-body-sm">
+            <span class="material-symbols-outlined animate-spin text-[28px]">autorenew</span>
+            <p class="mt-2">Loading journals...</p></td></tr>`;
+        try {
+            const journals = await apiJson(`/api/accountant/manual-journals/org/${currentOrgId}`) || [];
+            renderJournalList(journals);
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-error font-body-sm">
+                Failed to load journals: ${escapeHtml(err.message)}</td></tr>`;
+        }
+    }
+
+    function renderJournalList(journals) {
+        const tbody = document.getElementById('journalListBody');
+        if (!journals.length) {
+            renderJournalListEmpty('No journals yet. Create a new draft below.');
+            return;
+        }
+        tbody.innerHTML = '';
+        journals.forEach(journal => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition-colors cursor-pointer';
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-body-md text-primary font-semibold">${escapeHtml(journal.description || '-')}</td>
+                <td class="px-4 py-3 font-label-md text-secondary">${escapeHtml(formatDate(journal.journalDate))}</td>
+                <td class="px-4 py-3 text-center">${statusBadge(journal.status)}</td>
+                <td class="px-4 py-3 font-label-md text-right text-primary">NGN ${formatMoney(journal.totalDebits)}</td>
+                <td class="px-4 py-3 text-right">
+                    <button class="text-xs font-semibold text-secondary hover:text-primary underline transition-colors">Open</button>
+                </td>`;
+            tr.addEventListener('click', () => selectJournal(journal.id));
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderJournalListEmpty(message) {
+        document.getElementById('journalListBody').innerHTML =
+            `<tr><td colspan="5" class="py-8 text-center text-secondary font-body-sm">${message}</td></tr>`;
+    }
+
+    async function selectJournal(journalId) {
+        try {
+            const journal = await apiJson(`/api/accountant/manual-journals/${journalId}`);
+            currentJournalId = journal.id;
+            currentJournalStatus = journal.status || 'DRAFT';
+            document.getElementById('currentJournalId').value = currentJournalId;
+            document.getElementById('currentJournalStatus').value = currentJournalStatus;
+            document.getElementById('journalDescription').value = journal.description || '';
+            document.getElementById('journalDate').value = isoDate(journal.journalDate);
+            document.getElementById('branchId').value = journal.branchId || '';
+
+            const tbody = document.getElementById('journal-lines');
+            tbody.innerHTML = '';
+            lineSeq = 0;
+            const lines = journal.journalLines || [];
+            if (lines.length) {
+                lines.forEach((line, index) => appendRow(line, index + 1));
+            } else {
+                appendRow(null, 1);
+                appendRow(null, 2);
+            }
+            applyStatusState(currentJournalStatus);
+            updateTotals();
+            showAlert(`Journal #${journal.id} loaded.`, 'success');
+        } catch (err) {
+            showAlert('Could not load journal: ' + err.message);
+        }
+    }
+
+    function startNewJournal() {
+        currentJournalId = null;
+        currentJournalStatus = 'NEW';
+        document.getElementById('currentJournalId').value = '';
+        document.getElementById('currentJournalStatus').value = '';
+        document.getElementById('journalDescription').value = '';
+        document.getElementById('journalDate').value = '';
+        document.getElementById('branchId').value = '';
+        document.getElementById('journal-lines').innerHTML = '';
+        lineSeq = 0;
+        appendRow(null, 1);
+        appendRow(null, 2);
+        applyStatusState('NEW');
+        document.getElementById('statusPanel').classList.add('hidden');
+        updateTotals();
+    }
+
+    document.getElementById('newJournalBtn').addEventListener('click', startNewJournal);
+
+    const STATUS_CFG = {
+        NEW: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-200', icon: 'add_circle', label: 'New draft' },
+        DRAFT: { bg: 'bg-slate-100', text: 'text-slate-700', border: 'border-slate-200', icon: 'edit_note', label: 'Draft' },
+        SUBMITTED: { bg: 'bg-amber-50', text: 'text-amber-800', border: 'border-amber-200', icon: 'schedule', label: 'Submitted, awaiting CFO approval' },
+        APPROVED: { bg: 'bg-green-50', text: 'text-green-800', border: 'border-green-200', icon: 'check_circle', label: 'Approved, ready to post' },
+        REJECTED: { bg: 'bg-red-50', text: 'text-red-800', border: 'border-red-200', icon: 'cancel', label: 'Rejected' },
+        POSTED: { bg: 'bg-blue-50', text: 'text-blue-800', border: 'border-blue-200', icon: 'send', label: 'Posted to General Ledger' }
+    };
+
+    function statusBadge(status) {
+        const c = STATUS_CFG[status] || STATUS_CFG.NEW;
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${c.bg} ${c.text} border ${c.border}">
+            <span class="material-symbols-outlined text-[13px]">${escapeHtml(c.icon)}</span>${escapeHtml(status || 'NEW')}
+        </span>`;
+    }
+
+    function applyStatusState(status) {
+        const cfg = STATUS_CFG[status] || STATUS_CFG.NEW;
+        const editable = status === 'NEW' || status === 'DRAFT' || status === 'REJECTED';
+        const approved = status === 'APPROVED';
+        document.getElementById('headerStatusBadge').innerHTML = statusBadge(status);
+        document.getElementById('saveDraftBtn').disabled = !editable;
+        document.getElementById('submitBtn').disabled = !editable;
+        document.getElementById('postBtn').classList.toggle('hidden', !approved);
+        document.getElementById('submitBtn').classList.toggle('hidden', approved);
+        document.getElementById('addLineRow').classList.toggle('hidden', !editable);
+        ['journalDescription', 'journalDate', 'branchId'].forEach(id => {
+            document.getElementById(id).disabled = !editable;
+        });
+        setLinesEditable(editable);
+
+        if (status !== 'NEW') {
+            const panel = document.getElementById('statusPanel');
+            panel.className = `flex items-center gap-3 px-5 py-4 rounded-lg border text-body-sm font-semibold ${cfg.bg} ${cfg.text} ${cfg.border}`;
+            document.getElementById('statusIcon').textContent = cfg.icon;
+            document.getElementById('statusLabel').textContent = status;
+            document.getElementById('statusDetail').textContent = cfg.label;
+            panel.classList.remove('hidden');
+        }
+    }
+
+    function setEditorDisabled(disabled) {
+        ['journalDescription', 'journalDate', 'branchId', 'saveDraftBtn', 'submitBtn', 'postBtn', 'newJournalBtn', 'addLineBtn'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = disabled;
+        });
+        setLinesEditable(!disabled);
+    }
+
+    function setLinesEditable(editable) {
+        document.querySelectorAll('#journal-lines input, #journal-lines select, #journal-lines button').forEach(el => {
+            el.disabled = !editable;
+        });
+    }
+
+    function appendRow(lineData, seqHint) {
+        lineSeq += 1;
+        const seq = seqHint || lineSeq;
         const tbody = document.getElementById('journal-lines');
-        if(tbody.children.length === 0) return;
-        const newRow = tbody.children[0].cloneNode(true);
-        newRow.querySelectorAll('input').forEach(input => input.value = '');
-        newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-        tbody.appendChild(newRow);
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-100 group transition-colors hover:bg-slate-50/50';
+        tr.dataset.lineId = lineData?.id || '';
+        tr.dataset.lineSeq = seq;
+        tr.innerHTML = `
+            <td class="px-6 py-4">
+                <select class="account-select w-full bg-transparent border-none p-0 text-body-md focus:ring-0 cursor-pointer">${coaOptions()}</select>
+            </td>
+            <td class="px-6 py-4">
+                <input data-side="debit" type="number" min="0" step="0.01" placeholder="0.00" class="amount-input w-full bg-transparent border-none text-right font-label-md focus:ring-0" value="${escapeHtml(lineData?.debitAmount ?? '')}">
+            </td>
+            <td class="px-6 py-4">
+                <input data-side="credit" type="number" min="0" step="0.01" placeholder="0.00" class="amount-input w-full bg-transparent border-none text-right font-label-md focus:ring-0" value="${escapeHtml(lineData?.creditAmount ?? '')}">
+            </td>
+            <td class="px-6 py-4"><input data-field="narration" type="text" placeholder="Line narration" class="w-full bg-transparent border-none text-body-sm focus:ring-0" value="${escapeHtml(lineData?.narration ?? '')}"></td>
+            <td class="px-6 py-4"><input data-field="departmentCode" type="text" placeholder="e.g. HQ" class="w-full bg-transparent border-none text-body-sm focus:ring-0" value="${escapeHtml(lineData?.departmentCode ?? '')}"></td>
+            <td class="px-6 py-4"><input data-field="projectCode" type="text" placeholder="e.g. GENERAL" class="w-full bg-transparent border-none text-body-sm focus:ring-0" value="${escapeHtml(lineData?.projectCode ?? '')}"></td>
+            <td class="px-4 py-4 text-center">
+                <button class="delete-line-btn text-slate-300 hover:text-error transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                </button>
+            </td>`;
+        tbody.appendChild(tr);
+        const select = tr.querySelector('.account-select');
+        if (lineData?.chartOfAccountId) select.value = lineData.chartOfAccountId;
+        tr.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => handleLineInput(el)));
+        tr.querySelector('.account-select').addEventListener('change', updateTotals);
+        tr.querySelector('.delete-line-btn').addEventListener('click', () => deleteLine(tr));
+        updateTotals();
+    }
+
+    document.getElementById('addLineBtn').addEventListener('click', () => appendRow(null, null));
+
+    function handleLineInput(input) {
+        if (input.classList.contains('amount-input')) {
+            const row = input.closest('tr');
+            const debit = row.querySelector('[data-side="debit"]');
+            const credit = row.querySelector('[data-side="credit"]');
+            if (input.dataset.side === 'debit' && Number(debit.value) > 0) credit.value = '';
+            if (input.dataset.side === 'credit' && Number(credit.value) > 0) debit.value = '';
+        }
+        updateTotals();
+    }
+
+    async function deleteLine(row) {
+        const lineId = row.dataset.lineId;
+        if (lineId) {
+            try {
+                await apiJson(`/api/accountant/manual-journals/lines/${lineId}`, { method: 'DELETE' });
+            } catch (err) {
+                showAlert('Could not delete line: ' + err.message);
+                return;
+            }
+        }
+        row.remove();
+        updateTotals();
     }
 
     function updateTotals() {
         let debits = 0;
         let credits = 0;
-
-        const rows = document.querySelectorAll('#journal-lines tr');
-        rows.forEach(row => {
-            const d = parseFloat(row.cells[1].querySelector('input').value) || 0;
-            const c = parseFloat(row.cells[2].querySelector('input').value) || 0;
-            debits += d;
-            credits += c;
+        document.querySelectorAll('#journal-lines tr').forEach(row => {
+            debits += Number(row.querySelector('[data-side="debit"]')?.value || 0);
+            credits += Number(row.querySelector('[data-side="credit"]')?.value || 0);
         });
-
-        document.getElementById('total-debit').textContent = debits.toLocaleString('en-NG', {minimumFractionDigits: 2});
-        document.getElementById('total-credit').textContent = credits.toLocaleString('en-NG', {minimumFractionDigits: 2});
-
+        document.getElementById('total-debit').textContent = formatMoney(debits);
+        document.getElementById('total-credit').textContent = formatMoney(credits);
         const diff = Math.abs(debits - credits);
         const badge = document.getElementById('balance-badge');
         const icon = document.getElementById('balance-icon');
         const text = document.getElementById('balance-text');
-
         if (debits > 0 && credits > 0 && diff < 0.01) {
-            badge.className = "flex items-center gap-2 bg-green-100 text-green-800 px-3 py-1.5 rounded-full transition-all";
-            icon.textContent = "check_circle";
-            text.textContent = "Balanced ✓";
+            badge.className = 'flex items-center gap-2 bg-green-100 text-green-800 border border-green-200 px-3 py-1.5 rounded-full transition-all';
+            icon.textContent = 'check_circle';
+            text.textContent = 'Balanced';
         } else {
-            badge.className = "flex items-center gap-2 bg-error-container text-on-error-container px-3 py-1.5 rounded-full transition-all";
-            icon.textContent = "error";
-            text.textContent = `Unbalanced (Diff: ₦${diff.toLocaleString('en-NG', {minimumFractionDigits: 2})})`;
+            badge.className = 'flex items-center gap-2 bg-red-50 text-red-800 border border-red-200 px-3 py-1.5 rounded-full transition-all';
+            icon.textContent = 'error';
+            text.textContent = `Unbalanced (Diff: NGN ${formatMoney(diff)})`;
         }
     }
 
-    function showMessage(msg, isError = false) {
-        const msgDiv = isError ? document.getElementById('errorMsg') : document.getElementById('successMsg');
-        const textSpan = isError ? document.getElementById('errorText') : document.getElementById('successText');
-        textSpan.textContent = msg;
-        msgDiv.classList.remove('hidden');
-        setTimeout(() => msgDiv.classList.add('hidden'), 4000);
+    function validateRows() {
+        const rows = [...document.querySelectorAll('#journal-lines tr')];
+        if (rows.length < 2) return 'Add at least two journal lines.';
+        for (const row of rows) {
+            const accountId = row.querySelector('.account-select')?.value;
+            const debit = Number(row.querySelector('[data-side="debit"]')?.value || 0);
+            const credit = Number(row.querySelector('[data-side="credit"]')?.value || 0);
+            if (!accountId) return 'Every line must have an account selected.';
+            if (debit < 0 || credit < 0) return 'Amounts cannot be negative.';
+            if (debit > 0 && credit > 0) return 'A line cannot have both debit and credit amounts.';
+            if (debit === 0 && credit === 0) return 'Each line must have either a debit or a credit amount.';
+        }
+        return null;
     }
 
-    document.getElementById('saveDraftBtn').addEventListener('click', async function() {
-        const description = document.querySelector('input[placeholder="e.g. Monthly Payroll Accrual"]').value;
-        const journalDate = document.querySelector('input[type="date"]').value;
+    function rowToDTO(row, sequence) {
+        return {
+            chartOfAccountId: Number(row.querySelector('.account-select').value),
+            debitAmount: Number(row.querySelector('[data-side="debit"]').value || 0),
+            creditAmount: Number(row.querySelector('[data-side="credit"]').value || 0),
+            narration: row.querySelector('[data-field="narration"]').value.trim(),
+            departmentCode: row.querySelector('[data-field="departmentCode"]').value.trim(),
+            projectCode: row.querySelector('[data-field="projectCode"]').value.trim(),
+            branchCode: selectedBranchCode(),
+            lineSequence: sequence
+        };
+    }
 
-        if (!description || !journalDate) {
-            showMessage('Please fill in Description and Transaction Date', true);
-            return;
-        }
+    async function saveDraft({ silent = false } = {}) {
+        if (isActionRunning) return false;
+        const description = document.getElementById('journalDescription').value.trim();
+        const journalDate = document.getElementById('journalDate').value;
+        const branchId = document.getElementById('branchId').value;
+        if (!currentOrgId) { showAlert('Select an organization first.'); return false; }
+        if (!description || !journalDate) { showAlert('Fill description and transaction date.'); return false; }
+        if (!branchId) { showAlert('Select a branch.'); return false; }
+        const lineError = validateRows();
+        if (lineError) { showAlert(lineError); return false; }
 
-        this.disabled = true;
-        this.textContent = 'Saving...';
-
+        const btn = document.getElementById('saveDraftBtn');
+        const old = btn.innerHTML;
+        isActionRunning = true;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">autorenew</span> Saving...';
         try {
-            const response = await fetch(`/api/accountant/manual-journals/org/${orgId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    description: description,
-                    journalDate: journalDate
-                })
-            });
-
-            const result = await response.json();
-            if (response.ok && result.data) {
-                currentJournalId = result.data.id;
-                document.getElementById('journalId').value = currentJournalId;
-                showMessage('Journal draft saved successfully');
-            } else {
-                showMessage(result.message || 'Failed to save journal', true);
+            if (!currentJournalId) {
+                const journal = await apiJson(`/api/accountant/manual-journals/org/${currentOrgId}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ branchId: Number(branchId), description, journalDate })
+                });
+                currentJournalId = journal.id;
+                currentJournalStatus = journal.status || 'DRAFT';
+                document.getElementById('currentJournalId').value = currentJournalId;
+                document.getElementById('currentJournalStatus').value = currentJournalStatus;
             }
-        } catch (error) {
-            showMessage('Error: ' + error.message, true);
+            const rows = [...document.querySelectorAll('#journal-lines tr')];
+            for (let i = 0; i < rows.length; i += 1) {
+                const row = rows[i];
+                const dto = rowToDTO(row, i + 1);
+                const lineId = row.dataset.lineId;
+                if (lineId) {
+                    const updated = await apiJson(`/api/accountant/manual-journals/lines/${lineId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(dto)
+                    });
+                    row.dataset.lineId = updated?.id || lineId;
+                } else {
+                    const created = await apiJson(`/api/accountant/manual-journals/${currentJournalId}/lines`, {
+                        method: 'POST',
+                        body: JSON.stringify(dto)
+                    });
+                    if (created?.id) row.dataset.lineId = created.id;
+                }
+            }
+            currentJournalStatus = 'DRAFT';
+            document.getElementById('currentJournalStatus').value = 'DRAFT';
+            applyStatusState('DRAFT');
+            await loadJournalList();
+            if (!silent) showAlert('Draft saved successfully.', 'success');
+            return true;
+        } catch (err) {
+            showAlert('Save failed: ' + err.message);
+            return false;
         } finally {
-            this.disabled = false;
-            this.textContent = 'Save Draft';
+            isActionRunning = false;
+            btn.disabled = false;
+            btn.innerHTML = old;
         }
-    });
+    }
 
-    document.getElementById('submitBtn').addEventListener('click', async function() {
-        if (!currentJournalId) {
-            showMessage('Please save draft first', true);
-            return;
-        }
+    document.getElementById('saveDraftBtn').addEventListener('click', () => saveDraft());
 
-        const rows = document.querySelectorAll('#journal-lines tr');
-        if (rows.length === 0) {
-            showMessage('Please add at least one journal line', true);
-            return;
-        }
-
-        // Validate balance
-        let debits = 0, credits = 0;
-        rows.forEach(row => {
-            debits += parseFloat(row.cells[1].querySelector('input').value) || 0;
-            credits += parseFloat(row.cells[2].querySelector('input').value) || 0;
+    async function submitJournal() {
+        const saved = await saveDraft({ silent: true });
+        if (!saved || !currentJournalId) return;
+        let debits = 0;
+        let credits = 0;
+        document.querySelectorAll('#journal-lines tr').forEach(row => {
+            debits += Number(row.querySelector('[data-side="debit"]')?.value || 0);
+            credits += Number(row.querySelector('[data-side="credit"]')?.value || 0);
         });
-
         if (Math.abs(debits - credits) > 0.01) {
-            showMessage('Journal must be balanced (Debits = Credits)', true);
+            showAlert('Journal must be balanced before submitting.');
             return;
         }
-
-        this.disabled = true;
-        this.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Submitting...';
-
+        const btn = document.getElementById('submitBtn');
+        const old = btn.innerHTML;
+        isActionRunning = true;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">autorenew</span> Submitting...';
         try {
-            const response = await fetch(`/api/accountant/manual-journals/${currentJournalId}/submit`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+            const journal = await apiJson(`/api/accountant/manual-journals/${currentJournalId}/submit`, {
+                method: 'PATCH',
+                body: JSON.stringify({ submittedBy: CURRENT_USER })
             });
-
-            const result = await response.json();
-            if (response.ok) {
-                showMessage('Journal submitted for CFO approval');
-                setTimeout(() => window.location.reload(), 1500);
-            } else {
-                showMessage(result.message || 'Submission failed', true);
-            }
-        } catch (error) {
-            showMessage('Error: ' + error.message, true);
+            currentJournalStatus = journal.status || 'SUBMITTED';
+            document.getElementById('currentJournalStatus').value = currentJournalStatus;
+            applyStatusState(currentJournalStatus);
+            await loadJournalList();
+            showAlert('Journal submitted for CFO approval.', 'success');
+        } catch (err) {
+            showAlert('Submission failed: ' + err.message);
         } finally {
-            this.disabled = false;
-            this.innerHTML = '<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span> Submit to CFO for Approval';
+            isActionRunning = false;
+            btn.disabled = false;
+            btn.innerHTML = old;
         }
+    }
+
+    document.getElementById('submitBtn').addEventListener('click', submitJournal);
+
+    function openPostModal() {
+        if (currentJournalStatus !== 'APPROVED') {
+            showAlert('Only approved journals can be posted.');
+            return;
+        }
+        document.getElementById('postModalError').classList.add('hidden');
+        document.getElementById('postModal').classList.remove('hidden');
+    }
+
+    document.getElementById('postBtn').addEventListener('click', openPostModal);
+    document.getElementById('postModalOverlay').addEventListener('click', () => closeModal('postModal'));
+    document.getElementById('cancelPostBtn').addEventListener('click', () => closeModal('postModal'));
+
+    async function confirmPost() {
+        const btn = document.getElementById('confirmPostBtn');
+        const err = document.getElementById('postModalError');
+        err.classList.add('hidden');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">autorenew</span> Posting...';
+        try {
+            const journal = await apiJson(`/api/accountant/manual-journals/${currentJournalId}/post`, {
+                method: 'PATCH',
+                body: JSON.stringify({ postedBy: CURRENT_USER })
+            });
+            closeModal('postModal');
+            currentJournalStatus = journal.status || 'POSTED';
+            document.getElementById('currentJournalStatus').value = currentJournalStatus;
+            applyStatusState(currentJournalStatus);
+            await loadJournalList();
+            showAlert('Journal posted to General Ledger.', 'success');
+            try {
+                const glRows = await apiJson(`/api/accountant/general-ledger/journal/${currentJournalId}`) || [];
+                showGLModal(glRows);
+            } catch (_) {}
+        } catch (e) {
+            err.textContent = e.message;
+            err.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<span class="material-symbols-outlined">send</span> Post Journal';
+        }
+    }
+
+    document.getElementById('confirmPostBtn').addEventListener('click', confirmPost);
+
+    function showGLModal(rows) {
+        const tbody = document.getElementById('glTableBody');
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-secondary font-body-sm">No GL rows returned.</td></tr>';
+        } else {
+            tbody.innerHTML = rows.map(row => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-4 py-3 font-label-md text-primary">${escapeHtml(row.journalNumber || '-')}</td>
+                    <td class="px-4 py-3 text-secondary">${escapeHtml(formatDate(row.transactionDate))}</td>
+                    <td class="px-4 py-3 font-label-md">${escapeHtml(row.debitCredit || '-')}</td>
+                    <td class="px-4 py-3 text-right font-label-md">NGN ${formatMoney(row.amount)}</td>
+                    <td class="px-4 py-3 text-secondary font-body-sm">${escapeHtml(row.description || row.notes || '')}</td>
+                </tr>`).join('');
+        }
+        document.getElementById('glModal').classList.remove('hidden');
+    }
+
+    document.getElementById('glModalOverlay').addEventListener('click', () => closeModal('glModal'));
+    document.getElementById('closeGlBtn').addEventListener('click', () => closeModal('glModal'));
+
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', async function () {
+        startNewJournal();
+        setEditorDisabled(true);
+        await loadOrganizations();
     });
 </script>
 </body>

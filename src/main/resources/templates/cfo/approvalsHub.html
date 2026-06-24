@@ -5,8 +5,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>CFO Approval Hub</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     <script id="tailwind-config">
         tailwind.config = {
@@ -111,6 +111,36 @@
         .fine-border {
             border: 1px solid #e2e8f0;
         }
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        /* Spinner */
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .spinner-dark {
+            border: 2px solid rgba(0,0,0,0.15);
+            border-top-color: #000;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="text-on-background min-h-screen flex">
@@ -119,18 +149,19 @@
 
 <div class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
 
+    <!-- ═══ TOP NAV ═══ -->
     <nav class="sticky top-0 z-40 bg-background flex justify-between items-center w-full px-outer-padding py-6">
         <div class="flex flex-col">
             <h1 class="font-headline-md text-headline-md font-bold text-primary">Approval Hub</h1>
             <p class="font-body-md text-body-md text-secondary">Review pending journal adjustments, high-value purchase commitments, and overrides requiring executive mandate.</p>
         </div>
         <div class="flex items-center gap-stack-md">
-            <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors group relative">
-                <span class="material-symbols-outlined text-secondary group-hover:text-primary" data-icon="notifications">notifications</span>
-                <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+            <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors group relative" id="notifyBtn">
+                <span class="material-symbols-outlined text-secondary group-hover:text-primary">notifications</span>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full" id="notifyDot"></span>
             </button>
             <button class="p-2 rounded-full hover:bg-surface-container-low transition-colors group">
-                <span class="material-symbols-outlined text-secondary group-hover:text-primary" data-icon="settings">settings</span>
+                <span class="material-symbols-outlined text-secondary group-hover:text-primary">settings</span>
             </button>
             <div class="ml-2 w-10 h-10 rounded-full border border-outline-variant bg-surface-container-high overflow-hidden">
                 <img class="w-full h-full object-cover" alt="Profile Picture" th:src="@{/images/avatar.png}">
@@ -140,31 +171,56 @@
 
     <main class="px-outer-padding pb-outer-padding space-y-gutter">
 
+        <!-- ═══ PAGE-LEVEL ALERT PANELS ═══ -->
+        <div id="pageSuccess" class="hidden flex items-start gap-3 bg-green-50 border border-green-200 text-green-800 rounded-xl px-5 py-4 font-body-md text-body-md">
+            <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0">check_circle</span>
+            <span id="pageSuccessMsg"></span>
+        </div>
+        <div id="pageError" class="hidden flex items-start gap-3 bg-error-container border border-red-200 text-on-error-container rounded-xl px-5 py-4 font-body-md text-body-md">
+            <span class="material-symbols-outlined text-[18px] mt-0.5 shrink-0">error</span>
+            <span id="pageErrorMsg"></span>
+        </div>
+
+        <!-- ═══ ORGANIZATION SELECTOR ═══ -->
+        <section class="bg-surface-container-lowest p-4 rounded-xl fine-border flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-secondary text-[20px]">corporate_fare</span>
+                <label for="orgSelector" class="font-label-md text-label-md text-secondary uppercase whitespace-nowrap">Organization</label>
+                <select id="orgSelector" class="pl-3 pr-8 py-2 bg-surface border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all min-w-[220px]">
+                    <option value="">Loading organizations...</option>
+                </select>
+            </div>
+            <div id="orgEmptyHint" class="hidden font-body-sm text-body-sm text-secondary">
+                No organizations found. <a href="/financeAdmin/organizationSetup" class="text-primary underline">Finance Admin &rarr; Organization Setup</a>
+            </div>
+        </section>
+
+        <!-- ═══ SUMMARY CARDS ═══ -->
         <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow">
+            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow" style="transition: transform 0.2s cubic-bezier(0.16,1,0.3,1)">
                 <div class="flex justify-between items-start mb-4">
                     <span class="font-label-md text-label-md text-secondary uppercase">Journals Pending Review</span>
-                    <span class="material-symbols-outlined text-secondary text-[20px]" data-icon="history">history</span>
+                    <span class="material-symbols-outlined text-secondary text-[20px]">history</span>
                 </div>
                 <div>
-                    <h2 class="font-currency-display text-currency-display text-primary">6</h2>
+                    <h2 id="cardPendingCount" class="font-currency-display text-currency-display text-primary">&mdash;</h2>
                     <p class="font-body-sm text-body-sm text-secondary mt-1">Requires Executive Sign-off</p>
                 </div>
             </div>
-            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow">
+            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow" style="transition: transform 0.2s cubic-bezier(0.16,1,0.3,1)">
                 <div class="flex justify-between items-start mb-4">
-                    <span class="font-label-md text-label-md text-secondary uppercase">Invoice Risk Exposure</span>
-                    <span class="material-symbols-outlined text-error text-[20px]" data-icon="warning">warning</span>
+                    <span class="font-label-md text-label-md text-secondary uppercase">Total Pending Value</span>
+                    <span class="material-symbols-outlined text-error text-[20px]">warning</span>
                 </div>
                 <div>
-                    <h2 class="font-currency-display text-currency-display text-error">₦8,450,000.00</h2>
-                    <p class="font-body-sm text-body-sm text-secondary mt-1">High-value exposure pool</p>
+                    <h2 id="cardTotalValue" class="font-currency-display text-currency-display text-error">&mdash;</h2>
+                    <p class="font-body-sm text-body-sm text-secondary mt-1">Aggregate exposure pool</p>
                 </div>
             </div>
-            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow">
+            <div class="bg-surface-container-lowest p-card-padding rounded-xl fine-border flex flex-col justify-between hover:shadow-sm transition-shadow" style="transition: transform 0.2s cubic-bezier(0.16,1,0.3,1)">
                 <div class="flex justify-between items-start mb-4">
                     <span class="font-label-md text-label-md text-secondary uppercase">System Segregation Check</span>
-                    <span class="material-symbols-outlined text-secondary text-[20px]" data-icon="verified_user">verified_user</span>
+                    <span class="material-symbols-outlined text-secondary text-[20px]">verified_user</span>
                 </div>
                 <div>
                     <h2 class="font-currency-display text-currency-display text-primary">100%</h2>
@@ -173,23 +229,25 @@
             </div>
         </section>
 
+        <!-- ═══ FILTER BAR ═══ -->
         <section class="bg-surface-container-lowest p-4 rounded-xl fine-border flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
             <div class="flex flex-wrap gap-2 bg-surface p-1 rounded-lg border border-slate-100 self-start">
-                <button class="px-4 py-2 bg-white text-primary font-body-md font-bold rounded-md shadow-sm border border-slate-200/50">All Pending (6)</button>
-                <button class="px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors">Journals</button>
-                <button class="px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors">Vendor Bills</button>
+                <button id="filterAll" onclick="setFilter('all')" class="px-4 py-2 bg-white text-primary font-body-md font-bold rounded-md shadow-sm border border-slate-200/50">All Pending</button>
+                <button id="filterJournals" onclick="setFilter('journal')" class="px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors">Journals</button>
             </div>
             <div class="flex items-center gap-3">
                 <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]" data-icon="search">search</span>
-                    <input class="pl-9 pr-4 py-2 w-full sm:w-64 bg-surface border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filter queue..." type="text">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">search</span>
+                    <input id="queueSearch" class="pl-9 pr-4 py-2 w-full sm:w-64 bg-surface border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all" placeholder="Filter queue..." type="text">
                 </div>
             </div>
         </section>
 
+        <!-- ═══ AUTHORIZATION QUEUE TABLE ═══ -->
         <section class="bg-surface-container-lowest rounded-xl fine-border overflow-hidden">
             <div class="p-card-padding flex justify-between items-center border-b border-slate-100">
                 <h3 class="font-headline-sm text-headline-sm text-primary">Authorization Queue</h3>
+                <span id="queueSubtitle" class="font-body-sm text-body-sm text-secondary"></span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
@@ -197,179 +255,720 @@
                     <tr class="bg-surface text-secondary font-label-md text-label-md uppercase tracking-wider border-b border-slate-100">
                         <th class="px-card-padding py-4">Submission Timestamp</th>
                         <th class="px-card-padding py-4">Originating User</th>
-                        <th class="px-card-padding py-4">Transaction Type</th>
-                        <th class="px-card-padding py-4">Corporate Branch</th>
-                        <th class="px-card-padding py-4 text-right">Exposure (₦)</th>
+                        <th class="px-card-padding py-4">Description</th>
+                        <th class="px-card-padding py-4">Branch</th>
+                        <th class="px-card-padding py-4 text-right">Exposure (&#8358;)</th>
                         <th class="px-card-padding py-4 text-right">Actions</th>
                     </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
-                        <td class="px-card-padding py-5 font-body-md text-body-md text-primary">Oct 24, 2026 · 14:22</td>
-                        <td class="px-card-padding py-5">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-xs">EO</div>
-                                <span class="font-body-md text-body-md text-primary">E. Okoro</span>
-                            </div>
-                        </td>
-                        <td class="px-card-padding py-5">
-                            <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">Adjusting Journal Entry</span>
-                        </td>
-                        <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">Lagos HQ</td>
-                        <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">₦4,200,000.00</td>
-                        <td class="px-card-padding py-5 text-right">
-                            <div class="flex items-center justify-end gap-4">
-                                <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
-                                <button class="bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve &amp; Post</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
-                        <td class="px-card-padding py-5 font-body-md text-body-md text-primary">Oct 24, 2026 · 15:45</td>
-                        <td class="px-card-padding py-5">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed font-bold text-xs">AB</div>
-                                <span class="font-body-md text-body-md text-primary">A. Balogun</span>
-                            </div>
-                        </td>
-                        <td class="px-card-padding py-5">
-                            <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">Asset Disposal Override</span>
-                        </td>
-                        <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">Abuja North</td>
-                        <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">₦1,150,000.00</td>
-                        <td class="px-card-padding py-5 text-right">
-                            <div class="flex items-center justify-end gap-4">
-                                <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
-                                <button class="bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve &amp; Post</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
-                        <td class="px-card-padding py-5 font-body-md text-body-md text-primary">Oct 24, 2026 · 16:10</td>
-                        <td class="px-card-padding py-5">
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-8 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed font-bold text-xs">CN</div>
-                                <span class="font-body-md text-body-md text-primary">C. Nwosu</span>
-                            </div>
-                        </td>
-                        <td class="px-card-padding py-5">
-                            <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">Accrual Reversal</span>
-                        </td>
-                        <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">Port Harcourt</td>
-                        <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">₦3,100,000.00</td>
-                        <td class="px-card-padding py-5 text-right">
-                            <div class="flex items-center justify-end gap-4">
-                                <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
-                                <button class="bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve &amp; Post</button>
+                    <tbody id="queueTableBody" class="divide-y divide-slate-100">
+                    <!-- Loading state -->
+                    <tr id="loadingRow">
+                        <td colspan="6" class="px-card-padding py-10 text-center text-secondary font-body-md">
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="spinner spinner-dark"></div>
+                                <span>Loading pending journals&hellip;</span>
                             </div>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-
             <div class="px-card-padding py-4 bg-surface-container-low flex justify-between items-center border-t border-slate-100">
-                <span class="font-body-sm text-body-sm text-secondary">Showing 3 of 6 pending authorizations</span>
+                <span id="paginationLabel" class="font-body-sm text-body-sm text-secondary"></span>
                 <div class="flex gap-2">
-                    <button class="p-1.5 border border-outline-variant rounded bg-white hover:bg-surface-container-low transition-colors disabled:opacity-30" disabled>
-                        <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                    <button id="prevPageBtn" onclick="changePage(-1)" class="p-1.5 border border-outline-variant rounded bg-white hover:bg-surface-container-low transition-colors disabled:opacity-30" disabled>
+                        <span class="material-symbols-outlined text-sm">chevron_left</span>
                     </button>
-                    <button class="p-1.5 border border-outline-variant rounded bg-white hover:bg-surface-container-low transition-colors">
-                        <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                    <button id="nextPageBtn" onclick="changePage(1)" class="p-1.5 border border-outline-variant rounded bg-white hover:bg-surface-container-low transition-colors disabled:opacity-30" disabled>
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
                     </button>
                 </div>
             </div>
         </section>
+
     </main>
 </div>
 
-<script>
-    document.querySelectorAll('.hover\\:shadow-sm').forEach(card => {
-        card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-2px)'; });
-        card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0px)'; });
-        card.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';
-    });
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Review Journal Lines
+════════════════════════════════════════════════════════════ -->
+<div id="reviewModal" class="modal-overlay" onclick="handleOverlayClick(event,'reviewModal')">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl mx-4 flex flex-col max-h-[85vh]" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center px-6 py-5 border-b border-slate-100">
+            <h2 class="font-headline-sm text-headline-sm text-primary">Journal Lines Review</h2>
+            <button onclick="closeModal('reviewModal')" class="p-1 rounded-full hover:bg-surface-container-low transition-colors">
+                <span class="material-symbols-outlined text-secondary">close</span>
+            </button>
+        </div>
+        <div class="px-6 py-4 border-b border-slate-100 grid grid-cols-2 gap-4 text-body-sm">
+            <div><span class="font-label-md text-label-md text-secondary uppercase block mb-1">Journal ID</span><span id="rvJournalId" class="font-body-md text-body-md text-primary font-bold"></span></div>
+            <div><span class="font-label-md text-label-md text-secondary uppercase block mb-1">Date</span><span id="rvDate" class="font-body-md text-body-md text-primary"></span></div>
+            <div><span class="font-label-md text-label-md text-secondary uppercase block mb-1">Created By</span><span id="rvCreatedBy" class="font-body-md text-body-md text-primary"></span></div>
+            <div><span class="font-label-md text-label-md text-secondary uppercase block mb-1">Status</span><span id="rvStatus" class="font-body-md text-body-md text-primary"></span></div>
+            <div class="col-span-2"><span class="font-label-md text-label-md text-secondary uppercase block mb-1">Description</span><span id="rvDescription" class="font-body-md text-body-md text-primary"></span></div>
+        </div>
+        <div class="flex-1 overflow-y-auto px-6 py-4">
+            <div id="rvLinesLoading" class="text-center py-8 text-secondary font-body-md hidden">
+                <div class="spinner spinner-dark inline-block"></div> Loading lines&hellip;
+            </div>
+            <div id="rvLinesError" class="hidden bg-error-container text-on-error-container rounded-lg px-4 py-3 font-body-sm text-body-sm mb-3"></div>
+            <table class="w-full text-left" id="rvLinesTable">
+                <thead>
+                <tr class="bg-surface text-secondary font-label-md text-label-md uppercase tracking-wider border-b border-slate-100">
+                    <th class="px-3 py-3">Account</th>
+                    <th class="px-3 py-3">Narration</th>
+                    <th class="px-3 py-3 text-right">Debit (&#8358;)</th>
+                    <th class="px-3 py-3 text-right">Credit (&#8358;)</th>
+                </tr>
+                </thead>
+                <tbody id="rvLinesBody" class="divide-y divide-slate-100 text-body-sm text-primary font-body-md">
+                <tr><td colspan="4" class="px-3 py-6 text-center text-secondary">No lines loaded.</td></tr>
+                </tbody>
+                <tfoot class="border-t-2 border-slate-200 font-bold">
+                <tr>
+                    <td colspan="2" class="px-3 py-3 font-label-md text-label-md text-secondary uppercase">Totals</td>
+                    <td class="px-3 py-3 text-right font-currency-display text-[14px]" id="rvTotalDebit">&#8358;0.00</td>
+                    <td class="px-3 py-3 text-right font-currency-display text-[14px]" id="rvTotalCredit">&#8358;0.00</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="flex justify-end gap-3 px-6 py-5 border-t border-slate-100">
+            <button onclick="closeModal('reviewModal')" class="px-5 py-2.5 rounded-lg border border-outline-variant text-secondary font-body-md hover:bg-surface-container-low transition-colors">Close</button>
+            <button id="rvApproveBtn" onclick="openApproveFromReview()" class="bg-primary text-on-primary font-bold px-5 py-2.5 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve</button>
+            <button id="rvRejectBtn" onclick="openRejectFromReview()" class="bg-error text-on-error font-bold px-5 py-2.5 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Reject</button>
+        </div>
+    </div>
+</div>
 
-    const notifyBtn = document.querySelector('[data-icon="notifications"]').parentElement;
-    notifyBtn.addEventListener('click', () => {
-        const dot = notifyBtn.querySelector('.bg-error');
-        if (dot) dot.style.display = 'none';
-    });
-</script>
-<script>
-    // Dynamic approvals list: fetch pending journals for org 1 and render into table
-    document.addEventListener('DOMContentLoaded', function () {
-        const orgId = 1; // TODO: replace with dynamic org from server/session
-        const tbody = document.querySelector('table tbody');
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Approve Journal (with optional note)
+════════════════════════════════════════════════════════════ -->
+<div id="approveModal" class="modal-overlay" onclick="handleOverlayClick(event,'approveModal')">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center px-6 py-5 border-b border-slate-100">
+            <h2 class="font-headline-sm text-headline-sm text-primary">Approve Journal</h2>
+            <button onclick="closeModal('approveModal')" class="p-1 rounded-full hover:bg-surface-container-low transition-colors">
+                <span class="material-symbols-outlined text-secondary">close</span>
+            </button>
+        </div>
+        <div class="px-6 py-5 space-y-4">
+            <p class="font-body-md text-body-md text-secondary">You are approving journal <strong id="approveJournalIdLabel" class="text-primary"></strong>. This will move it to <strong>APPROVED</strong> status so the Accountant can post it to General Ledger.</p>
+            <div id="approveError" class="hidden bg-error-container text-on-error-container rounded-lg px-4 py-3 font-body-sm text-body-sm"></div>
+            <div>
+                <label for="approveNote" class="font-label-md text-label-md text-secondary uppercase block mb-1">Approval Note <span class="normal-case text-secondary font-body-sm">(optional)</span></label>
+                <textarea id="approveNote" rows="3" placeholder="e.g. Approved for Q2 closing entries" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all resize-none"></textarea>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 px-6 py-5 border-t border-slate-100">
+            <button onclick="closeModal('approveModal')" class="px-5 py-2.5 rounded-lg border border-outline-variant text-secondary font-body-md hover:bg-surface-container-low transition-colors">Cancel</button>
+            <button id="approveConfirmBtn" onclick="submitApprove()" class="bg-primary text-on-primary font-bold px-5 py-2.5 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95 min-w-[100px]">Approve</button>
+        </div>
+    </div>
+</div>
 
-        function formatCurrency(amount) {
-            try {
-                return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount);
-            } catch (e) {
-                return amount;
+<!-- ═══════════════════════════════════════════════════════
+     MODAL: Reject Journal (required reason)
+════════════════════════════════════════════════════════════ -->
+<div id="rejectModal" class="modal-overlay" onclick="handleOverlayClick(event,'rejectModal')">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center px-6 py-5 border-b border-slate-100">
+            <h2 class="font-headline-sm text-headline-sm text-primary">Reject Journal</h2>
+            <button onclick="closeModal('rejectModal')" class="p-1 rounded-full hover:bg-surface-container-low transition-colors">
+                <span class="material-symbols-outlined text-secondary">close</span>
+            </button>
+        </div>
+        <div class="px-6 py-5 space-y-4">
+            <p class="font-body-md text-body-md text-secondary">Rejecting journal <strong id="rejectJournalIdLabel" class="text-primary"></strong>. The Accountant will be notified to revise and resubmit.</p>
+            <div id="rejectError" class="hidden bg-error-container text-on-error-container rounded-lg px-4 py-3 font-body-sm text-body-sm"></div>
+            <div>
+                <label for="rejectReason" class="font-label-md text-label-md text-secondary uppercase block mb-1">Rejection Reason <span class="text-error">*</span></label>
+                <textarea id="rejectReason" rows="4" placeholder="e.g. Wrong account selected. Please use account 1020 for receivables." class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all resize-none"></textarea>
+                <p id="rejectReasonError" class="hidden text-error text-body-sm mt-1">Rejection reason is required.</p>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 px-6 py-5 border-t border-slate-100">
+            <button onclick="closeModal('rejectModal')" class="px-5 py-2.5 rounded-lg border border-outline-variant text-secondary font-body-md hover:bg-surface-container-low transition-colors">Cancel</button>
+            <button id="rejectConfirmBtn" onclick="submitReject()" class="bg-error text-on-error font-bold px-5 py-2.5 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95 min-w-[100px]">Reject</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ─────────────────────────────────────────────────────────
+    // Constants & State
+    // ─────────────────────────────────────────────────────────
+    const ORG_SESSION_KEY = 'ams.selectedOrganizationId';
+    const PAGE_SIZE = 10;
+
+    let allPendingJournals = [];  // raw backend array
+    let filteredJournals   = [];  // after client filter/search
+    let currentPage        = 1;
+    let activeFilter       = 'all';
+    let activeRequestCount = 0;   // prevent double-submits
+
+    let modalState = {
+        journalId: null,
+        journalData: null  // full journal object from review load
+    };
+
+    // ─────────────────────────────────────────────────────────
+    // Utility: safe API helper
+    // ─────────────────────────────────────────────────────────
+    async function apiJson(url, options = {}) {
+        const res = await fetch(url, {
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+            ...options
+        });
+        let body = null;
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json') && res.status !== 204) {
+            try { body = await res.json(); } catch (_) { body = null; }
+        } else if (ct.includes('text/plain')) {
+            try { body = await res.text(); } catch (_) { body = null; }
+        }
+        if (!res.ok) {
+            const fieldErrors = body?.fieldErrors
+                ? Object.values(body.fieldErrors).filter(Boolean).join(' ')
+                : '';
+            const msg = fieldErrors || body?.message || body?.error || (typeof body === 'string' ? body : '') || `Request failed (${res.status})`;
+            throw new Error(msg);
+        }
+        return body;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Utility: formatting
+    // ─────────────────────────────────────────────────────────
+    function formatCurrency(amount) {
+        try {
+            return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount || 0);
+        } catch (_) { return 'NGN ' + (amount || 0); }
+    }
+
+    function formatDate(raw) {
+        if (!raw) return '-';
+        const value = String(raw);
+        try {
+            if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                const [year, month, day] = value.split('-').map(Number);
+                return new Intl.DateTimeFormat('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })
+                    .format(new Date(year, month - 1, day));
             }
+            return new Date(value).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' });
+        } catch (_) { return value; }
+    }
+
+    function escText(str) {
+        const d = document.createElement('div');
+        d.textContent = String(str ?? '');
+        return d.innerHTML;
+    }
+
+    function initials(name) {
+        if (!name) return 'U';
+        return name.trim().split(/\s+/).map(p => p[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    const avatarBgs = ['bg-primary-fixed', 'bg-secondary-fixed', 'bg-tertiary-fixed'];
+    function avatarBg(idx) { return avatarBgs[idx % avatarBgs.length]; }
+
+    // ─────────────────────────────────────────────────────────
+    // Utility: alert panels
+    // ─────────────────────────────────────────────────────────
+    let successTimer = null;
+    function showSuccess(msg) {
+        const el = document.getElementById('pageSuccess');
+        document.getElementById('pageSuccessMsg').textContent = msg;
+        el.classList.remove('hidden');
+        document.getElementById('pageError').classList.add('hidden');
+        clearTimeout(successTimer);
+        successTimer = setTimeout(() => el.classList.add('hidden'), 5000);
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('pageError');
+        document.getElementById('pageErrorMsg').textContent = msg;
+        el.classList.remove('hidden');
+        document.getElementById('pageSuccess').classList.add('hidden');
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function clearAlerts() {
+        document.getElementById('pageSuccess').classList.add('hidden');
+        document.getElementById('pageError').classList.add('hidden');
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Utility: button loading state
+    // ─────────────────────────────────────────────────────────
+    function setBtnLoading(btn, loading, originalText) {
+        if (!btn) return;
+        if (loading) {
+            btn.disabled = true;
+            btn._origText = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner"></span>Processing...';
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = originalText !== undefined ? originalText : (btn._origText || btn.innerHTML);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Organization Selector
+    // ─────────────────────────────────────────────────────────
+    async function loadOrganizations() {
+        const sel = document.getElementById('orgSelector');
+        try {
+            const orgs = await apiJson('/api/organizations');
+            sel.innerHTML = '';
+            if (!orgs || orgs.length === 0) {
+                document.getElementById('orgEmptyHint').classList.remove('hidden');
+                sel.innerHTML = '<option value="">No organizations</option>';
+                allPendingJournals = [];
+                filteredJournals = [];
+                renderEmpty();
+                return;
+            }
+            document.getElementById('orgEmptyHint').classList.add('hidden');
+            orgs.forEach(org => {
+                const opt = document.createElement('option');
+                opt.value = org.id;
+                opt.textContent = org.name;
+                sel.appendChild(opt);
+            });
+
+            // Restore from session or default to first
+            const stored = sessionStorage.getItem(ORG_SESSION_KEY);
+            const match = stored && orgs.find(o => String(o.id) === String(stored));
+            if (match) {
+                sel.value = match.id;
+            } else {
+                sel.value = orgs[0].id;
+                sessionStorage.setItem(ORG_SESSION_KEY, orgs[0].id);
+            }
+
+            await loadPendingJournals();
+        } catch (err) {
+            sel.innerHTML = '<option value="">Error loading</option>';
+            showError('Could not load organizations: ' + err.message);
+            allPendingJournals = [];
+            filteredJournals = [];
+            renderEmpty();
+        }
+    }
+
+    document.getElementById('orgSelector').addEventListener('change', function () {
+        sessionStorage.setItem(ORG_SESSION_KEY, this.value);
+        currentPage = 1;
+        loadPendingJournals();
+    });
+
+    function selectedOrgId() {
+        return document.getElementById('orgSelector').value;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Load Pending Journals
+    // ─────────────────────────────────────────────────────────
+    async function loadPendingJournals() {
+        const orgId = selectedOrgId();
+        if (!orgId) return;
+        clearAlerts();
+        showTableLoading();
+
+        try {
+            const data = await apiJson(`/api/cfo/manual-journals/org/${orgId}/pending`);
+            allPendingJournals = Array.isArray(data) ? data : [];
+            applyFilterAndRender();
+        } catch (err) {
+            showError('Failed to load pending journals: ' + err.message);
+            allPendingJournals = [];
+            applyFilterAndRender();
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Filter + Search + Render
+    // ─────────────────────────────────────────────────────────
+    function setFilter(filter) {
+        activeFilter = filter;
+        document.getElementById('filterAll').className    = filter === 'all'     ? 'px-4 py-2 bg-white text-primary font-body-md font-bold rounded-md shadow-sm border border-slate-200/50' : 'px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors';
+        document.getElementById('filterJournals').className = filter === 'journal' ? 'px-4 py-2 bg-white text-primary font-body-md font-bold rounded-md shadow-sm border border-slate-200/50' : 'px-4 py-2 text-secondary hover:text-primary font-body-md font-medium rounded-md transition-colors';
+        currentPage = 1;
+        applyFilterAndRender();
+    }
+
+    document.getElementById('queueSearch').addEventListener('input', function () {
+        currentPage = 1;
+        applyFilterAndRender();
+    });
+
+    function applyFilterAndRender() {
+        const q = document.getElementById('queueSearch').value.trim().toLowerCase();
+        filteredJournals = allPendingJournals.filter(j => {
+            const matchSearch = !q
+                || (j.description || '').toLowerCase().includes(q)
+                || (j.createdBy || '').toLowerCase().includes(q)
+                || String(j.journalId || j.id || '').toLowerCase().includes(q)
+                || (j.branchId || '').toString().toLowerCase().includes(q);
+            return matchSearch;
+        });
+        updateSummaryCards();
+        renderTablePage();
+    }
+
+    function updateSummaryCards() {
+        document.getElementById('cardPendingCount').textContent = allPendingJournals.length;
+        const total = allPendingJournals.reduce((s, j) => s + (j.totalDebits || 0), 0);
+        document.getElementById('cardTotalValue').textContent = formatCurrency(total);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Table Rendering
+    // ─────────────────────────────────────────────────────────
+    function showTableLoading() {
+        const tbody = document.getElementById('queueTableBody');
+        tbody.innerHTML = `
+            <tr id="loadingRow">
+                <td colspan="6" class="px-card-padding py-10 text-center text-secondary font-body-md">
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="spinner spinner-dark"></div>
+                        <span>Loading pending journals&hellip;</span>
+                    </div>
+                </td>
+            </tr>`;
+        document.getElementById('queueSubtitle').textContent = '';
+        document.getElementById('paginationLabel').textContent = '';
+        document.getElementById('prevPageBtn').disabled = true;
+        document.getElementById('nextPageBtn').disabled = true;
+    }
+
+    function renderEmpty() {
+        const tbody = document.getElementById('queueTableBody');
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="px-card-padding py-16 text-center">
+                    <div class="flex flex-col items-center gap-3">
+                        <span class="material-symbols-outlined text-[48px] text-outline-variant">task_alt</span>
+                        <p class="font-body-md text-body-md text-secondary">No journals pending CFO approval.</p>
+                        <p class="font-body-sm text-body-sm text-secondary">When Accountants submit journals, they will appear here.</p>
+                    </div>
+                </td>
+            </tr>`;
+        document.getElementById('cardPendingCount').textContent = '0';
+        document.getElementById('cardTotalValue').textContent = formatCurrency(0);
+        document.getElementById('queueSubtitle').textContent = '';
+        document.getElementById('paginationLabel').textContent = '';
+        document.getElementById('prevPageBtn').disabled = true;
+        document.getElementById('nextPageBtn').disabled = true;
+    }
+
+    function renderTablePage() {
+        const tbody = document.getElementById('queueTableBody');
+
+        if (filteredJournals.length === 0) {
+            renderEmpty();
+            return;
         }
 
-        function renderRows(data) {
-            if (!tbody) return;
+        const totalPages = Math.ceil(filteredJournals.length / PAGE_SIZE);
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const end   = Math.min(start + PAGE_SIZE, filteredJournals.length);
+        const pageItems = filteredJournals.slice(start, end);
+
+        tbody.innerHTML = '';
+        pageItems.forEach((item, idx) => {
+            const journalId   = item.journalId || item.id;
+            const submittedAt = formatDate(item.submittedAt || item.journalDate);
+            const createdBy   = item.createdBy || 'Unknown';
+            const description = item.description || 'Manual Journal';
+            const branchId    = item.branchId || '-';
+            const exposure    = item.totalDebits || 0;
+            const status      = item.status || 'SUBMITTED';
+            const absIdx      = start + idx;
+
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-surface-container-lowest/50 transition-colors';
+            tr.innerHTML = `
+                <td class="px-card-padding py-5 font-body-md text-body-md text-primary">${escText(submittedAt)}</td>
+                <td class="px-card-padding py-5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-full ${avatarBg(absIdx)} flex items-center justify-center text-on-primary-fixed font-bold text-xs">${escText(initials(createdBy))}</div>
+                        <span class="font-body-md text-body-md text-primary">${escText(createdBy)}</span>
+                    </div>
+                </td>
+                <td class="px-card-padding py-5">
+                    <span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">${escText(description)}</span>
+                </td>
+                <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">${escText(branchId)}</td>
+                <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">${escText(formatCurrency(exposure))}</td>
+                <td class="px-card-padding py-5 text-right">
+                    <div class="flex items-center justify-end gap-3 flex-wrap">
+                        <button
+                            type="button"
+                            class="review-lines-btn font-label-md text-label-md text-secondary hover:text-primary underline transition-colors">
+                            Review Lines
+                        </button>
+                        <button
+                            type="button"
+                            class="approve-btn bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">
+                            Approve
+                        </button>
+                        <button
+                            type="button"
+                            class="reject-btn border border-error text-error font-bold px-4 py-2 rounded-lg text-body-sm hover:bg-error hover:text-on-error transition-colors active:scale-95">
+                            Reject
+                        </button>
+                    </div>
+                </td>`;
+            tbody.appendChild(tr);
+
+            const reviewBtn = tr.querySelector('.review-lines-btn');
+            const approveBtn = tr.querySelector('.approve-btn');
+            const rejectBtn = tr.querySelector('.reject-btn');
+
+            reviewBtn.addEventListener('click', () => openReviewModal({
+                journalId,
+                submittedAt,
+                createdBy,
+                description,
+                status
+            }));
+            approveBtn.addEventListener('click', () => openApproveModal(journalId));
+            rejectBtn.addEventListener('click', () => openRejectModal(journalId));
+        });
+
+        // Pagination labels
+        document.getElementById('queueSubtitle').textContent = `Showing ${start + 1}-${end} of ${filteredJournals.length}`;
+        document.getElementById('paginationLabel').textContent = `Showing ${start + 1}-${end} of ${filteredJournals.length} pending`;
+        document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+        document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+    }
+
+    function changePage(delta) {
+        const totalPages = Math.ceil(filteredJournals.length / PAGE_SIZE);
+        const next = currentPage + delta;
+        if (next < 1 || next > totalPages) return;
+        currentPage = next;
+        renderTablePage();
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Modal helpers
+    // ─────────────────────────────────────────────────────────
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function handleOverlayClick(e, id) {
+        if (e.target === document.getElementById(id)) closeModal(id);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Review Lines Modal
+    // ─────────────────────────────────────────────────────────
+    async function openReviewModal(data) {
+        const journalId = data.journalId;
+        modalState.journalId = journalId;
+
+        // Populate header fields
+        document.getElementById('rvJournalId').textContent   = journalId;
+        document.getElementById('rvDate').textContent        = data.submittedAt || '-';
+        document.getElementById('rvCreatedBy').textContent   = data.createdBy   || '-';
+        document.getElementById('rvDescription').textContent = data.description  || '-';
+        document.getElementById('rvStatus').textContent      = data.status       || 'SUBMITTED';
+        document.getElementById('approveJournalIdLabel').textContent = '#' + journalId;
+        document.getElementById('rejectJournalIdLabel').textContent  = '#' + journalId;
+
+        document.getElementById('rvLinesError').classList.add('hidden');
+        document.getElementById('rvLinesLoading').classList.remove('hidden');
+        document.getElementById('rvLinesBody').innerHTML = '<tr><td colspan="4" class="px-3 py-6 text-center text-secondary">Loading&hellip;</td></tr>';
+        document.getElementById('rvTotalDebit').textContent  = formatCurrency(0);
+        document.getElementById('rvTotalCredit').textContent = formatCurrency(0);
+
+        openModal('reviewModal');
+
+        try {
+            const journal = await apiJson(`/api/cfo/manual-journals/${journalId}`);
+            modalState.journalData = journal;
+            document.getElementById('rvLinesLoading').classList.add('hidden');
+            document.getElementById('rvDate').textContent = formatDate(journal.submittedAt || journal.journalDate);
+            document.getElementById('rvCreatedBy').textContent = journal.createdBy || data.createdBy || '-';
+            document.getElementById('rvDescription').textContent = journal.description || data.description || '-';
+            document.getElementById('rvStatus').textContent = journal.status || data.status || 'SUBMITTED';
+
+            const lines = journal.lines || journal.journalLines || [];
+            if (lines.length === 0) {
+                document.getElementById('rvLinesBody').innerHTML = '<tr><td colspan="4" class="px-3 py-8 text-center text-secondary font-body-md">No lines found for this journal.</td></tr>';
+                return;
+            }
+
+            let totalDebit = 0, totalCredit = 0;
+            const tbody = document.getElementById('rvLinesBody');
             tbody.innerHTML = '';
-            data.forEach(item => {
+            lines.forEach(line => {
+                const acct = line.accountCode && line.accountName
+                    ? `${line.accountCode} - ${line.accountName}`
+                    : (line.chartOfAccountId || '-');
+                const dr = line.debitAmount  || 0;
+                const cr = line.creditAmount || 0;
+                totalDebit  += dr;
+                totalCredit += cr;
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-surface-container-lowest/50 transition-colors';
-
-                const submitted = new Date(item.submittedAt || item.createdAt).toLocaleString();
-                const userName = item.createdBy || 'Unknown';
-                const type = 'Adjusting Journal Entry';
-                const branch = item.branchId || 'Main';
-                const exposure = item.totalDebits || 0;
-
+                tr.className = 'hover:bg-surface-container-lowest/50';
                 tr.innerHTML = `
-                    <td class="px-card-padding py-5 font-body-md text-body-md text-primary">${submitted}</td>
-                    <td class="px-card-padding py-5">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed font-bold text-xs">${(userName||'U').slice(0,2).toUpperCase()}</div>
-                            <span class="font-body-md text-body-md text-primary">${userName}</span>
-                        </div>
-                    </td>
-                    <td class="px-card-padding py-5"><span class="px-2 py-1 bg-surface-container-highest text-primary font-label-md text-label-md rounded">${type}</span></td>
-                    <td class="px-card-padding py-5 font-body-md text-body-md text-secondary">${branch}</td>
-                    <td class="px-card-padding py-5 font-currency-display text-[16px] text-primary text-right font-bold">${formatCurrency(exposure)}</td>
-                    <td class="px-card-padding py-5 text-right">
-                        <div class="flex items-center justify-end gap-4">
-                            <a class="font-label-md text-label-md text-secondary hover:text-primary underline transition-colors" href="#">Review Impact Lines</a>
-                            <button data-id="${item.id}" class="approve-btn bg-primary text-on-primary font-bold px-4 py-2 rounded-lg text-body-sm hover:opacity-90 transition-opacity active:scale-95">Approve & Post</button>
-                        </div>
+                    <td class="px-3 py-3">${escText(acct)}</td>
+                    <td class="px-3 py-3 text-secondary">${escText(line.narration || '-')}</td>
+                    <td class="px-3 py-3 text-right font-bold">${dr > 0 ? escText(formatCurrency(dr)) : '<span class="text-outline-variant">-</span>'}</td>
+                    <td class="px-3 py-3 text-right font-bold">${cr > 0 ? escText(formatCurrency(cr)) : '<span class="text-outline-variant">-</span>'}
                     </td>`;
-
                 tbody.appendChild(tr);
             });
+            document.getElementById('rvTotalDebit').textContent  = formatCurrency(totalDebit);
+            document.getElementById('rvTotalCredit').textContent = formatCurrency(totalCredit);
+        } catch (err) {
+            document.getElementById('rvLinesLoading').classList.add('hidden');
+            const errEl = document.getElementById('rvLinesError');
+            errEl.textContent = 'Could not load journal lines: ' + err.message;
+            errEl.classList.remove('hidden');
+        }
+    }
 
-            // attach handlers
-            document.querySelectorAll('.approve-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const id = e.currentTarget.getAttribute('data-id');
-                    try {
-                        const res = await fetch(`/api/cfo/manual-journals/${id}/approve`, { method: 'PUT', headers: { 'X-User-Name': 'cfo' } });
-                        if (res.ok) {
-                            e.currentTarget.textContent = 'Posted';
-                            e.currentTarget.disabled = true;
-                        } else {
-                            alert('Failed to approve: ' + res.statusText);
-                        }
-                    } catch (err) {
-                        console.error(err);
-                        alert('Error approving journal');
-                    }
-                });
+    // Called from the review modal's Approve button
+    function openApproveFromReview() {
+        closeModal('reviewModal');
+        openApproveModal(modalState.journalId);
+    }
+
+    // Called from the review modal's Reject button
+    function openRejectFromReview() {
+        closeModal('reviewModal');
+        openRejectModal(modalState.journalId);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Approve Modal
+    // ─────────────────────────────────────────────────────────
+    function openApproveModal(journalId) {
+        modalState.journalId = journalId;
+        document.getElementById('approveJournalIdLabel').textContent = '#' + journalId;
+        document.getElementById('approveNote').value = '';
+        document.getElementById('approveError').classList.add('hidden');
+        setBtnLoading(document.getElementById('approveConfirmBtn'), false, 'Approve');
+        openModal('approveModal');
+    }
+
+    async function submitApprove() {
+        if (activeRequestCount > 0) return;
+        const journalId = modalState.journalId;
+        if (!journalId) return;
+
+        const btn = document.getElementById('approveConfirmBtn');
+        const note = document.getElementById('approveNote').value.trim();
+        document.getElementById('approveError').classList.add('hidden');
+
+        activeRequestCount++;
+        setBtnLoading(btn, true);
+        try {
+            await apiJson(`/api/cfo/manual-journals/${journalId}/approve`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    approvedBy: 'current-cfo',
+                    approvalNote: note || 'Approved for posting'
+                })
             });
+            closeModal('approveModal');
+            showSuccess(`Journal #${journalId} approved successfully. Accountant can now post it.`);
+            await loadPendingJournals();
+        } catch (err) {
+            const errEl = document.getElementById('approveError');
+            errEl.textContent = err.message;
+            errEl.classList.remove('hidden');
+            setBtnLoading(btn, false, 'Approve');
+        } finally {
+            activeRequestCount--;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Reject Modal
+    // ─────────────────────────────────────────────────────────
+    function openRejectModal(journalId) {
+        modalState.journalId = journalId;
+        document.getElementById('rejectJournalIdLabel').textContent = '#' + journalId;
+        document.getElementById('rejectReason').value = '';
+        document.getElementById('rejectError').classList.add('hidden');
+        document.getElementById('rejectReasonError').classList.add('hidden');
+        setBtnLoading(document.getElementById('rejectConfirmBtn'), false, 'Reject');
+        openModal('rejectModal');
+    }
+
+    async function submitReject() {
+        if (activeRequestCount > 0) return;
+        const journalId = modalState.journalId;
+        if (!journalId) return;
+
+        const btn    = document.getElementById('rejectConfirmBtn');
+        const reason = document.getElementById('rejectReason').value.trim();
+        document.getElementById('rejectError').classList.add('hidden');
+        document.getElementById('rejectReasonError').classList.add('hidden');
+
+        if (!reason) {
+            document.getElementById('rejectReasonError').classList.remove('hidden');
+            document.getElementById('rejectReason').focus();
+            return;
         }
 
-        // initial load
-        fetch(`/api/cfo/manual-journals/org/${orgId}/pending`)
-            .then(r => r.json())
-            .then(data => renderRows(data))
-            .catch(err => console.error('Failed loading pending journals', err));
+        activeRequestCount++;
+        setBtnLoading(btn, true);
+        try {
+            await apiJson(`/api/cfo/manual-journals/${journalId}/reject`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    rejectionReason: reason,
+                    rejectedBy: 'current-cfo'
+                })
+            });
+            closeModal('rejectModal');
+            showSuccess(`Journal #${journalId} rejected. The Accountant will be notified to revise.`);
+            await loadPendingJournals();
+        } catch (err) {
+            const errEl = document.getElementById('rejectError');
+            errEl.textContent = err.message;
+            errEl.classList.remove('hidden');
+            setBtnLoading(btn, false, 'Reject');
+        } finally {
+            activeRequestCount--;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Misc UI
+    // ─────────────────────────────────────────────────────────
+    document.querySelectorAll('[style*="transition"]').forEach(card => {
+        card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-2px)'; });
+        card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0px)'; });
     });
+
+    document.getElementById('notifyBtn').addEventListener('click', () => {
+        const dot = document.getElementById('notifyDot');
+        if (dot) dot.style.display = 'none';
+    });
+
+    // Keyboard: ESC closes any open modal
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            ['reviewModal','approveModal','rejectModal'].forEach(closeModal);
+        }
+    });
+
+    // ─────────────────────────────────────────────────────────
+    // Init
+    // ─────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', loadOrganizations);
 </script>
 </body>
 </html>

@@ -151,8 +151,21 @@
             </button>
         </section>
 
+        <!-- Alert Panel -->
+        <div id="alertPanel" class="hidden mb-4 px-4 py-3 rounded-lg border text-body-sm font-semibold"></div>
+
+        <!-- Organization Selector Row -->
+        <section class="mb-4">
+            <div class="flex flex-col gap-2 max-w-sm">
+                <label class="font-body-sm font-semibold text-on-surface">Organization</label>
+                <select class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none" id="orgSelector" onchange="onOrgChange()">
+                    <option value="">Loading organizations...</option>
+                </select>
+            </div>
+        </section>
+
         <!-- Filter Row Section -->
-        <section class="mb-gutter grid grid-cols-1 md:grid-cols-4 gap-gutter">
+        <section class="mb-gutter grid grid-cols-1 md:grid-cols-5 gap-gutter">
             <div class="flex flex-col gap-2">
                 <label class="font-body-sm font-semibold text-on-surface">Start Date</label>
                 <input class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none" type="date" id="startDate" onchange="applyFilters()">
@@ -165,10 +178,28 @@
                 <label class="font-body-sm font-semibold text-on-surface">Entity Type</label>
                 <select class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none" id="entityTypeFilter" onchange="applyFilters()">
                     <option value="">All Entities</option>
-                    <option value="Invoice">Invoice</option>
-                    <option value="JournalEntry">Journal Entry</option>
-                    <option value="Account">Account</option>
-                    <option value="User">User</option>
+                    <option value="Organization">Organization</option>
+                    <option value="Branch">Branch</option>
+                    <option value="ChartOfAccounts">Chart of Accounts</option>
+                    <option value="FiscalPeriod">Fiscal Period</option>
+                    <option value="ManualJournal">Manual Journal</option>
+                    <option value="JournalLine">Journal Line</option>
+                    <option value="GeneralLedger">General Ledger</option>
+                </select>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-body-sm font-semibold text-on-surface">Action</label>
+                <select class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2.5 text-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none" id="actionFilter" onchange="applyFilters()">
+                    <option value="">All Actions</option>
+                    <option value="CREATE">CREATE</option>
+                    <option value="UPDATE">UPDATE</option>
+                    <option value="DELETE">DELETE</option>
+                    <option value="SUBMIT">SUBMIT</option>
+                    <option value="APPROVE">APPROVE</option>
+                    <option value="REJECT">REJECT</option>
+                    <option value="POST">POST</option>
+                    <option value="CLOSE">CLOSE</option>
+                    <option value="LOCK">LOCK</option>
                 </select>
             </div>
             <div class="flex flex-end items-end">
@@ -192,14 +223,18 @@
                         <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">User</th>
                         <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">Action</th>
                         <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">Entity</th>
+                        <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">Description</th>
                         <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">Before Value</th>
                         <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">After Value</th>
                         <th class="px-4 py-2.5 font-label-md text-label-md uppercase text-on-secondary-container tracking-wider">IP Address</th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-outline-variant" id="auditTableBody">
-                    <tr class="text-center">
-                        <td colspan="7" class="py-8 text-on-surface-variant">Loading audit logs...</td>
+                    <tr class="text-center" id="tableLoadingRow">
+                        <td colspan="8" class="py-8 text-on-surface-variant">
+                            <span class="material-symbols-outlined animate-spin inline-block mr-2" style="animation: spin 1s linear infinite;">autorenew</span>
+                            Loading audit logs...
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -219,8 +254,8 @@
                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
                 </div>
                 <div>
-                    <h4 class="font-headline-sm text-primary">Ledger Integrity</h4>
-                    <p class="font-body-sm text-on-secondary-container">Hash chain validated. 100% immutable consistency.</p>
+                    <h4 class="font-headline-sm text-primary">Audit Records Loaded</h4>
+                    <p class="font-body-sm text-on-secondary-container" id="auditRecordsStatus">Select an organization to load records.</p>
                 </div>
             </div>
             <div class="bg-white border border-outline-variant rounded-xl p-card-padding flex items-start gap-4">
@@ -228,188 +263,368 @@
                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield_person</span>
                 </div>
                 <div>
-                    <h4 class="font-headline-sm text-primary">Active Sessions</h4>
-                    <p class="font-body-sm text-on-secondary-container" id="activeSessions">Loading session data...</p>
+                    <h4 class="font-headline-sm text-primary">Unique Users</h4>
+                    <p class="font-body-sm text-on-secondary-container" id="uniqueUsersCount">-</p>
                 </div>
             </div>
             <div class="bg-white border border-outline-variant rounded-xl p-card-padding flex items-start gap-4">
                 <div class="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">warning</span>
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
                 </div>
                 <div>
                     <h4 class="font-headline-sm text-primary">Recent Mutations</h4>
-                    <p class="font-body-sm text-on-secondary-container" id="recentMutations">Loading mutation data...</p>
+                    <p class="font-body-sm text-on-secondary-container" id="recentMutations">-</p>
                 </div>
             </div>
         </section>
     </main>
 </div>
 
+<style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .animate-spin { animation: spin 1s linear infinite; display: inline-block; }
+</style>
 <script>
     const API_BASE = '/api/auditor';
-    const DEFAULT_ORG_ID = 1; // Replace with actual org ID from context
+    const ORGS_BASE = '/api/organizations';
+    const SESSION_KEY = 'ams.selectedOrganizationId';
+
     let allAuditLogs = [];
+    let filteredLogs = [];
     let currentPage = 1;
     const ITEMS_PER_PAGE = 10;
+    let isLoading = false;
 
-    // Format date for API
-    function formatDateForAPI(dateString) {
-        if (!dateString) return null;
-        return new Date(dateString + 'T00:00:00').toISOString();
+    // ── Shared API helper ──────────────────────────────────────────
+    async function apiJson(url, options = {}) {
+        const res = await fetch(url, {
+            ...options,
+            headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+        });
+        if (!res.ok) {
+            let msg = `Request failed (${res.status})`;
+            try {
+                const err = await res.json();
+                const fieldErrors = err.fieldErrors ? Object.values(err.fieldErrors).filter(Boolean).join(' ') : '';
+                msg = fieldErrors || err.message || err.error || msg;
+            } catch (_) {}
+            throw new Error(msg);
+        }
+        const text = await res.text();
+        return text ? JSON.parse(text) : null;
     }
 
-    // Load audit logs
+    // ── Alert panel ───────────────────────────────────────────────
+    function showAlert(message, type = 'error') {
+        const panel = document.getElementById('alertPanel');
+        panel.textContent = message;
+        panel.className = type === 'error'
+            ? 'mb-4 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-red-50 border-error text-error'
+            : 'mb-4 px-4 py-3 rounded-lg border text-body-sm font-semibold bg-green-50 border-green-300 text-green-800';
+        panel.classList.remove('hidden');
+        if (type !== 'error') setTimeout(() => panel.classList.add('hidden'), 4000);
+    }
+
+    function hideAlert() {
+        document.getElementById('alertPanel').classList.add('hidden');
+    }
+
+    // ── Escape helpers ────────────────────────────────────────────
+    function escHtml(str) {
+        if (str == null) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function csvField(val) {
+        const s = val == null ? '' : String(val);
+        return '"' + s.replace(/"/g, '""') + '"';
+    }
+
+    // ── Organization selector ─────────────────────────────────────
+    async function loadOrganizations() {
+        try {
+            const orgs = await apiJson(ORGS_BASE);
+            const sel = document.getElementById('orgSelector');
+            sel.innerHTML = '';
+
+            if (!orgs || orgs.length === 0) {
+                sel.innerHTML = '<option value="">No organizations found</option>';
+                showOrgEmptyState();
+                return;
+            }
+
+            orgs.forEach(org => {
+                const opt = document.createElement('option');
+                opt.value = org.id;
+                opt.textContent = org.name;
+                sel.appendChild(opt);
+            });
+
+            // Restore from sessionStorage or default to first
+            const stored = sessionStorage.getItem(SESSION_KEY);
+            if (stored && orgs.find(o => String(o.id) === stored)) {
+                sel.value = stored;
+            } else {
+                sel.value = orgs[0].id;
+                sessionStorage.setItem(SESSION_KEY, String(orgs[0].id));
+            }
+
+            loadAuditLogs();
+        } catch (err) {
+            document.getElementById('orgSelector').innerHTML = '<option value="">Failed to load organizations</option>';
+            showAlert('Could not load organizations: ' + err.message);
+            showOrgEmptyState();
+        }
+    }
+
+    function onOrgChange() {
+        const val = document.getElementById('orgSelector').value;
+        if (val) {
+            sessionStorage.setItem(SESSION_KEY, val);
+            loadAuditLogs();
+        }
+    }
+
+    function getSelectedOrgId() {
+        return document.getElementById('orgSelector').value || sessionStorage.getItem(SESSION_KEY);
+    }
+
+    function showOrgEmptyState() {
+        const tbody = document.getElementById('auditTableBody');
+        tbody.innerHTML = '<tr><td colspan="8" class="py-10 text-center text-on-surface-variant">'
+            + '<span class="material-symbols-outlined text-4xl block mb-2 mx-auto text-outline">domain_disabled</span>'
+            + 'No organization found. <a href="/financeAdmin/organizationSetup" class="text-primary underline font-semibold">Set one up in Finance Admin.</a>'
+            + '</td></tr>';
+        updateIntegrityCards([]);
+    }
+
+    // ── Date helpers ──────────────────────────────────────────────
+    function formatDateForAPI(dateString, endOfDay) {
+        if (!dateString) return null;
+        return dateString + (endOfDay ? 'T23:59:59' : 'T00:00:00');
+    }
+
+    // ── Load audit logs (smart routing) ───────────────────────────
     async function loadAuditLogs() {
+        const orgId = getSelectedOrgId();
+        if (!orgId) return;
+
+        if (isLoading) return;
+        isLoading = true;
+        hideAlert();
+
+        const tbody = document.getElementById('auditTableBody');
+        tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-on-surface-variant">'
+            + '<span class="material-symbols-outlined animate-spin inline-block mr-2">autorenew</span>'
+            + 'Loading audit logs...'
+            + '</td></tr>';
+
         try {
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             const entityType = document.getElementById('entityTypeFilter').value;
-
-            let url = `${API_BASE}/audit-logs/org/${DEFAULT_ORG_ID}/date-range`;
-            const now = new Date();
-            const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-            const start = startDate ? formatDateForAPI(startDate) : thirtyDaysAgo.toISOString();
-            const end = endDate ? formatDateForAPI(endDate) : now.toISOString();
-
-            url += `?startDate=${start}&endDate=${end}`;
-
-            const response = await fetch(url);
-            allAuditLogs = await response.json();
-
-            // Filter by entity type if specified
-            if (entityType) {
-                allAuditLogs = allAuditLogs.filter(log => log.entityType === entityType);
+            const action = document.getElementById('actionFilter').value;
+            const params = new URLSearchParams();
+            if (startDate || endDate) {
+                params.set('startDate', formatDateForAPI(startDate || '1970-01-01', false));
+                params.set('endDate', formatDateForAPI(endDate || new Date().toISOString().slice(0, 10), true));
             }
+            if (entityType) params.set('entityType', entityType);
+            if (action) params.set('action', action);
 
-            // Sort by creation date descending
+            let url = API_BASE + '/audit-logs/org/' + encodeURIComponent(orgId);
+            const query = params.toString();
+            if (query) url += '?' + query;
+
+            allAuditLogs = await apiJson(url) || [];
             allAuditLogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
+            filteredLogs = allAuditLogs.slice();
             currentPage = 1;
             displayAuditLogs();
-        } catch (error) {
-            console.error('Error loading audit logs:', error);
-            document.getElementById('auditTableBody').innerHTML = '<tr><td colspan="7" class="py-8 text-center text-error">Error loading audit logs</td></tr>';
+            updateIntegrityCards(filteredLogs);
+        } catch (err) {
+            console.error('Error loading audit logs:', err);
+            showAlert('Error loading audit logs: ' + err.message);
+            tbody.innerHTML = '<tr><td colspan="8" class="py-8 text-center text-error">Error loading audit logs: ' + escHtml(err.message) + '</td></tr>';
+            updateIntegrityCards([]);
+        } finally {
+            isLoading = false;
         }
     }
 
-    // Display audit logs with pagination
+    // ── Client-side action filter (applied after fetch) ───────────
+    function applyClientFilters() {
+        filteredLogs = allAuditLogs.slice();
+        currentPage = 1;
+        displayAuditLogs();
+        updateIntegrityCards(filteredLogs);
+    }
+
+    // ── Display rows ──────────────────────────────────────────────
     function displayAuditLogs() {
         const tbody = document.getElementById('auditTableBody');
         const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-        const endIdx = startIdx + ITEMS_PER_PAGE;
-        const pageItems = allAuditLogs.slice(startIdx, endIdx);
+        const pageItems = filteredLogs.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
         if (pageItems.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-on-surface-variant">No audit logs found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="py-10 text-center text-on-surface-variant">'
+                + '<span class="material-symbols-outlined text-4xl block mb-2 mx-auto text-outline">manage_search</span>'
+                + 'No audit logs match the current filters.'
+                + '</td></tr>';
         } else {
-            tbody.innerHTML = pageItems.map(log => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-4 py-2 font-label-md text-on-surface">${new Date(log.createdAt).toLocaleString()}</td>
-                    <td class="px-4 py-2">
-                        <div class="flex flex-col gap-0">
-                            <span class="font-label-md text-[12px] font-bold text-primary">${log.userId || 'System'}</span>
-                        </div>
-                    </td>
-                    <td class="px-4 py-2">
-                        <span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase ${getActionBadgeClass(log.action)}">${log.action}</span>
-                    </td>
-                    <td class="px-4 py-2 font-body-sm text-on-surface-variant">${log.entityType}/${log.entityId}</td>
-                    <td class="px-4 py-2 font-label-md text-on-secondary-container truncate" title="${log.oldValue || ''}">${log.oldValue || '-'}</td>
-                    <td class="px-4 py-2 font-label-md text-primary font-bold truncate" title="${log.newValue || ''}">${log.newValue || '-'}</td>
-                    <td class="px-4 py-2 font-label-md text-on-surface-variant">${log.ipAddress || 'N/A'}</td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = pageItems.map(function(log) {
+                var ts = log.createdAt ? new Date(log.createdAt).toLocaleString('en-NG') : '-';
+                return '<tr class="hover:bg-slate-50 transition-colors">'
+                    + '<td class="px-4 py-2 font-label-md text-on-surface whitespace-nowrap">' + escHtml(ts) + '</td>'
+                    + '<td class="px-4 py-2"><span class="font-label-md text-[12px] font-bold text-primary">' + escHtml(log.userId ? 'User #' + log.userId : 'system') + '</span></td>'
+                    + '<td class="px-4 py-2"><span class="px-3 py-1 rounded-full text-[11px] font-bold uppercase ' + getActionBadgeClass(log.action) + '">' + escHtml(log.action || '') + '</span></td>'
+                    + '<td class="px-4 py-2 font-body-sm text-on-surface-variant whitespace-nowrap">' + escHtml(log.entityType || '') + '/' + escHtml(log.entityId || '') + '</td>'
+                    + '<td class="px-4 py-2 font-body-sm text-on-surface-variant max-w-[180px] truncate" title="' + escHtml(log.description || '') + '">' + escHtml(log.description || '-') + '</td>'
+                    + '<td class="px-4 py-2 font-label-md text-on-secondary-container max-w-[140px] truncate" title="' + escHtml(log.oldValue || '') + '">' + escHtml(log.oldValue || '-') + '</td>'
+                    + '<td class="px-4 py-2 font-label-md text-primary font-bold max-w-[140px] truncate" title="' + escHtml(log.newValue || '') + '">' + escHtml(log.newValue || '-') + '</td>'
+                    + '<td class="px-4 py-2 font-label-md text-on-surface-variant">' + escHtml(log.ipAddress || 'N/A') + '</td>'
+                    + '</tr>';
+            }).join('');
         }
 
         updatePagination();
     }
 
-    // Get badge class based on action
+    // ── Action badge colours ──────────────────────────────────────
     function getActionBadgeClass(action) {
-        switch(action) {
-            case 'DELETE':
-                return 'bg-red-50 text-error border border-error-container';
-            case 'UPDATE':
-                return 'bg-amber-50 text-amber-700 border border-amber-100';
-            case 'CREATE':
-                return 'bg-green-50 text-green-700 border border-green-100';
-            default:
-                return 'bg-slate-100 text-slate-600 border border-slate-200';
+        switch (action) {
+            case 'DELETE':  return 'bg-red-50 text-error border border-error-container';
+            case 'UPDATE':  return 'bg-amber-50 text-amber-700 border border-amber-100';
+            case 'CREATE':  return 'bg-green-50 text-green-700 border border-green-100';
+            case 'SUBMIT':  return 'bg-blue-50 text-blue-700 border border-blue-100';
+            case 'APPROVE': return 'bg-emerald-50 text-emerald-700 border border-emerald-100';
+            case 'REJECT':  return 'bg-rose-50 text-rose-700 border border-rose-100';
+            case 'POST':    return 'bg-purple-50 text-purple-700 border border-purple-100';
+            case 'CLOSE':   return 'bg-slate-100 text-slate-600 border border-slate-200';
+            case 'LOCK':    return 'bg-slate-200 text-slate-700 border border-slate-300';
+            default:        return 'bg-slate-100 text-slate-600 border border-slate-200';
         }
     }
 
-    // Update pagination controls
+    // ── Integrity cards ───────────────────────────────────────────
+    function updateIntegrityCards(logs) {
+        var total = allAuditLogs.length;
+        var shown = logs.length;
+        document.getElementById('auditRecordsStatus').textContent =
+            total === 0 ? 'No records found for this organization.'
+                       : shown + ' record' + (shown !== 1 ? 's' : '') + ' shown (' + total + ' total).';
+
+        var uniqueUsers = new Set(logs.map(function(l) { return l.userId ? 'User #' + l.userId : 'system'; })).size;
+        document.getElementById('uniqueUsersCount').textContent =
+            uniqueUsers + ' unique user' + (uniqueUsers !== 1 ? 's' : '') + ' in current view.';
+
+        var cutoff = Date.now() - 24 * 60 * 60 * 1000;
+        var recentCount = logs.filter(function(l) { return l.createdAt && new Date(l.createdAt).getTime() > cutoff; }).length;
+        document.getElementById('recentMutations').textContent =
+            recentCount + ' mutation' + (recentCount !== 1 ? 's' : '') + ' in the last 24 hours.';
+    }
+
+    // ── Pagination ────────────────────────────────────────────────
     function updatePagination() {
-        const totalPages = Math.ceil(allAuditLogs.length / ITEMS_PER_PAGE);
-        document.getElementById('paginationInfo').textContent = `Showing ${Math.min(ITEMS_PER_PAGE, allAuditLogs.length)} of ${allAuditLogs.length} records`;
+        var total = filteredLogs.length;
+        var totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+        var start = total === 0 ? 0 : ((currentPage - 1) * ITEMS_PER_PAGE) + 1;
+        var end = Math.min(currentPage * ITEMS_PER_PAGE, total);
+        document.getElementById('paginationInfo').textContent =
+            total === 0 ? 'No records' : 'Showing ' + start + '-' + end + ' of ' + total + ' records';
 
-        const paginationControls = document.getElementById('paginationControls');
-        paginationControls.innerHTML = '';
+        var controls = document.getElementById('paginationControls');
+        controls.innerHTML = '';
 
-        // Previous button
-        const prevBtn = document.createElement('button');
+        var prevBtn = document.createElement('button');
         prevBtn.className = 'p-1 rounded hover:bg-surface-container disabled:opacity-30';
         prevBtn.innerHTML = '<span class="material-symbols-outlined">chevron_left</span>';
         prevBtn.disabled = currentPage === 1;
-        prevBtn.onclick = () => { currentPage--; displayAuditLogs(); };
-        paginationControls.appendChild(prevBtn);
+        prevBtn.onclick = function() { currentPage--; displayAuditLogs(); };
+        controls.appendChild(prevBtn);
 
-        // Page numbers
-        const pageDiv = document.createElement('div');
+        var pageDiv = document.createElement('div');
         pageDiv.className = 'flex gap-1';
-        for (let i = 1; i <= Math.min(totalPages, 5); i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = `w-8 h-8 rounded font-bold text-label-md ${i === currentPage ? 'bg-primary text-on-primary' : 'hover:bg-surface-container'}`;
-            pageBtn.textContent = i;
-            pageBtn.onclick = () => { currentPage = i; displayAuditLogs(); };
-            pageDiv.appendChild(pageBtn);
+        var winStart = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+        var winEnd = Math.min(totalPages, winStart + 4);
+        for (var i = winStart; i <= winEnd; i++) {
+            (function(idx) {
+                var btn = document.createElement('button');
+                btn.className = 'w-8 h-8 rounded font-bold text-label-md ' + (idx === currentPage ? 'bg-primary text-on-primary' : 'hover:bg-surface-container');
+                btn.textContent = idx;
+                btn.onclick = function() { currentPage = idx; displayAuditLogs(); };
+                pageDiv.appendChild(btn);
+            })(i);
         }
-        paginationControls.appendChild(pageDiv);
+        controls.appendChild(pageDiv);
 
-        // Next button
-        const nextBtn = document.createElement('button');
+        var nextBtn = document.createElement('button');
         nextBtn.className = 'p-1 rounded hover:bg-surface-container disabled:opacity-30';
         nextBtn.innerHTML = '<span class="material-symbols-outlined">chevron_right</span>';
         nextBtn.disabled = currentPage === totalPages;
-        nextBtn.onclick = () => { currentPage++; displayAuditLogs(); };
-        paginationControls.appendChild(nextBtn);
+        nextBtn.onclick = function() { currentPage++; displayAuditLogs(); };
+        controls.appendChild(nextBtn);
     }
 
-    // Apply filters
+    // ── Filter triggers ───────────────────────────────────────────
     function applyFilters() {
         loadAuditLogs();
     }
 
-    // Reset filters
     function resetFilters() {
         document.getElementById('startDate').value = '';
         document.getElementById('endDate').value = '';
         document.getElementById('entityTypeFilter').value = '';
+        document.getElementById('actionFilter').value = '';
         loadAuditLogs();
     }
 
-    // Export to CSV
+    // ── CSV Export ────────────────────────────────────────────────
     function exportAuditLog() {
-        let csv = 'Timestamp,User,Action,Entity Type,Entity ID,Before Value,After Value,IP Address\n';
-        allAuditLogs.forEach(log => {
-            csv += `"${new Date(log.createdAt).toLocaleString()}","${log.userId || 'System'}","${log.action}","${log.entityType}","${log.entityId}","${log.oldValue || ''}","${log.newValue || ''}","${log.ipAddress || 'N/A'}"\n`;
+        if (filteredLogs.length === 0) {
+            showAlert('No logs to export. Load some records first.', 'error');
+            return;
+        }
+        var orgId = getSelectedOrgId() || 'unknown';
+        var today = new Date().toISOString().split('T')[0];
+
+        var header = ['Timestamp', 'User', 'Action', 'Entity Type', 'Entity ID',
+                      'Description', 'Before Value', 'After Value', 'IP Address']
+                      .map(csvField).join(',');
+
+        var rows = filteredLogs.map(function(log) {
+            return [
+                log.createdAt ? new Date(log.createdAt).toLocaleString('en-NG') : '',
+                log.userId ? 'User #' + log.userId : 'system',
+                log.action || '',
+                log.entityType || '',
+                log.entityId || '',
+                log.description || '',
+                log.oldValue || '',
+                log.newValue || '',
+                log.ipAddress || 'N/A'
+            ].map(csvField).join(',');
         });
 
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        var csv = [header].concat(rows).join('\n');
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
         a.href = url;
-        a.download = `audit_log_${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = 'ams_audit_logs_' + orgId + '_' + today + '.csv';
         a.click();
-        window.URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
+        showAlert('Exported ' + filteredLogs.length + ' record(s) to CSV.', 'success');
     }
 
-    // Load on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        loadAuditLogs();
+    // ── Initialise ────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+        loadOrganizations();
     });
 </script>
 
 </body></html>
-

@@ -9,12 +9,16 @@ import com.justjava.ams.accountant.repository.ChartOfAccountsRepository;
 import com.justjava.ams.accountant.repository.GeneralLedgerRepository;
 import com.justjava.ams.accountant.repository.JournalLineRepository;
 import com.justjava.ams.accountant.repository.ManualJournalRepository;
+import com.justjava.ams.auditor.dto.AuditLogDTO;
+import com.justjava.ams.auditor.service.AuditLogService;
 import com.justjava.ams.common.entity.User;
 import com.justjava.ams.common.repository.UserRepository;
 import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +34,7 @@ public class GeneralLedgerService {
     private final UserRepository userRepository;
     private final ManualJournalRepository manualJournalRepository;
     private final JournalLineRepository journalLineRepository;
+    private final AuditLogService auditLogService;
 
     public GeneralLedgerDTO createEntry(GeneralLedgerDTO dto, Long userId) {
         ChartOfAccounts account = chartOfAccountsRepository.findById(dto.getAccountId())
@@ -55,29 +60,31 @@ public class GeneralLedgerService {
         return mapToDTO(saved);
     }
 
-    public void postJournalEntriesFromManualJournal(Long journalId, String approverName) {
+    public List<GeneralLedgerDTO> postJournalEntriesFromManualJournal(Long journalId, String postedBy) {
         ManualJournal journal = manualJournalRepository.findById(journalId)
-                .orElseThrow(() -> new RuntimeException("Journal not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Journal not found"));
 
-        if (!journal.getStatus().equals(ManualJournal.JournalStatus.APPROVED)) {
-            throw new RuntimeException("Only APPROVED journals can be posted to GL");
+        if (!ManualJournal.JournalStatus.APPROVED.equals(journal.getStatus())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Only APPROVED journals can be posted to GL");
         }
 
-        User approver = null;
-        if (approverName != null) {
-            approver = userRepository.findByUsername(approverName).orElse(null);
+        User postingUser = null;
+        if (postedBy != null) {
+            postingUser = userRepository.findByUsername(postedBy).orElse(null);
         }
 
         String journalNumber = "MJ-" + journal.getId();
-
-        // idempotency: if GL entries for this journalNumber already posted, skip
-        java.util.List<GeneralLedger> existing = generalLedgerRepository.findByJournalNumberAndStatus(journalNumber, GeneralLedger.TransactionStatus.POSTED);
+        List<GeneralLedger> existing = generalLedgerRepository.findByJournalNumber(journalNumber);
         if (existing != null && !existing.isEmpty()) {
-            return; // already posted
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "General ledger entries already exist for this journal");
         }
 
-        // create GL entries for each journal line
-        java.util.List<JournalLine> lines = journalLineRepository.findByManualJournalId(journalId);
+        List<JournalLine> lines = journalLineRepository.findByManualJournalId(journalId);
+        if (lines.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Journal must have lines before posting");
+        }
+
+        List<GeneralLedger> postedEntries = new java.util.ArrayList<>();
         for (JournalLine line : lines) {
             if (line.getDebitAmount() != null && line.getDebitAmount().compareTo(BigDecimal.ZERO) > 0) {
                 GeneralLedger debit = GeneralLedger.builder()
@@ -88,11 +95,11 @@ public class GeneralLedgerService {
                         .amount(line.getDebitAmount())
                         .description(journal.getDescription() != null ? journal.getDescription() : line.getNarration())
                         .referenceNumber(null)
-                        .createdByUser(approver)
+                        .createdByUser(postingUser)
                         .notes(line.getNarration())
                         .status(GeneralLedger.TransactionStatus.POSTED)
                         .build();
-                generalLedgerRepository.save(debit);
+                postedEntries.add(generalLedgerRepository.save(debit));
             }
 
             if (line.getCreditAmount() != null && line.getCreditAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -104,13 +111,30 @@ public class GeneralLedgerService {
                         .amount(line.getCreditAmount())
                         .description(journal.getDescription() != null ? journal.getDescription() : line.getNarration())
                         .referenceNumber(null)
-                        .createdByUser(approver)
+                        .createdByUser(postingUser)
                         .notes(line.getNarration())
                         .status(GeneralLedger.TransactionStatus.POSTED)
                         .build();
-                generalLedgerRepository.save(credit);
+                postedEntries.add(generalLedgerRepository.save(credit));
             }
         }
+
+        try {
+            AuditLogDTO log = AuditLogDTO.builder()
+                    .organizationId(journal.getOrganization().getId())
+                    .entityType("GeneralLedger")
+                    .entityId(journal.getId())
+                    .action("POST")
+                    .newValue(journalNumber)
+                    .description("Posted " + postedEntries.size() + " general ledger entries for ManualJournal " + journal.getId())
+                    .build();
+            auditLogService.createAuditLog(journal.getOrganization().getId(), log);
+        } catch (Exception ex) {
+        }
+
+        return postedEntries.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
     public GeneralLedgerDTO getEntry(Long entryId) {
@@ -121,6 +145,14 @@ public class GeneralLedgerService {
 
     public List<GeneralLedgerDTO> getEntriesByAccount(Long accountId) {
         return generalLedgerRepository.findByAccountIdOrderByTransactionDateDesc(accountId)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<GeneralLedgerDTO> getEntriesByJournalId(Long journalId) {
+        return generalLedgerRepository.findByJournalNumber("MJ-" + journalId)
                 .stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());

@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 
 @Slf4j
 @Configuration
@@ -37,11 +38,34 @@ public class Oauth2SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> {
 
-                    authorize.requestMatchers("/", "/index").permitAll();
-                    authorize.requestMatchers("/api/**").permitAll();
-                    authorize.requestMatchers("/static/**", "/css/**", "/js/**").permitAll();
-                    authorize.requestMatchers("/images/**").permitAll();
-                    authorize.requestMatchers("/favicon.ico").permitAll();
+                    authorize.requestMatchers("/", "/index", "/index.html").permitAll();
+                    authorize.requestMatchers("/static/**", "/css/**", "/js/**", "/webjars/**").permitAll();
+                    authorize.requestMatchers("/images/**", "/fonts/**").permitAll();
+                    authorize.requestMatchers("/favicon.ico", "/error").permitAll();
+                    authorize.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll();
+
+                    authorize.requestMatchers(HttpMethod.GET, "/api/organizations/**").authenticated();
+                    authorize.requestMatchers(HttpMethod.GET, "/api/branches/**").authenticated();
+
+                    authorize.requestMatchers("/api/organizations/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isFinanceAdmin()));
+
+                    authorize.requestMatchers("/api/branches/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isFinanceAdmin()));
+
+                    authorize.requestMatchers("/api/financeAdmin/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isFinanceAdmin()));
+
+                    authorize.requestMatchers("/api/accountant/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isAccountant()));
+
+                    authorize.requestMatchers("/api/cfo/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isCfo()));
+
+                    authorize.requestMatchers("/api/auditor/**").access((authentication, context) ->
+                            new AuthorizationDecision(authenticationManager.isAuditor()));
+
+                    authorize.requestMatchers("/api/**").authenticated();
 
                     authorize.requestMatchers("/admin/**").access((authentication, context) ->
                             new AuthorizationDecision(authenticationManager.isAdmin()));

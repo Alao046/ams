@@ -9,5 +9,9 @@ import java.util.Optional;
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
     Optional<Organization> findByName(String name);
+    Optional<Organization> findByNameIgnoreCase(String name);
     Optional<Organization> findByRegistrationNumber(String registrationNumber);
+    Optional<Organization> findByRegistrationNumberIgnoreCase(String registrationNumber);
+    boolean existsByNameIgnoreCase(String name);
+    boolean existsByRegistrationNumberIgnoreCase(String registrationNumber);
 }

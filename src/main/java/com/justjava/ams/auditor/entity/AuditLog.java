@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 public class AuditLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "audit_logs_id_seq")
+    @SequenceGenerator(name = "audit_logs_id_seq", sequenceName = "audit_logs_id_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -66,6 +67,8 @@ public class AuditLog {
         IMPORT,
         LOGIN,
         LOGOUT,
+        SUBMIT,
+        POST,
         APPROVE,
         REJECT
     }

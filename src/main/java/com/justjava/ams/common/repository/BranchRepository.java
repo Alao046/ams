@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface BranchRepository extends JpaRepository<Branch, Long> {
     List<Branch> findByOrganizationId(Long organizationId);
     Optional<Branch> findByCode(String code);
+    Optional<Branch> findByCodeIgnoreCase(String code);
+    boolean existsByCodeIgnoreCase(String code);
 }
