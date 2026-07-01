@@ -4,6 +4,11 @@ import com.justjava.ams.accountant.dto.ChartOfAccountsDTO;
 import com.justjava.ams.accountant.dto.FiscalPeriodDTO;
 import com.justjava.ams.accountant.service.ChartOfAccountsService;
 import com.justjava.ams.accountant.service.FiscalPeriodService;
+import com.justjava.ams.financeAdmin.service.ModuleControlService;
+import com.justjava.ams.financeAdmin.dto.ModuleControlDTO;
+import com.justjava.ams.financeAdmin.dto.ModuleControlDefaultsResponse;
+import com.justjava.ams.financeAdmin.dto.ModuleControlUpdateRequest;
+import com.justjava.ams.financeAdmin.dto.ModuleControlToggleRequest;
 import com.justjava.ams.financeAdmin.dto.ChartOfAccountCreateRequest;
 import com.justjava.ams.financeAdmin.dto.ChartOfAccountUpdateRequest;
 import com.justjava.ams.financeAdmin.dto.FiscalPeriodCreateRequest;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import java.security.Principal;
 
 import java.util.List;
 
@@ -30,6 +36,7 @@ import java.util.List;
 public class FinanceAdminApiController {
     private final ChartOfAccountsService chartOfAccountsService;
     private final FiscalPeriodService fiscalPeriodService;
+    private final ModuleControlService moduleControlService;
 
     @GetMapping("/chartOfAccounts/org/{organizationId}")
     public List<ChartOfAccountsDTO> getChartOfAccounts(@PathVariable Long organizationId) {
@@ -65,6 +72,51 @@ public class FinanceAdminApiController {
     @GetMapping("/fiscalPeriods/org/{organizationId}")
     public List<FiscalPeriodDTO> getFiscalPeriods(@PathVariable Long organizationId) {
         return fiscalPeriodService.getFiscalPeriodsByOrganization(organizationId);
+    }
+
+    @GetMapping("/module-controls/org/{organizationId}")
+    public List<ModuleControlDTO> getModuleControls(@PathVariable Long organizationId) {
+        return moduleControlService.getModulesByOrganization(organizationId);
+    }
+
+    @PostMapping("/module-controls/org/{organizationId}/defaults")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ModuleControlDefaultsResponse initializeModuleDefaults(@PathVariable Long organizationId) {
+        return moduleControlService.initializeDefaultModules(organizationId);
+    }
+
+    @PutMapping("/module-controls/{moduleId}")
+    public ModuleControlDTO updateModuleControl(
+            @PathVariable Long moduleId,
+            @Valid @RequestBody ModuleControlUpdateRequest request,
+            Principal principal) {
+        ModuleControlDTO dto = ModuleControlDTO.builder()
+                .enabled(request.getEnabled())
+                .allowUserConfiguration(request.getAllowUserConfiguration())
+                .requiresApproval(request.getRequiresApproval())
+                .enableAuditTrail(request.getEnableAuditTrail())
+                .enableNotifications(request.getEnableNotifications())
+                .maxTransactionAmountLimit(request.getMaxTransactionAmountLimit())
+                .configurationJson(request.getConfigurationJson())
+                .notes(request.getNotes())
+                .build();
+
+        String changedBy = principal != null ? principal.getName() : "system";
+        return moduleControlService.updateModuleControl(moduleId, dto, changedBy);
+    }
+
+    @PatchMapping("/module-controls/{moduleId}/toggle")
+    public ModuleControlDTO toggleModuleControl(
+            @PathVariable Long moduleId,
+            @Valid @RequestBody ModuleControlToggleRequest request,
+            Principal principal) {
+        String changedBy = principal != null ? principal.getName() : "system";
+        return moduleControlService.toggleModule(moduleId, request.getEnabled(), request.getReason(), changedBy);
+    }
+
+    @GetMapping("/module-controls/org/{organizationId}/enabled")
+    public List<ModuleControlDTO> getEnabledModuleControls(@PathVariable Long organizationId) {
+        return moduleControlService.getEnabledModulesByOrganization(organizationId);
     }
 
     @PostMapping("/fiscalPeriods/org/{organizationId}")

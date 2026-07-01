@@ -11,5 +11,10 @@ import java.util.List;
 public interface TrialBalanceRepository extends JpaRepository<TrialBalance, Long> {
     List<TrialBalance> findByOrganizationIdAndReportDate(Long organizationId, LocalDate reportDate);
     List<TrialBalance> findByOrganizationIdAndStatus(Long organizationId, TrialBalance.ReportStatus status);
+
+    // Ordered retrieval for snapshots and deletion by org/report date
+    List<TrialBalance> findByOrganizationIdAndReportDateOrderByAccountCodeAsc(Long organizationId, LocalDate reportDate);
+
+    void deleteByOrganizationIdAndReportDate(Long organizationId, LocalDate reportDate);
 }
 

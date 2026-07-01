@@ -14,5 +14,8 @@ public interface FinancialReportRepository extends JpaRepository<FinancialReport
     List<FinancialReport> findByOrganizationIdAndReportType(Long organizationId, FinancialReport.ReportType reportType);
     List<FinancialReport> findByOrganizationIdAndStatus(Long organizationId, FinancialReport.ReportStatus status);
     List<FinancialReport> findByOrganizationIdAndReportDateBetween(Long organizationId, LocalDate fromDate, LocalDate toDate);
+
+    // List reports for an organization, newest first
+    List<FinancialReport> findByOrganizationIdOrderByReportDateDesc(Long organizationId);
 }
 

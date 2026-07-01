@@ -28,7 +28,12 @@ public class AuditLogService {
             "FiscalPeriod",
             "ManualJournal",
             "JournalLine",
-            "GeneralLedger"
+            "GeneralLedger",
+            // Stage 2 entity types
+            "ModuleControl",
+            "TrialBalance",
+            "FinancialReport",
+            "SecurityEvent"
     );
 
     private final AuditLogRepository auditLogRepository;

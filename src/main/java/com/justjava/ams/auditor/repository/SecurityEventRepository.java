@@ -14,5 +14,12 @@ public interface SecurityEventRepository extends JpaRepository<SecurityEvent, Lo
     List<SecurityEvent> findByOrganizationIdAndCreatedAtBetween(Long organizationId, LocalDateTime startDate, LocalDateTime endDate);
     List<SecurityEvent> findByOrganizationIdAndAcknowledgedFalse(Long organizationId);
     List<SecurityEvent> findByOrganizationId(Long organizationId);
+
+    // Ordered retrievals for auditor UI
+    List<SecurityEvent> findByOrganizationIdOrderByCreatedAtDesc(Long organizationId);
+
+    List<SecurityEvent> findByOrganizationIdAndAcknowledgedFalseOrderByCreatedAtDesc(Long organizationId);
+
+    List<SecurityEvent> findByOrganizationIdAndCreatedAtBetweenOrderByCreatedAtDesc(Long organizationId, LocalDateTime startDate, LocalDateTime endDate);
 }
 

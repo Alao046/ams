@@ -158,6 +158,38 @@ public class GeneralLedgerService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<GeneralLedgerDTO> getPostedEntriesByOrganizationAndDateRange(Long organizationId, LocalDate fromDate, LocalDate toDate) {
+        // Validate dates
+        if (fromDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "From date is required");
+        }
+        if (toDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "To date is required");
+        }
+        if (fromDate.isAfter(toDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "From date must not be after to date");
+        }
+
+        return generalLedgerRepository.findPostedEntriesByOrganizationAndDateRange(organizationId, fromDate, toDate)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<GeneralLedgerDTO> getPostedEntriesByOrganizationAsOf(Long organizationId, LocalDate asOfDate) {
+        // Validate date
+        if (asOfDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "As of date is required");
+        }
+
+        return generalLedgerRepository.findPostedEntriesByOrganizationAsOf(organizationId, asOfDate)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<GeneralLedgerDTO> getEntriesByDateRange(LocalDate startDate, LocalDate endDate) {
         return generalLedgerRepository.findByTransactionDateBetween(startDate, endDate)
                 .stream()
@@ -191,4 +223,3 @@ public class GeneralLedgerService {
                 .build();
     }
 }
-

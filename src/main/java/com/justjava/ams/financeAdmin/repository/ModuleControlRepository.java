@@ -12,4 +12,6 @@ public interface ModuleControlRepository extends JpaRepository<ModuleControl, Lo
     Optional<ModuleControl> findByOrganizationIdAndModuleType(Long organizationId, ModuleControl.ModuleType moduleType);
     List<ModuleControl> findByOrganizationIdAndEnabledTrue(Long organizationId);
     List<ModuleControl> findByOrganizationId(Long organizationId);
+
+    boolean existsByOrganizationIdAndModuleType(Long organizationId, ModuleControl.ModuleType moduleType);
 }

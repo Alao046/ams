@@ -24,4 +24,14 @@ public interface GeneralLedgerRepository extends JpaRepository<GeneralLedger, Lo
 
     @Query("SELECT gl FROM GeneralLedger gl WHERE gl.account.id = :accountId AND gl.status = :status")
     List<GeneralLedger> findByAccountIdAndStatus(@Param("accountId") Long accountId, @Param("status") GeneralLedger.TransactionStatus status);
+
+    // Reporting queries - filter by the organization through the GL.account.organization.id path
+    @Query("SELECT gl FROM GeneralLedger gl WHERE gl.status = com.justjava.ams.accountant.entity.GeneralLedger.TransactionStatus.POSTED AND gl.account.organization.id = :organizationId AND gl.transactionDate BETWEEN :fromDate AND :toDate ORDER BY gl.transactionDate ASC")
+    List<GeneralLedger> findPostedEntriesByOrganizationAndDateRange(@Param("organizationId") Long organizationId, @Param("fromDate") LocalDate fromDate, @Param("toDate") LocalDate toDate);
+
+    @Query("SELECT gl FROM GeneralLedger gl WHERE gl.status = com.justjava.ams.accountant.entity.GeneralLedger.TransactionStatus.POSTED AND gl.account.organization.id = :organizationId AND gl.transactionDate <= :asOfDate ORDER BY gl.transactionDate ASC")
+    List<GeneralLedger> findPostedEntriesByOrganizationAsOf(@Param("organizationId") Long organizationId, @Param("asOfDate") LocalDate asOfDate);
+
+    @Query("SELECT CASE WHEN COUNT(gl) > 0 THEN true ELSE false END FROM GeneralLedger gl WHERE gl.status = com.justjava.ams.accountant.entity.GeneralLedger.TransactionStatus.POSTED AND gl.account.organization.id = :organizationId")
+    boolean existsPostedByOrganization(@Param("organizationId") Long organizationId);
 }
