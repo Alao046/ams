@@ -46,19 +46,31 @@
         }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        [disabled] { cursor: not-allowed; }
+        .truncate-cell { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
 </head>
 <body class="text-on-surface flex h-screen overflow-hidden">
 
 <aside th:replace="~{layouts/auditorLayout :: sidebar('securityEvents')}"></aside>
 
+<script th:inline="javascript">
+    const CURRENT_USER = /*[[${userName}]]*/ 'system';
+</script>
+
 <div class="flex-1 flex flex-col overflow-hidden">
 
-    <header class="bg-surface border-b border-gray-200 flex justify-between items-center w-full px-outer-padding h-16 sticky top-0 z-40 shrink-0">
-        <div class="flex items-center gap-4">
-            <span class="font-bold">Security Events</span>
+    <header class="bg-surface border-b border-gray-200 flex justify-between items-center w-full px-outer-padding h-16 sticky top-0 z-40 shrink-0 gap-4">
+        <div class="flex items-center gap-4 min-w-0">
+            <span class="font-bold whitespace-nowrap">Security Events</span>
         </div>
-
+        <div class="flex items-center gap-3">
+            <label class="text-sm font-semibold text-gray-600" for="organizationSelector">Organization</label>
+            <select id="organizationSelector" class="border rounded px-3 py-1.5 bg-white text-sm min-w-[200px]"></select>
+            <button id="refreshEventsBtn" type="button" class="border rounded px-3 py-1.5 bg-white hover:bg-gray-50 transition-colors text-sm flex items-center gap-1.5" onclick="handleRefreshClick()">
+                <span class="material-symbols-outlined text-[18px]">refresh</span> Refresh
+            </button>
+        </div>
     </header>
 
     <main class="flex-1 overflow-y-auto px-outer-padding py-6">
@@ -67,103 +79,124 @@
             <p class="text-sm text-gray-600">Monitoring authentication events, unauthorized access attempts and security-related activities.</p>
         </div>
 
-        <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div>
-                <label class="block text-sm font-semibold mb-1">Severity</label>
-                <select id="severityFilter" class="w-full border rounded px-3 py-2 bg-white" onchange="applySecurityFilters()">
-                    <option value="">All Severities</option>
-                    <option value="CRITICAL">Critical</option>
-                    <option value="HIGH">High</option>
-                    <option value="MEDIUM">Medium</option>
-                    <option value="LOW">Low</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold mb-1">Event Type</label>
-                <select id="eventTypeFilter" class="w-full border rounded px-3 py-2 bg-white" onchange="applySecurityFilters()">
-                    <option value="">All Events</option>
-                    <option value="LOGIN_ATTEMPT">Login Attempt</option>
-                    <option value="UNAUTHORIZED_ACCESS">Unauthorized Access</option>
-                    <option value="MULTIPLE_LOGIN_ATTEMPTS">Multiple Login Attempts</option>
-                    <option value="PERMISSION_CHANGE">Permission Change</option>
-                    <option value="DATA_ACCESS">Data Access</option>
-                    <option value="DATA_MODIFICATION">Data Modification</option>
-                    <option value="DATA_DELETION">Data Deletion</option>
-                    <option value="CONFIGURATION_CHANGE">Configuration Change</option>
-                    <option value="SUSPICIOUS_ACTIVITY">Suspicious Activity</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-semibold mb-1">Acknowledgment</label>
-                <select id="statusFilter" class="w-full border rounded px-3 py-2 bg-white" onchange="applySecurityFilters()">
-                    <option value="">All</option>
-                    <option value="unacknowledged">Unacknowledged</option>
-                    <option value="acknowledged">Acknowledged</option>
-                </select>
-            </div>
-            <div class="flex items-end">
-                <button class="w-full border rounded px-4 py-2 bg-white hover:bg-gray-50 transition-colors" onclick="resetSecurityFilters()">Reset Filters</button>
-            </div>
-        </section>
+        <div id="pageMessage" class="hidden rounded-lg border px-4 py-3 text-sm mb-6"></div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-outer-padding">
-            <div class="lg:col-span-2 bg-white border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
-                <div class="overflow-x-auto custom-scrollbar">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-gray-50 border-b">
-                        <tr>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Timestamp</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Title</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Event Type</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Severity</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Status</th>
-                            <th class="px-4 py-3 text-sm font-semibold text-gray-700">Action</th>
-                        </tr>
-                        </thead>
-                        <tbody id="securityEventTableBody" class="divide-y divide-gray-100">
-                        <tr><td colspan="6" class="py-8 text-center text-gray-500">Loading security events...</td></tr>
-                        </tbody>
-                    </table>
+        <div id="noOrgState" class="hidden bg-white border rounded-xl p-10 text-center text-gray-600 mb-outer-padding">
+            No organization found. Create one from Finance Admin Organization Setup before using this page.
+        </div>
+
+        <div id="pageContent" class="hidden">
+            <section class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6 items-end">
+                <div>
+                    <label class="block text-sm font-semibold mb-1" for="severityFilter">Severity</label>
+                    <select id="severityFilter" class="w-full border rounded px-3 py-2 bg-white">
+                        <option value="">All Severities</option>
+                        <option value="CRITICAL">Critical</option>
+                        <option value="HIGH">High</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="LOW">Low</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1" for="eventTypeFilter">Event Type</label>
+                    <select id="eventTypeFilter" class="w-full border rounded px-3 py-2 bg-white">
+                        <option value="">All Events</option>
+                        <option value="CONFIGURATION_CHANGE">Configuration Change</option>
+                        <option value="REPORT_GENERATION">Report Generation</option>
+                        <option value="UNAUTHORIZED_ACCESS">Unauthorized Access</option>
+                        <option value="MULTIPLE_LOGIN_ATTEMPTS">Multiple Login Attempts</option>
+                        <option value="PERMISSION_CHANGE">Permission Change</option>
+                        <option value="DATA_ACCESS">Data Access</option>
+                        <option value="DATA_MODIFICATION">Data Modification</option>
+                        <option value="DATA_DELETION">Data Deletion</option>
+                        <option value="PAYMENT_PROCESSING">Payment Processing</option>
+                        <option value="EXPORT_DATA">Export Data</option>
+                        <option value="SUSPICIOUS_ACTIVITY">Suspicious Activity</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1" for="statusFilter">Acknowledgment</label>
+                    <select id="statusFilter" class="w-full border rounded px-3 py-2 bg-white">
+                        <option value="">All</option>
+                        <option value="unacknowledged">Unacknowledged</option>
+                        <option value="acknowledged">Acknowledged</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1" for="startDateFilter">Start Date</label>
+                    <input id="startDateFilter" type="datetime-local" class="w-full border rounded px-3 py-2 bg-white text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1" for="endDateFilter">End Date</label>
+                    <input id="endDateFilter" type="datetime-local" class="w-full border rounded px-3 py-2 bg-white text-sm">
+                </div>
+                <div class="flex gap-2">
+                    <button id="applySecurityFiltersBtn" type="button" class="flex-1 border rounded px-4 py-2 bg-primary text-white hover:opacity-90 transition-all text-sm font-semibold" onclick="handleApplyFiltersClick()">Apply Filters</button>
+                    <button id="resetSecurityFiltersBtn" type="button" class="flex-1 border rounded px-4 py-2 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold" onclick="handleResetFiltersClick()">Reset</button>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-outer-padding">
+                <div class="lg:col-span-2 bg-white border rounded-xl shadow-sm overflow-hidden flex flex-col justify-between">
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Timestamp</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Title</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Event Type</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Severity</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Description</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Status</th>
+                                <th class="px-4 py-3 text-sm font-semibold text-gray-700">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="securityEventTableBody" class="divide-y divide-gray-100">
+                            <tr><td colspan="7" class="py-8 text-center text-gray-500">Loading security events...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-4 py-3 border-t flex items-center justify-between bg-gray-50">
+                        <div class="text-sm text-gray-600" id="eventsPaginationInfo">Loading...</div>
+                        <div id="eventsPaginationControls" class="flex gap-2"></div>
+                    </div>
                 </div>
 
-                <div class="px-4 py-3 border-t flex items-center justify-between bg-gray-50">
-                    <div class="text-sm text-gray-600" id="eventsPaginationInfo">Loading...</div>
-                    <div id="eventsPaginationControls" class="flex gap-2"></div>
-                </div>
-            </div>
-
-            <div class="bg-white border rounded-xl p-card-padding shadow-sm h-fit">
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600 font-semibold tracking-wider">CRITICAL EVENTS</span>
-                        <span id="criticalCount" class="text-red-600 font-bold">0</span>
-                    </div>
-                    <div class="h-2 bg-gray-100 rounded overflow-hidden"><div id="criticalBar" class="h-full bg-red-600 transition-all duration-300" style="width:0%"></div></div>
-                </div>
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600 font-semibold tracking-wider">HIGH EVENTS</span>
-                        <span id="highCount" class="text-amber-600 font-bold">0</span>
-                    </div>
-                    <div class="h-2 bg-gray-100 rounded overflow-hidden"><div id="highBar" class="h-full bg-amber-600 transition-all duration-300" style="width:0%"></div></div>
-                </div>
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-sm text-gray-600 font-semibold tracking-wider">UNACKNOWLEDGED</span>
-                        <span id="unacknowledgedCount" class="text-gray-700 font-bold">0</span>
-                    </div>
-                    <div class="h-2 bg-gray-100 rounded overflow-hidden"><div id="unacknowledgedBar" class="h-full bg-primary transition-all duration-300" style="width:0%"></div></div>
-                </div>
-                <div class="mt-6 pt-4 border-t border-gray-100">
-                    <div class="flex items-center justify-between gap-3">
-                        <div>
-                            <div class="text-3xl font-bold tracking-tight" id="uniqueIPCount">0</div>
-                            <div class="text-xs text-gray-500 font-medium">unique IPs</div>
+                <div class="bg-white border rounded-xl p-card-padding shadow-sm h-fit">
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm text-gray-600 font-semibold tracking-wider">CRITICAL EVENTS</span>
+                            <span id="criticalCount" class="text-red-600 font-bold">0</span>
                         </div>
-                        <div>
-                            <button class="bg-primary text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 hover:opacity-90 active:opacity-80 transition-all" onclick="exportSecurityEvents()">
-                                <span class="material-symbols-outlined text-[18px]">download</span> Export
-                            </button>
+                        <div class="h-2 bg-gray-100 rounded overflow-hidden"><div id="criticalBar" class="h-full bg-red-600 transition-all duration-300" style="width:0%"></div></div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm text-gray-600 font-semibold tracking-wider">HIGH EVENTS</span>
+                            <span id="highCount" class="text-amber-600 font-bold">0</span>
+                        </div>
+                        <div class="h-2 bg-gray-100 rounded overflow-hidden"><div id="highBar" class="h-full bg-amber-600 transition-all duration-300" style="width:0%"></div></div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-sm text-gray-600 font-semibold tracking-wider">UNACKNOWLEDGED</span>
+                            <span id="unacknowledgedCount" class="text-gray-700 font-bold">0</span>
+                        </div>
+                        <div class="h-2 bg-gray-100 rounded overflow-hidden"><div id="unacknowledgedBar" class="h-full bg-primary transition-all duration-300" style="width:0%"></div></div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-gray-100">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <div class="text-3xl font-bold tracking-tight" id="uniqueIPCount">0</div>
+                                <div class="text-xs text-gray-500 font-medium">unique IPs</div>
+                            </div>
+                            <div>
+                                <button id="exportSecurityEventsBtn" type="button" class="bg-primary text-white px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2 hover:opacity-90 active:opacity-80 transition-all" onclick="exportSecurityEvents()">
+                                    <span class="material-symbols-outlined text-[18px]">download</span> Export
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -172,78 +205,397 @@
     </main>
 </div>
 
+<!-- Acknowledge confirmation modal -->
+<div id="acknowledgeSecurityEventModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-card-padding">
+        <div class="flex items-start justify-between mb-4">
+            <h2 class="text-lg font-bold">Acknowledge Security Event</h2>
+            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeAcknowledgeModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div id="acknowledgeModalError" class="hidden rounded-lg border border-red-200 bg-red-50 text-red-700 px-3 py-2 text-sm mb-4"></div>
+
+        <dl class="space-y-2 text-sm mb-4">
+            <div class="flex justify-between gap-4"><dt class="text-gray-500">Title</dt><dd id="ackTitle" class="font-semibold text-gray-900 text-right"></dd></div>
+            <div class="flex justify-between gap-4"><dt class="text-gray-500">Event Type</dt><dd id="ackEventType" class="font-semibold text-gray-900 text-right"></dd></div>
+            <div class="flex justify-between gap-4"><dt class="text-gray-500">Severity</dt><dd id="ackSeverity" class="font-semibold text-gray-900 text-right"></dd></div>
+            <div class="flex justify-between gap-4"><dt class="text-gray-500">Created</dt><dd id="ackCreatedAt" class="font-semibold text-gray-900 text-right"></dd></div>
+        </dl>
+
+        <label class="block text-sm font-semibold mb-1" for="ackNote">Note (optional - not yet persisted by backend)</label>
+        <textarea id="ackNote" rows="3" class="w-full border rounded px-3 py-2 mb-4 text-sm"></textarea>
+
+        <div class="flex justify-end gap-2">
+            <button type="button" class="px-4 py-2 rounded-lg border text-sm font-semibold hover:bg-gray-50" onclick="closeAcknowledgeModal()">Cancel</button>
+            <button id="confirmAcknowledgeBtn" type="button" class="px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90" onclick="confirmAcknowledge()">Confirm Acknowledge</button>
+        </div>
+    </div>
+</div>
+
+<!-- Event detail modal -->
+<div id="securityEventDetailModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+    <div class="bg-white rounded-xl shadow-lg w-full max-w-lg p-card-padding max-h-[85vh] overflow-y-auto custom-scrollbar">
+        <div class="flex items-start justify-between mb-4">
+            <h2 class="text-lg font-bold">Security Event Detail</h2>
+            <button type="button" class="text-gray-400 hover:text-gray-600" onclick="closeDetailModal()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 text-sm mb-4">
+            <div><dt class="text-gray-500">Event ID</dt><dd id="detailEventId" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Organization ID</dt><dd id="detailOrgId" class="font-semibold text-gray-900"></dd></div>
+            <div class="sm:col-span-2"><dt class="text-gray-500">Title</dt><dd id="detailTitle" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Event Type</dt><dd id="detailEventType" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Severity</dt><dd id="detailSeverity" class="font-semibold text-gray-900"></dd></div>
+            <div class="sm:col-span-2"><dt class="text-gray-500">Description</dt><dd id="detailDescription" class="text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">IP Address</dt><dd id="detailIpAddress" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">User Agent</dt><dd id="detailUserAgent" class="font-semibold text-gray-900 break-all"></dd></div>
+            <div><dt class="text-gray-500">Created At</dt><dd id="detailCreatedAt" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Updated At</dt><dd id="detailUpdatedAt" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Acknowledged</dt><dd id="detailAcknowledged" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Acknowledged At</dt><dd id="detailAcknowledgedAt" class="font-semibold text-gray-900"></dd></div>
+            <div><dt class="text-gray-500">Acknowledged By</dt><dd id="detailAcknowledgedBy" class="font-semibold text-gray-900"></dd></div>
+        </dl>
+
+        <div class="flex justify-end gap-2">
+            <button type="button" class="px-4 py-2 rounded-lg border text-sm font-semibold hover:bg-gray-50" onclick="closeDetailModal()">Close</button>
+            <button id="detailAcknowledgeBtn" type="button" class="hidden px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:opacity-90" onclick="acknowledgeFromDetail()">Acknowledge</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    const API_BASE = '/api/auditor';
-    const DEFAULT_ORG_ID = 1;
+    const ORG_STORAGE_KEY = 'ams.selectedOrganizationId';
+    let organizations = [];
+    let selectedOrganizationId = null;
+
     let allSecurityEvents = [];
+    let visibleSecurityEvents = [];
     let currentPage = 1;
     const ITEMS_PER_PAGE = 8;
 
-    async function loadSecurityEvents() {
-        try {
-            const [recentRes, unackRes] = await Promise.all([
-                fetch(`${API_BASE}/security-events/org/${DEFAULT_ORG_ID}/date-range?startDate=${new Date(Date.now() - 7*24*60*60*1000).toISOString()}&endDate=${new Date().toISOString()}`),
-                fetch(`${API_BASE}/security-events/org/${DEFAULT_ORG_ID}/unacknowledged`)
-            ]);
+    let pendingAcknowledgement = { eventId: null, title: null, eventType: null, severity: null };
+    let detailEventId = null;
 
-            const recent = recentRes.ok ? await recentRes.json() : [];
-            const unack = unackRes.ok ? await unackRes.json() : [];
+    // ---------- API helper ----------
 
-            const map = new Map();
-            recent.forEach(e => map.set(e.id, e));
-            unack.forEach(e => map.set(e.id, e));
-            allSecurityEvents = Array.from(map.values());
-            allSecurityEvents.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            headers: options.body ? { 'Content-Type': 'application/json', ...(options.headers || {}) } : (options.headers || {}),
+            ...options
+        });
+        const text = await response.text();
+        let payload = null;
+        if (text) {
+            try {
+                payload = JSON.parse(text);
+            } catch (parseError) {
+                if (!response.ok) {
+                    throw new Error(text || `Request failed with status ${response.status}`);
+                }
+                throw new Error('Unexpected non-JSON response from server.');
+            }
+        }
+        if (!response.ok) {
+            const message = (payload && (payload.message || payload.error || payload.detail || flattenFieldErrors(payload.fieldErrors)))
+                || `Request failed with status ${response.status}`;
+            throw new Error(message);
+        }
+        return payload;
+    }
 
-            currentPage = 1;
-            updateThreatMetrics();
-            displaySecurityEvents();
-        } catch (err) {
-            console.error('Error loading security events', err);
-            document.getElementById('securityEventTableBody').innerHTML = '<tr><td colspan="6" class="py-8 text-center text-red-600">Failed to load events</td></tr>';
+    function flattenFieldErrors(fieldErrors) {
+        if (!fieldErrors || typeof fieldErrors !== 'object') return null;
+        const parts = Object.keys(fieldErrors).map(key => `${key}: ${fieldErrors[key]}`);
+        return parts.length ? parts.join('; ') : null;
+    }
+
+    // ---------- Formatting / safety helpers ----------
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatDateTime(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        return isNaN(date.getTime()) ? '-' : date.toLocaleString();
+    }
+
+    function labelizeEventType(value) {
+        if (!value) return 'Unknown';
+        return String(value).toLowerCase().split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    }
+
+    function csvCell(value) {
+        return `"${String(value ?? '').replace(/"/g, '""')}"`;
+    }
+
+    // ---------- Page message panel ----------
+
+    function showPageMessage(type, text) {
+        const el = document.getElementById('pageMessage');
+        el.textContent = text;
+        el.classList.remove('hidden', 'bg-error-container', 'text-on-error-container', 'border-red-200', 'bg-green-50', 'text-green-800', 'border-green-200', 'bg-amber-50', 'text-amber-800', 'border-amber-200');
+        if (type === 'error') {
+            el.classList.add('border-red-200', 'bg-error-container', 'text-on-error-container');
+        } else if (type === 'warning') {
+            el.classList.add('border-amber-200', 'bg-amber-50', 'text-amber-800');
+        } else {
+            el.classList.add('border-green-200', 'bg-green-50', 'text-green-800');
         }
     }
 
-    function applySecurityFilters() {
-        const severity = document.getElementById('severityFilter').value;
-        const eventType = document.getElementById('eventTypeFilter').value;
-        const status = document.getElementById('statusFilter').value;
-
-        let filtered = allSecurityEvents.slice();
-        if (severity) filtered = filtered.filter(e => e.severity === severity);
-        if (eventType) filtered = filtered.filter(e => e.eventType === eventType);
-        if (status === 'acknowledged') filtered = filtered.filter(e => e.acknowledged === true);
-        if (status === 'unacknowledged') filtered = filtered.filter(e => e.acknowledged === false);
-
-        currentPage = 1;
-        renderPage(filtered);
+    function clearPageMessage() {
+        const el = document.getElementById('pageMessage');
+        el.classList.add('hidden');
+        el.textContent = '';
     }
 
-    function resetSecurityFilters() {
-        document.getElementById('severityFilter').value = '';
-        document.getElementById('eventTypeFilter').value = '';
-        document.getElementById('statusFilter').value = '';
+    // ---------- Button busy state ----------
+
+    function setBusy(button, busy) {
+        if (!button) return;
+        button.disabled = busy;
+        button.classList.toggle('opacity-60', busy);
+    }
+
+    // ---------- Init / organization context ----------
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    async function init() {
+        try {
+            organizations = await apiJson('/api/organizations');
+        } catch (err) {
+            organizations = [];
+            showPageMessage('error', err.message);
+        }
+
+        if (!organizations || organizations.length === 0) {
+            document.getElementById('noOrgState').classList.remove('hidden');
+            document.getElementById('pageContent').classList.add('hidden');
+            return;
+        }
+
+        document.getElementById('noOrgState').classList.add('hidden');
+        document.getElementById('pageContent').classList.remove('hidden');
+
+        populateOrganizationSelector();
+        resolveSelectedOrganization();
+
+        document.getElementById('organizationSelector').addEventListener('change', (e) => {
+            selectedOrganizationId = e.target.value;
+            sessionStorage.setItem(ORG_STORAGE_KEY, selectedOrganizationId);
+            clearPageMessage();
+            resetFilterFields();
+            currentPage = 1;
+            loadSecurityEvents();
+        });
+
         loadSecurityEvents();
     }
 
-    function displaySecurityEvents() { renderPage(allSecurityEvents); }
+    function populateOrganizationSelector() {
+        const select = document.getElementById('organizationSelector');
+        select.innerHTML = organizations.map(org =>
+            `<option value="${escapeHtml(org.id)}">${escapeHtml(org.name)}</option>`
+        ).join('');
+    }
 
-    function renderPage(list) {
+    function resolveSelectedOrganization() {
+        const stored = sessionStorage.getItem(ORG_STORAGE_KEY);
+        const storedMatch = organizations.find(org => String(org.id) === String(stored));
+        if (storedMatch) {
+            selectedOrganizationId = String(storedMatch.id);
+        } else {
+            const firstActive = organizations.find(org => org.active === true) || organizations[0];
+            selectedOrganizationId = String(firstActive.id);
+            sessionStorage.setItem(ORG_STORAGE_KEY, selectedOrganizationId);
+        }
+        document.getElementById('organizationSelector').value = selectedOrganizationId;
+    }
+
+    // ---------- Data loading / filtering ----------
+
+    function toLocalDateTimeParam(value) {
+        if (!value) return '';
+        return value.length === 16 ? `${value}:00` : value;
+    }
+
+    function anyFilterActive() {
+        return !!(
+            document.getElementById('severityFilter').value ||
+            document.getElementById('eventTypeFilter').value ||
+            document.getElementById('statusFilter').value ||
+            document.getElementById('startDateFilter').value ||
+            document.getElementById('endDateFilter').value
+        );
+    }
+
+    function resetFilterFields() {
+        document.getElementById('severityFilter').value = '';
+        document.getElementById('eventTypeFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('startDateFilter').value = '';
+        document.getElementById('endDateFilter').value = '';
+    }
+
+    function buildFilterQuery() {
+        const severity = document.getElementById('severityFilter').value;
+        const eventType = document.getElementById('eventTypeFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        const startRaw = document.getElementById('startDateFilter').value;
+        const endRaw = document.getElementById('endDateFilter').value;
+
+        if ((startRaw && !endRaw) || (!startRaw && endRaw)) {
+            return { error: 'Start date and end date are both required.' };
+        }
+        if (startRaw && endRaw && new Date(startRaw) > new Date(endRaw)) {
+            return { error: 'Start date must be before the end date.' };
+        }
+
+        const params = new URLSearchParams();
+        if (eventType) params.set('eventType', eventType);
+        if (severity) params.set('severity', severity);
+        if (status) params.set('acknowledged', status === 'acknowledged' ? 'true' : 'false');
+        if (startRaw && endRaw) {
+            params.set('startDate', toLocalDateTimeParam(startRaw));
+            params.set('endDate', toLocalDateTimeParam(endRaw));
+        }
+        return { query: params.toString(), severity, eventType, status, startRaw, endRaw };
+    }
+
+    async function loadSecurityEvents() {
+        if (!selectedOrganizationId) return;
+
+        const built = buildFilterQuery();
+        if (built.error) {
+            showPageMessage('error', built.error);
+            return;
+        }
+
+        setLoadingState();
+
+        const baseUrl = `/api/auditor/security-events/org/${selectedOrganizationId}`;
+        const filteredUrl = built.query ? `${baseUrl}?${built.query}` : baseUrl;
+
+        try {
+            const events = await apiJson(filteredUrl);
+            allSecurityEvents = Array.isArray(events) ? events : [];
+            visibleSecurityEvents = sortNewestFirst(allSecurityEvents);
+            currentPage = 1;
+            renderTable(visibleSecurityEvents);
+            updateMetrics(visibleSecurityEvents);
+            updateExportButton();
+            clearPageMessage();
+        } catch (err) {
+            if (built.query) {
+                try {
+                    const fallbackEvents = await apiJson(baseUrl);
+                    allSecurityEvents = Array.isArray(fallbackEvents) ? fallbackEvents : [];
+                    visibleSecurityEvents = applyClientSideFilters(allSecurityEvents, built);
+                    currentPage = 1;
+                    renderTable(visibleSecurityEvents);
+                    updateMetrics(visibleSecurityEvents);
+                    updateExportButton();
+                    showPageMessage('warning', `Server-side filtering failed (${err.message}). Showing client-side filtered results.`);
+                    return;
+                } catch (fallbackErr) {
+                    showPageMessage('error', fallbackErr.message);
+                }
+            } else {
+                showPageMessage('error', err.message);
+            }
+            allSecurityEvents = [];
+            visibleSecurityEvents = [];
+            renderTable([]);
+            updateMetrics([]);
+            updateExportButton();
+        }
+    }
+
+    function sortNewestFirst(list) {
+        return list.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    function applyClientSideFilters(list, filters) {
+        let filtered = list.slice();
+        if (filters.severity) filtered = filtered.filter(e => e.severity === filters.severity);
+        if (filters.eventType) filtered = filtered.filter(e => e.eventType === filters.eventType);
+        if (filters.status === 'acknowledged') filtered = filtered.filter(e => e.acknowledged === true);
+        if (filters.status === 'unacknowledged') filtered = filtered.filter(e => e.acknowledged === false);
+        if (filters.startRaw && filters.endRaw) {
+            const start = new Date(filters.startRaw);
+            const end = new Date(filters.endRaw);
+            filtered = filtered.filter(e => {
+                const created = new Date(e.createdAt);
+                return created >= start && created <= end;
+            });
+        }
+        return sortNewestFirst(filtered);
+    }
+
+    function handleApplyFiltersClick() {
+        const btn = document.getElementById('applySecurityFiltersBtn');
+        setBusy(btn, true);
+        Promise.resolve(loadSecurityEvents()).finally(() => setBusy(btn, false));
+    }
+
+    function handleResetFiltersClick() {
+        const btn = document.getElementById('resetSecurityFiltersBtn');
+        setBusy(btn, true);
+        resetFilterFields();
+        clearPageMessage();
+        Promise.resolve(loadSecurityEvents()).finally(() => setBusy(btn, false));
+    }
+
+    function handleRefreshClick() {
+        const btn = document.getElementById('refreshEventsBtn');
+        setBusy(btn, true);
+        Promise.resolve(loadSecurityEvents()).finally(() => setBusy(btn, false));
+    }
+
+    // ---------- Rendering ----------
+
+    function setLoadingState() {
+        document.getElementById('securityEventTableBody').innerHTML =
+            '<tr><td colspan="7" class="py-8 text-center text-gray-500">Loading security events...</td></tr>';
+        document.getElementById('eventsPaginationInfo').textContent = 'Loading...';
+        document.getElementById('eventsPaginationControls').innerHTML = '';
+    }
+
+    function renderTable(list) {
         const tbody = document.getElementById('securityEventTableBody');
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         const pageItems = list.slice(start, start + ITEMS_PER_PAGE);
 
-        if (pageItems.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-gray-500">No security events found</td></tr>';
+        if (list.length === 0) {
+            const message = anyFilterActive()
+                ? 'No security events match the selected filters.'
+                : 'No security events found for this organization. Module changes and report generation will create events.';
+            tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-500">${escapeHtml(message)}</td></tr>`;
         } else {
             tbody.innerHTML = pageItems.map(e => `
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3 text-sm">${new Date(e.createdAt).toLocaleString()}</td>
+                    <td class="px-4 py-3 text-sm whitespace-nowrap">${formatDateTime(e.createdAt)}</td>
                     <td class="px-4 py-3 text-sm font-semibold text-gray-900">${escapeHtml(e.title || 'Security Event')}</td>
-                    <td class="px-4 py-3 text-sm text-gray-600">${escapeHtml(e.eventType || 'UNKNOWN')}</td>
-                    <td class="px-4 py-3 text-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${getSeverityClass(e.severity)}">${e.severity || ''}</span></td>
+                    <td class="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">${escapeHtml(labelizeEventType(e.eventType))}</td>
+                    <td class="px-4 py-3 text-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${getSeverityClass(e.severity)}">${escapeHtml(e.severity || '')}</span></td>
+                    <td class="px-4 py-3 text-sm text-gray-600 truncate-cell" title="${escapeHtml(e.description || '')}">${escapeHtml(e.description || '-')}</td>
                     <td class="px-4 py-3 text-sm">${e.acknowledged ? '<span class="text-green-700 font-bold text-xs">ACKNOWLEDGED</span>' : '<span class="text-red-700 font-bold text-xs">PENDING</span>'}</td>
-                    <td class="px-4 py-3 text-sm">${!e.acknowledged ? `<button class="text-primary font-bold text-sm hover:underline" onclick="acknowledgeEvent(${e.id})">Acknowledge</button>` : '—'}</td>
+                    <td class="px-4 py-3 text-sm whitespace-nowrap">
+                        <button class="text-primary font-semibold text-sm hover:underline mr-3" onclick="openDetailModal(${e.id})">View</button>
+                        ${!e.acknowledged ? `<button class="text-primary font-bold text-sm hover:underline" onclick="openAcknowledgeModal(${e.id})">Acknowledge</button>` : ''}
+                    </td>
                 </tr>
             `).join('');
         }
@@ -261,11 +613,11 @@
         }
     }
 
-    function updateThreatMetrics() {
-        const critical = allSecurityEvents.filter(e => e.severity === 'CRITICAL').length;
-        const high = allSecurityEvents.filter(e => e.severity === 'HIGH').length;
-        const unack = allSecurityEvents.filter(e => !e.acknowledged).length;
-        const uniqueIPs = new Set(allSecurityEvents.map(e => e.ipAddress)).size;
+    function updateMetrics(list) {
+        const critical = list.filter(e => e.severity === 'CRITICAL').length;
+        const high = list.filter(e => e.severity === 'HIGH').length;
+        const unack = list.filter(e => !e.acknowledged).length;
+        const uniqueIPs = new Set(list.map(e => e.ipAddress).filter(ip => ip && String(ip).trim() !== '')).size;
 
         document.getElementById('criticalCount').textContent = critical;
         document.getElementById('highCount').textContent = high;
@@ -278,52 +630,184 @@
         document.getElementById('unacknowledgedBar').style.width = (unack / max * 100) + '%';
     }
 
+    function updateExportButton() {
+        const btn = document.getElementById('exportSecurityEventsBtn');
+        const disabled = visibleSecurityEvents.length === 0;
+        btn.disabled = disabled;
+        btn.classList.toggle('opacity-40', disabled);
+    }
+
     function updateSecurityPagination(totalItems) {
-        const totalPages = Math.max(1, Math.ceil((totalItems || allSecurityEvents.length) / ITEMS_PER_PAGE));
-        document.getElementById('eventsPaginationInfo').textContent = `Showing ${Math.min(ITEMS_PER_PAGE, (totalItems || allSecurityEvents.length))} of ${(totalItems || allSecurityEvents.length)} events`;
-        const controls = document.getElementById('eventsPaginationControls'); controls.innerHTML = '';
+        const totalPages = Math.max(1, Math.ceil(totalItems / ITEMS_PER_PAGE));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const shown = totalItems === 0 ? 0 : Math.min(ITEMS_PER_PAGE, totalItems - (currentPage - 1) * ITEMS_PER_PAGE);
+        document.getElementById('eventsPaginationInfo').textContent = `Showing ${shown} of ${totalItems} events`;
+
+        const controls = document.getElementById('eventsPaginationControls');
+        controls.innerHTML = '';
         if (totalPages <= 1) return;
 
         const prev = document.createElement('button');
         prev.textContent = 'Previous';
         prev.disabled = currentPage === 1;
         prev.className = 'px-3 py-1 text-sm bg-white border rounded-lg disabled:opacity-40 hover:bg-gray-50';
-        prev.onclick = () => { currentPage--; applySecurityFilters(); };
+        prev.onclick = () => { currentPage--; renderTable(visibleSecurityEvents); };
 
         const next = document.createElement('button');
         next.textContent = 'Next';
         next.disabled = currentPage === totalPages;
         next.className = 'px-3 py-1 text-sm bg-white border rounded-lg disabled:opacity-40 hover:bg-gray-50';
-        next.onclick = () => { currentPage++; applySecurityFilters(); };
+        next.onclick = () => { currentPage++; renderTable(visibleSecurityEvents); };
 
         controls.appendChild(prev);
         controls.appendChild(next);
     }
 
-    async function acknowledgeEvent(eventId) {
-        try {
-            const res = await fetch(`${API_BASE}/security-events/${eventId}/acknowledge`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ acknowledgedBy: 'auditor-ui' }) });
-            if (res.ok) loadSecurityEvents(); else console.error('Ack failed', res.status);
-        } catch (err) { console.error('Ack error', err); }
+    // ---------- Acknowledge modal ----------
+
+    function findEvent(eventId) {
+        return visibleSecurityEvents.find(e => e.id === eventId) || allSecurityEvents.find(e => e.id === eventId);
     }
+
+    function openAcknowledgeModal(eventId) {
+        const event = findEvent(eventId);
+        if (!event) return;
+
+        pendingAcknowledgement = { eventId: event.id, title: event.title, eventType: event.eventType, severity: event.severity };
+
+        document.getElementById('ackTitle').textContent = event.title || 'Security Event';
+        document.getElementById('ackEventType').textContent = labelizeEventType(event.eventType);
+        document.getElementById('ackSeverity').textContent = event.severity || '-';
+        document.getElementById('ackCreatedAt').textContent = formatDateTime(event.createdAt);
+        document.getElementById('ackNote').value = '';
+
+        const errorEl = document.getElementById('acknowledgeModalError');
+        errorEl.classList.add('hidden');
+        errorEl.textContent = '';
+
+        setBusy(document.getElementById('confirmAcknowledgeBtn'), false);
+        document.getElementById('acknowledgeSecurityEventModal').classList.remove('hidden');
+    }
+
+    function closeAcknowledgeModal() {
+        document.getElementById('acknowledgeSecurityEventModal').classList.add('hidden');
+        pendingAcknowledgement = { eventId: null, title: null, eventType: null, severity: null };
+    }
+
+    async function confirmAcknowledge() {
+        if (!pendingAcknowledgement.eventId) return;
+        const btn = document.getElementById('confirmAcknowledgeBtn');
+        const errorEl = document.getElementById('acknowledgeModalError');
+        errorEl.classList.add('hidden');
+        setBusy(btn, true);
+        btn.textContent = 'Acknowledging...';
+
+        try {
+            await apiJson(`/api/auditor/security-events/${pendingAcknowledgement.eventId}/acknowledge`, {
+                method: 'PATCH',
+                body: JSON.stringify({ acknowledgedBy: CURRENT_USER })
+            });
+            closeAcknowledgeModal();
+            closeDetailModal();
+            await loadSecurityEvents();
+            showPageMessage('success', 'Security event acknowledged.');
+        } catch (err) {
+            errorEl.textContent = err.message;
+            errorEl.classList.remove('hidden');
+        } finally {
+            setBusy(btn, false);
+            btn.textContent = 'Confirm Acknowledge';
+        }
+    }
+
+    // ---------- Detail modal ----------
+
+    function openDetailModal(eventId) {
+        const event = findEvent(eventId);
+        if (!event) return;
+
+        detailEventId = event.id;
+
+        document.getElementById('detailEventId').textContent = event.id ?? '-';
+        document.getElementById('detailOrgId').textContent = event.organizationId ?? '-';
+        document.getElementById('detailTitle').textContent = event.title || '-';
+        document.getElementById('detailEventType').textContent = labelizeEventType(event.eventType);
+        document.getElementById('detailSeverity').textContent = event.severity || '-';
+        document.getElementById('detailDescription').textContent = event.description || '-';
+        document.getElementById('detailIpAddress').textContent = event.ipAddress || '-';
+        document.getElementById('detailUserAgent').textContent = event.userAgent || '-';
+        document.getElementById('detailCreatedAt').textContent = formatDateTime(event.createdAt);
+        document.getElementById('detailUpdatedAt').textContent = formatDateTime(event.updatedAt);
+        document.getElementById('detailAcknowledged').textContent = event.acknowledged ? 'Yes' : 'No';
+        document.getElementById('detailAcknowledgedAt').textContent = formatDateTime(event.acknowledgedAt);
+        document.getElementById('detailAcknowledgedBy').textContent = event.acknowledgedBy || '-';
+
+        const ackBtn = document.getElementById('detailAcknowledgeBtn');
+        ackBtn.classList.toggle('hidden', !!event.acknowledged);
+
+        document.getElementById('securityEventDetailModal').classList.remove('hidden');
+    }
+
+    function closeDetailModal() {
+        document.getElementById('securityEventDetailModal').classList.add('hidden');
+        detailEventId = null;
+    }
+
+    function acknowledgeFromDetail() {
+        if (!detailEventId) return;
+        const eventId = detailEventId;
+        closeDetailModal();
+        openAcknowledgeModal(eventId);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeAcknowledgeModal();
+            closeDetailModal();
+        }
+    });
+
+    // ---------- CSV export ----------
 
     function exportSecurityEvents() {
-        let csv = 'Timestamp,Title,Event Type,Severity,Acknowledged,IP Address\n';
-        allSecurityEvents.forEach(e => {
-            csv += `"${new Date(e.createdAt).toLocaleString()}","${(e.title||'').replace(/"/g,'""')}","${e.eventType||''}","${e.severity||''}","${e.acknowledged? 'Yes':'No'}","${e.ipAddress||''}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `security_events_${new Date().toISOString().split('T')[0]}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+        if (!visibleSecurityEvents.length) {
+            showPageMessage('error', 'No visible security events to export.');
+            return;
+        }
+
+        const btn = document.getElementById('exportSecurityEventsBtn');
+        setBusy(btn, true);
+        try {
+            const header = ['Event ID', 'Organization ID', 'Timestamp', 'Title', 'Event Type', 'Severity', 'Description', 'Acknowledged', 'Acknowledged At', 'Acknowledged By', 'IP Address', 'User Agent'];
+            const rows = visibleSecurityEvents.map(e => [
+                e.id,
+                e.organizationId,
+                formatDateTime(e.createdAt),
+                e.title || '',
+                e.eventType || '',
+                e.severity || '',
+                e.description || '',
+                e.acknowledged ? 'Yes' : 'No',
+                e.acknowledgedAt ? formatDateTime(e.acknowledgedAt) : '',
+                e.acknowledgedBy || '',
+                e.ipAddress || '',
+                e.userAgent || ''
+            ].map(csvCell).join(','));
+
+            const csv = [header.map(csvCell).join(','), ...rows].join('\n');
+            const dateStamp = new Date().toISOString().split('T')[0];
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ams_security_events_${selectedOrganizationId}_${dateStamp}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } finally {
+            setBusy(btn, false);
+        }
     }
-
-    function escapeHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    document.addEventListener('DOMContentLoaded', () => { loadSecurityEvents(); setInterval(loadSecurityEvents, 60000); });
 </script>
 
 </body>

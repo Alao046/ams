@@ -115,9 +115,27 @@
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
             transform: translateY(-2px);
         }
+        .report-card-disabled:hover {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transform: none;
+        }
+        button:disabled {
+            cursor: not-allowed;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fade-in 0.15s ease-out;
+        }
     </style>
 </head>
 <body class="text-on-background min-h-screen flex">
+
+<script th:inline="javascript">
+    const CURRENT_USER = /*[[${userName}]]*/ 'current-cfo';
+</script>
 
 <!-- Shared Layout Sidebar Fragment Alignment Navigation -->
 <aside th:replace="~{layouts/cfoLayout :: sidebar('financialReports')}"></aside>
@@ -126,205 +144,630 @@
 <div class="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen">
 
     <!-- Header Section Frame Workspace Integration -->
-    <header class="flex justify-between items-start w-full px-outer-padding pt-outer-padding pb-6 sticky top-0 z-40 bg-background/95 backdrop-blur-sm">
+    <header class="flex flex-wrap justify-between items-start gap-4 w-full px-outer-padding pt-outer-padding pb-6 sticky top-0 z-40 bg-background/95 backdrop-blur-sm">
         <div class="space-y-1">
-            <h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Financial Report</h1>
-            <p class="font-body-lg text-body-lg text-secondary">Access system-generated income statements, corporate balance sheets, and cash flow analysis tools.</p>
+            <h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">Financial Reports</h1>
+            <p class="font-body-lg text-body-lg text-secondary">Generate an Income Statement or Balance Sheet from posted general ledger activity.</p>
         </div>
 
+        <div class="flex items-end gap-3">
+            <div class="flex flex-col gap-1">
+                <label class="font-label-md text-label-md text-on-surface-variant" for="organizationSelector">Organization</label>
+                <select id="organizationSelector" class="min-w-[220px] rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"></select>
+            </div>
+            <button id="refreshBtn" type="button" class="h-[42px] px-4 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container font-body-sm text-body-sm text-primary flex items-center gap-2 transition-colors">
+                <span class="material-symbols-outlined text-base">refresh</span>
+                Refresh
+            </button>
+        </div>
     </header>
 
     <!-- Main Dynamic Reporting Dashboard Grid Segment Area -->
-    <main class="px-outer-padding pb-outer-padding flex-1">
+    <main class="px-outer-padding pb-outer-padding flex-1 space-y-gutter">
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
-
-            <!-- Card 1: Income Statement -->
-            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col justify-between report-card-shadow">
-                <div>
-                    <div class="flex items-center justify-between mb-stack-md">
-                        <div class="p-2 bg-surface-container rounded-lg">
-                            <span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
-                        </div>
-                        <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Quarterly Sync</span>
-                    </div>
-                    <h2 class="font-headline-sm text-headline-sm mb-2">Income Statement</h2>
-                    <p class="font-body-md text-body-md text-secondary mb-6 leading-relaxed">Analyze operational revenue, cost of sales, and gross profit margins across fiscal periods.</p>
-
-                    <!-- Preview Layout -->
-                    <div class="space-y-4 mb-8 bg-surface border border-outline-variant/30 rounded-lg p-4">
-                        <div class="flex justify-between items-center pb-2 border-b border-outline-variant/20">
-                            <span class="font-label-md text-label-md text-on-surface-variant">Revenue (YTD)</span>
-                            <span class="font-currency-display text-currency-display text-primary">₦42,850,000</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="font-label-md text-label-md text-on-surface-variant">Cost of Goods Sold</span>
-                            <span class="font-body-md text-body-md text-error">(₦12,400,000)</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="font-label-md text-label-md text-on-surface-variant">Operating Expenses</span>
-                            <span class="font-body-md text-body-md text-error">(₦8,200,000)</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                    Generate Statement Report
-                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
-                </button>
-            </section>
-
-            <!-- Card 2: Balance Sheet -->
-            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col justify-between report-card-shadow">
-                <div>
-                    <div class="flex items-center justify-between mb-stack-md">
-                        <div class="p-2 bg-surface-container rounded-lg">
-                            <span class="material-symbols-outlined text-primary" data-icon="account_balance">account_balance</span>
-                        </div>
-                        <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Live Audit</span>
-                    </div>
-                    <h2 class="font-headline-sm text-headline-sm mb-2">Balance Sheet</h2>
-                    <p class="font-body-md text-body-md text-secondary mb-6 leading-relaxed">A detailed snapshot of corporate assets, liabilities, and equity at the current reporting date.</p>
-
-                    <!-- Preview Layout -->
-                    <div class="space-y-4 mb-8 bg-surface border border-outline-variant/30 rounded-lg p-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="border-r border-outline-variant/30 pr-4">
-                                <span class="block font-label-md text-label-md text-on-surface-variant mb-1">Total Assets</span>
-                                <span class="block font-currency-display text-currency-display text-primary">₦128.4M</span>
-                            </div>
-                            <div class="pl-2">
-                                <span class="block font-label-md text-label-md text-on-surface-variant mb-1">Total Liabilities</span>
-                                <span class="block font-currency-display text-currency-display text-on-error-container">₦45.2M</span>
-                            </div>
-                        </div>
-                        <div class="pt-2 border-t border-outline-variant/20 flex justify-between items-center">
-                            <span class="font-label-md text-label-md text-on-surface-variant">Shareholder Equity</span>
-                            <span class="font-body-md text-body-md font-semibold text-primary">₦83.2M</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                    Generate Statement Report
-                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
-                </button>
-            </section>
-
-            <!-- Card 3: Cash Flow Statement -->
-            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col justify-between report-card-shadow">
-                <div>
-                    <div class="flex items-center justify-between mb-stack-md">
-                        <div class="p-2 bg-surface-container rounded-lg">
-                            <span class="material-symbols-outlined text-primary" data-icon="show_chart">show_chart</span>
-                        </div>
-                        <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Liquidity Analysis</span>
-                    </div>
-                    <h2 class="font-headline-sm text-headline-sm mb-2">Cash Flow Statement</h2>
-                    <p class="font-body-md text-body-md text-secondary mb-6 leading-relaxed">Tracking the inflow and outflow of cash through operating, investing, and financing activities.</p>
-
-                    <!-- Preview Layout -->
-                    <div class="space-y-3 mb-8 bg-surface border border-outline-variant/30 rounded-lg p-4">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                                <span class="font-label-md text-label-md text-on-surface-variant">Operating Cash</span>
-                            </div>
-                            <span class="font-body-md text-body-md">+₦15,200,000</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
-                                <span class="font-label-md text-label-md text-on-surface-variant">Investing Cash</span>
-                            </div>
-                            <span class="font-body-md text-body-md">-₦8,400,000</span>
-                        </div>
-                        <div class="flex justify-between items-center font-bold border-t border-outline-variant/20 pt-2 mt-2">
-                            <span class="font-label-md text-label-md text-primary">Net Increase</span>
-                            <span class="font-body-md text-body-md">₦6,800,000</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                    Generate Statement Report
-                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
-                </button>
-            </section>
-
-            <!-- Card 4: Multi-Dimensional Dimension KPI Report -->
-            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding flex flex-col justify-between report-card-shadow">
-                <div>
-                    <div class="flex items-center justify-between mb-stack-md">
-                        <div class="p-2 bg-surface-container rounded-lg">
-                            <span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
-                        </div>
-                        <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Dimension KPIs</span>
-                    </div>
-                    <h2 class="font-headline-sm text-headline-sm mb-2">Multi-Dimensional Report</h2>
-                    <p class="font-body-md text-body-md text-secondary mb-6 leading-relaxed">Drill down into department-level performance metrics and cross-functional financial indicators.</p>
-
-                    <!-- Preview Layout -->
-                    <div class="mb-8 grid grid-cols-3 gap-2">
-                        <div class="bg-surface p-3 rounded-lg border border-outline-variant/20 text-center">
-                            <span class="block font-label-md text-[10px] text-secondary mb-1">ROI</span>
-                            <span class="block font-headline-sm text-sm text-primary">24.8%</span>
-                        </div>
-                        <div class="bg-surface p-3 rounded-lg border border-outline-variant/20 text-center">
-                            <span class="block font-label-md text-[10px] text-secondary mb-1">EBITDA</span>
-                            <span class="block font-headline-sm text-sm text-primary">₦18M</span>
-                        </div>
-                        <div class="bg-surface p-3 rounded-lg border border-outline-variant/20 text-center">
-                            <span class="block font-label-md text-[10px] text-secondary mb-1">OER</span>
-                            <span class="block font-headline-sm text-sm text-primary">0.62</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2">
-                    Generate Statement Report
-                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
-                </button>
-            </section>
+        <!-- Page-level message panel -->
+        <div id="pageMessage" class="hidden rounded-lg border px-4 py-3 text-sm flex items-start justify-between gap-4 fade-in">
+            <span id="pageMessageText" class="font-body-sm text-body-sm"></span>
+            <button type="button" id="pageMessageDismiss" class="font-label-md text-label-md uppercase tracking-widest opacity-70 hover:opacity-100">Dismiss</button>
         </div>
 
-        <!-- System Status Footer Component Alignment -->
-        <footer class="mt-12 flex justify-center pb-6">
-            <div class="inline-flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-outline-variant/30">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span class="font-label-md text-label-md text-secondary">System synchronization active: Last update 2 mins ago</span>
-            </div>
-        </footer>
+        <!-- No-organization empty state -->
+        <div id="organizationEmptyState" class="hidden rounded-xl border border-outline-variant bg-surface-container-lowest p-card-padding text-center">
+            <span class="material-symbols-outlined text-4xl text-secondary mb-2">domain_disabled</span>
+            <p class="font-body-md text-body-md text-secondary">No organization found. Create one from Finance Admin Organization Setup before using this page.</p>
+        </div>
+
+        <div id="reportWorkspace" class="hidden space-y-gutter">
+
+            <!-- Report Generation Panel -->
+            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding report-card-shadow">
+                <div class="flex flex-wrap items-end justify-between gap-4 mb-stack-md">
+                    <div>
+                        <h2 class="font-headline-sm text-headline-sm text-primary">Generate a Report</h2>
+                        <p class="font-body-sm text-body-sm text-secondary mt-1">Choose a date range, then generate an Income Statement or Balance Sheet from posted GL entries.</p>
+                    </div>
+                    <div class="flex flex-wrap items-end gap-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-md text-label-md text-on-surface-variant" for="fromDateInput">From date</label>
+                            <input id="fromDateInput" type="date" class="rounded-lg border border-outline-variant bg-surface px-3 py-2 font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-label-md text-label-md text-on-surface-variant" for="toDateInput">To date</label>
+                            <input id="toDateInput" type="date" class="rounded-lg border border-outline-variant bg-surface px-3 py-2 font-body-sm text-body-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
+
+                    <!-- Card 1: Income Statement -->
+                    <div class="bg-surface border border-outline-variant/60 rounded-xl p-card-padding flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-stack-md">
+                                <div class="p-2 bg-surface-container rounded-lg">
+                                    <span class="material-symbols-outlined text-primary">payments</span>
+                                </div>
+                                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Revenue &amp; Expense</span>
+                            </div>
+                            <h3 class="font-headline-sm text-headline-sm mb-2">Income Statement</h3>
+                            <p class="font-body-md text-body-md text-secondary leading-relaxed">Revenue and expense lines from posted GL entries for the selected date range, with net income.</p>
+                        </div>
+                        <button id="generateIncomeStatementBtn" type="button" class="mt-6 w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+                            Generate Income Statement
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 2: Balance Sheet -->
+                    <div class="bg-surface border border-outline-variant/60 rounded-xl p-card-padding flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-stack-md">
+                                <div class="p-2 bg-surface-container rounded-lg">
+                                    <span class="material-symbols-outlined text-primary">account_balance</span>
+                                </div>
+                                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Assets &amp; Equity</span>
+                            </div>
+                            <h3 class="font-headline-sm text-headline-sm mb-2">Balance Sheet</h3>
+                            <p class="font-body-md text-body-md text-secondary leading-relaxed">A snapshot of assets, liabilities, and equity from posted GL entries as of the selected date range.</p>
+                        </div>
+                        <button id="generateBalanceSheetBtn" type="button" class="mt-6 w-full bg-primary text-on-primary font-bold py-3 rounded-lg hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+                            Generate Balance Sheet
+                            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                        </button>
+                    </div>
+
+                    <!-- Card 3: Cash Flow Statement (out of Stage 2 scope) -->
+                    <div class="bg-surface border border-outline-variant/60 rounded-xl p-card-padding flex flex-col justify-between report-card-disabled opacity-60">
+                        <div>
+                            <div class="flex items-center justify-between mb-stack-md">
+                                <div class="p-2 bg-surface-container rounded-lg">
+                                    <span class="material-symbols-outlined text-secondary">show_chart</span>
+                                </div>
+                                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Later</span>
+                            </div>
+                            <h3 class="font-headline-sm text-headline-sm mb-2 text-secondary">Cash Flow Statement</h3>
+                            <p class="font-body-md text-body-md text-secondary leading-relaxed">Not part of the 12-15 hour Stage 2 MVP.</p>
+                        </div>
+                        <button type="button" disabled class="mt-6 w-full bg-surface-container text-secondary font-bold py-3 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                            Not Available Yet
+                        </button>
+                    </div>
+
+                    <!-- Card 4: Multi-Dimensional Report (out of Stage 2 scope) -->
+                    <div class="bg-surface border border-outline-variant/60 rounded-xl p-card-padding flex flex-col justify-between report-card-disabled opacity-60">
+                        <div>
+                            <div class="flex items-center justify-between mb-stack-md">
+                                <div class="p-2 bg-surface-container rounded-lg">
+                                    <span class="material-symbols-outlined text-secondary">analytics</span>
+                                </div>
+                                <span class="font-label-md text-label-md text-secondary uppercase tracking-widest">Later</span>
+                            </div>
+                            <h3 class="font-headline-sm text-headline-sm mb-2 text-secondary">Multi-Dimensional Report</h3>
+                            <p class="font-body-md text-body-md text-secondary leading-relaxed">Not part of the 12-15 hour Stage 2 MVP.</p>
+                        </div>
+                        <button type="button" disabled class="mt-6 w-full bg-surface-container text-secondary font-bold py-3 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed">
+                            Not Available Yet
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Result Panel -->
+            <section id="financialReportResultPanel" class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding report-card-shadow">
+                <div id="resultEmptyState" class="text-center py-10">
+                    <span class="material-symbols-outlined text-4xl text-secondary mb-2">description</span>
+                    <p class="font-body-md text-body-md text-secondary">Choose a date range and generate an Income Statement or Balance Sheet.</p>
+                </div>
+
+                <div id="resultContent" class="hidden space-y-6">
+                    <div id="resultHeaderInfo"></div>
+
+                    <div id="resultTotalsStrip" class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-surface border border-outline-variant/30 rounded-lg p-4"></div>
+
+                    <div class="overflow-x-auto border border-outline-variant/30 rounded-lg">
+                        <table class="w-full text-left">
+                            <thead>
+                            <tr class="border-b border-outline-variant/30 bg-surface">
+                                <th class="py-2 pl-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Account Code</th>
+                                <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Account Name</th>
+                                <th class="py-2 pr-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest text-right">Amount (NGN)</th>
+                            </tr>
+                            </thead>
+                            <tbody id="financialReportLinesBody"></tbody>
+                        </table>
+                        <div id="resultLinesEmptyState" class="hidden py-8 text-center font-body-md text-body-md text-secondary">
+                            No posted GL entries matched this report type and date range.
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button id="exportFinancialReportCsvBtn" type="button" disabled class="px-4 py-2 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container disabled:opacity-50 disabled:cursor-not-allowed font-body-sm text-body-sm text-primary flex items-center gap-2 transition-colors">
+                            <span class="material-symbols-outlined text-base">download</span>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Report History Panel -->
+            <section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-card-padding report-card-shadow">
+                <div class="flex items-center justify-between mb-stack-md">
+                    <h2 class="font-headline-sm text-headline-sm text-primary">Report History</h2>
+                </div>
+                <div class="overflow-x-auto border border-outline-variant/30 rounded-lg">
+                    <table class="w-full text-left">
+                        <thead>
+                        <tr class="border-b border-outline-variant/30 bg-surface">
+                            <th class="py-2 pl-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Report Name</th>
+                            <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Type</th>
+                            <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">From</th>
+                            <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">To</th>
+                            <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Report Date</th>
+                            <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Status</th>
+                            <th class="py-2 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Generated By</th>
+                            <th class="py-2 pr-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-widest text-right">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="financialReportHistoryBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </main>
 </div>
 
 <script>
-    // Micro-interactions for buttons
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('mousedown', () => {
-            button.style.transform = 'scale(0.98)';
+    const ORG_STORAGE_KEY = 'ams.selectedOrganizationId';
+    let organizations = [];
+    let selectedOrganizationId = null;
+    let currentFinancialReport = null;
+    let reportHistory = [];
+
+    // ---------- API helper ----------
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            headers: options.body ? { 'Content-Type': 'application/json', ...(options.headers || {}) } : (options.headers || {}),
+            ...options
         });
-        button.addEventListener('mouseup', () => {
-            button.style.transform = 'scale(1)';
-        });
-        button.addEventListener('mouseleave', () => {
-            button.style.transform = 'scale(1)';
-        });
+        const text = await response.text();
+        const payload = text ? JSON.parse(text) : null;
+        if (!response.ok) {
+            const message = payload?.message || payload?.error || payload?.detail || flattenFieldErrors(payload?.fieldErrors) || `Request failed with status ${response.status}`;
+            throw new Error(message);
+        }
+        return payload;
+    }
+
+    function flattenFieldErrors(fieldErrors) {
+        if (!fieldErrors || typeof fieldErrors !== 'object') return null;
+        const parts = Object.entries(fieldErrors).map(([field, msg]) => `${field}: ${msg}`);
+        return parts.length ? parts.join('; ') : null;
+    }
+
+    // ---------- Formatting helpers ----------
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatMoney(value) {
+        const number = Number(value || 0);
+        return new Intl.NumberFormat('en-NG', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(number);
+    }
+
+    function formatDate(value) {
+        if (!value) return '-';
+        return new Date(value).toLocaleDateString();
+    }
+
+    function formatDateTime(value) {
+        if (!value) return '-';
+        return new Date(value).toLocaleString();
+    }
+
+    function csvCell(value) {
+        return `"${String(value ?? '').replace(/"/g, '""')}"`;
+    }
+
+    function toIsoDate(date) {
+        return date.toISOString().slice(0, 10);
+    }
+
+    function reportLabel(type) {
+        if (type === 'INCOME_STATEMENT') return 'Income Statement';
+        if (type === 'BALANCE_SHEET') return 'Balance Sheet';
+        return type || 'Report';
+    }
+
+    function statusBadgeClasses(status) {
+        switch ((status || '').toUpperCase()) {
+            case 'DRAFT': return 'bg-surface-container text-secondary';
+            case 'APPROVED':
+            case 'FINAL':
+            case 'POSTED': return 'bg-green-100 text-green-700';
+            case 'REJECTED': return 'bg-error-container text-on-error-container';
+            default: return 'bg-surface-container text-secondary';
+        }
+    }
+
+    // ---------- Page message ----------
+    function showPageMessage(message, type) {
+        const panel = document.getElementById('pageMessage');
+        const text = document.getElementById('pageMessageText');
+        text.textContent = message;
+        panel.className = 'rounded-lg border px-4 py-3 text-sm flex items-start justify-between gap-4 fade-in ' +
+            (type === 'error'
+                ? 'bg-error-container/40 border-error text-on-error-container'
+                : 'bg-green-50 border-green-300 text-green-800');
+        panel.classList.remove('hidden');
+    }
+
+    function hidePageMessage() {
+        document.getElementById('pageMessage').classList.add('hidden');
+    }
+
+    document.getElementById('pageMessageDismiss').addEventListener('click', hidePageMessage);
+
+    // ---------- Button loading state ----------
+    function setButtonLoading(button, isLoading, loadingLabel) {
+        if (!button) return;
+        if (isLoading) {
+            if (!button.dataset.originalHtml) {
+                button.dataset.originalHtml = button.innerHTML;
+            }
+            button.style.minWidth = button.offsetWidth + 'px';
+            button.disabled = true;
+            button.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> ${escapeHtml(loadingLabel || 'Processing...')}`;
+        } else {
+            button.disabled = false;
+            if (button.dataset.originalHtml) {
+                button.innerHTML = button.dataset.originalHtml;
+            }
+        }
+    }
+
+    // ---------- Organization context ----------
+    async function loadOrganizations() {
+        try {
+            organizations = await apiJson('/api/organizations');
+        } catch (err) {
+            showPageMessage(err.message || 'Failed to load organizations.', 'error');
+            organizations = [];
+        }
+
+        if (!organizations.length) {
+            document.getElementById('organizationEmptyState').classList.remove('hidden');
+            document.getElementById('reportWorkspace').classList.add('hidden');
+            return false;
+        }
+
+        document.getElementById('organizationEmptyState').classList.add('hidden');
+        document.getElementById('reportWorkspace').classList.remove('hidden');
+
+        const select = document.getElementById('organizationSelector');
+        select.innerHTML = organizations.map(org => `<option value="${org.id}">${escapeHtml(org.name)}</option>`).join('');
+
+        const stored = sessionStorage.getItem(ORG_STORAGE_KEY);
+        const storedValid = organizations.find(org => String(org.id) === String(stored));
+        const fallback = organizations.find(org => org.active) || organizations[0];
+        selectedOrganizationId = storedValid ? storedValid.id : fallback.id;
+        sessionStorage.setItem(ORG_STORAGE_KEY, String(selectedOrganizationId));
+        select.value = String(selectedOrganizationId);
+        return true;
+    }
+
+    document.getElementById('organizationSelector').addEventListener('change', async (event) => {
+        selectedOrganizationId = event.target.value;
+        select.innerHTML = organizations.map(org => `<option value="${escapeHtml(org.id)}">${escapeHtml(org.name)}</option>`).join('');
+        hidePageMessage();
+        resetResultPanel();
+        await loadReportHistory();
     });
 
-    // Simulating data loading on report generation
-    document.querySelectorAll('button').forEach(button => {
-        if (button.innerText.includes('Generate')) {
-            button.addEventListener('click', (e) => {
-                const originalText = button.innerHTML;
-                button.disabled = true;
-                button.innerHTML = `
-                    <span class="inline-block animate-spin material-symbols-outlined text-sm">sync</span>
-                    Processing...
-                `;
+    // ---------- Date range ----------
+    function setDateDefaults() {
+        const today = new Date();
+        const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        document.getElementById('toDateInput').value = toIsoDate(today);
+        document.getElementById('fromDateInput').value = toIsoDate(firstOfMonth);
+    }
 
-                setTimeout(() => {
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-                }, 1500);
-            });
+    function validateDateRange() {
+        const from = document.getElementById('fromDateInput').value;
+        const to = document.getElementById('toDateInput').value;
+        if (!from || !to) {
+            showPageMessage('From date and to date are both required.', 'error');
+            return null;
         }
+        if (from > to) {
+            showPageMessage('From date must be on or before to date.', 'error');
+            return null;
+        }
+        return { from, to };
+    }
+
+    // ---------- Report generation ----------
+    async function generateFinancialReport(reportType, button) {
+        if (!selectedOrganizationId) {
+            showPageMessage('Select an organization first.', 'error');
+            return;
+        }
+        const range = validateDateRange();
+        if (!range) return;
+
+        hidePageMessage();
+        setButtonLoading(button, true, 'Generating...');
+        try {
+            const body = {
+                reportType,
+                fromDate: range.from,
+                toDate: range.to,
+                generatedBy: CURRENT_USER || 'current-cfo',
+                persist: true
+            };
+            const report = await apiJson(`/api/cfo/financial-reports/org/${selectedOrganizationId}/generate`, {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            currentFinancialReport = report;
+            renderResultPanel();
+            showPageMessage(`${reportLabel(reportType)} generated successfully.`, 'success');
+            await loadReportHistory();
+        } catch (err) {
+            showPageMessage(err.message || `Failed to generate ${reportLabel(reportType)}.`, 'error');
+        } finally {
+            setButtonLoading(button, false);
+        }
+    }
+
+    // ---------- Result panel rendering ----------
+    function resetResultPanel() {
+        currentFinancialReport = null;
+        document.getElementById('resultEmptyState').classList.remove('hidden');
+        document.getElementById('resultContent').classList.add('hidden');
+        document.getElementById('exportFinancialReportCsvBtn').disabled = true;
+    }
+
+    function renderResultPanel() {
+        if (!currentFinancialReport) {
+            resetResultPanel();
+            return;
+        }
+        const report = currentFinancialReport;
+
+        document.getElementById('resultEmptyState').classList.add('hidden');
+        document.getElementById('resultContent').classList.remove('hidden');
+
+        document.getElementById('resultHeaderInfo').innerHTML = `
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                    <span class="inline-block font-label-md text-label-md uppercase tracking-widest text-secondary mb-1">${escapeHtml(reportLabel(report.reportType))}</span>
+                    <h3 class="font-headline-sm text-headline-sm text-primary">${escapeHtml(report.reportName || reportLabel(report.reportType))}</h3>
+                    <p class="font-body-sm text-body-sm text-secondary mt-1">
+                        ${formatDate(report.fromDate)} &ndash; ${formatDate(report.toDate)}
+                        &middot; Generated ${formatDateTime(report.generatedAt || report.createdAt)}${report.generatedBy ? ' by ' + escapeHtml(report.generatedBy) : ''}
+                    </p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${statusBadgeClasses(report.status)}">${escapeHtml(report.status || 'DRAFT')}</span>
+            </div>
+        `;
+
+        const totalsStrip = document.getElementById('resultTotalsStrip');
+        if (report.reportType === 'INCOME_STATEMENT') {
+            totalsStrip.innerHTML = totalsBlockHtml([
+                { label: 'Total Revenue', value: report.totalRevenue },
+                { label: 'Total Expenses', value: report.totalExpenses, negative: true },
+                { label: 'Net Income', value: report.netIncome, emphasize: true }
+            ]);
+        } else if (report.reportType === 'BALANCE_SHEET') {
+            const variance = Number(report.balanceSheetVariance || 0);
+            totalsStrip.innerHTML = totalsBlockHtml([
+                { label: 'Total Assets', value: report.totalAssets },
+                { label: 'Total Liabilities', value: report.totalLiabilities },
+                { label: 'Total Equity', value: report.totalEquity },
+                { label: 'Net Income', value: report.netIncome },
+                { label: 'Variance', value: report.balanceSheetVariance, warn: variance !== 0 }
+            ]);
+        } else {
+            totalsStrip.innerHTML = '';
+        }
+
+        const lines = Array.isArray(report.lines) ? report.lines : [];
+        const tbody = document.getElementById('financialReportLinesBody');
+        const linesEmpty = document.getElementById('resultLinesEmptyState');
+
+        if (!lines.length) {
+            tbody.innerHTML = '';
+            linesEmpty.classList.remove('hidden');
+        } else {
+            linesEmpty.classList.add('hidden');
+            tbody.innerHTML = groupBySection(lines, report.reportType).map(sectionRowsHtml).join('');
+        }
+
+        document.getElementById('exportFinancialReportCsvBtn').disabled = lines.length === 0;
+    }
+
+    function totalsBlockHtml(items) {
+        return items.map((item, idx) => `
+            <div class="${idx > 0 ? 'border-l border-outline-variant/30 pl-4' : ''}">
+                <span class="block font-label-md text-label-md text-on-surface-variant mb-1">${escapeHtml(item.label)}</span>
+                <span class="block font-currency-display text-currency-display ${item.warn ? 'text-on-error-container' : item.negative ? 'text-error' : 'text-primary'}">NGN ${formatMoney(item.value)}</span>
+            </div>
+        `).join('');
+    }
+
+    function groupBySection(lines, reportType) {
+        const order = reportType === 'INCOME_STATEMENT' ? ['REVENUE', 'EXPENSE'] : ['ASSET', 'LIABILITY', 'EQUITY'];
+        const groups = order
+            .map(section => ({ section, lines: lines.filter(line => line.section === section) }))
+            .filter(group => group.lines.length > 0);
+        const known = new Set(order);
+        const other = lines.filter(line => !known.has(line.section));
+        if (other.length) groups.push({ section: 'OTHER', lines: other });
+        return groups;
+    }
+
+    function sectionLabel(section) {
+        const map = { REVENUE: 'Revenue', EXPENSE: 'Expenses', ASSET: 'Assets', LIABILITY: 'Liabilities', EQUITY: 'Equity', OTHER: 'Other' };
+        return map[section] || section;
+    }
+
+    function sectionRowsHtml(group) {
+        const subtotal = group.lines.reduce((sum, line) => sum + Number(line.amount || 0), 0);
+        const rows = group.lines.map(line => `
+            <tr class="border-b border-outline-variant/10">
+                <td class="py-2 pl-4 font-body-sm text-body-sm text-secondary">${escapeHtml(line.accountCode)}</td>
+                <td class="py-2 font-body-md text-body-md text-primary">${escapeHtml(line.accountName)}</td>
+                <td class="py-2 pr-4 font-body-md text-body-md text-right">NGN ${formatMoney(line.amount)}</td>
+            </tr>
+        `).join('');
+        return `
+            <tr class="bg-surface">
+                <td colspan="3" class="py-2 px-4 font-label-md text-label-md uppercase tracking-widest text-secondary">${escapeHtml(sectionLabel(group.section))}</td>
+            </tr>
+            ${rows}
+            <tr class="border-b border-outline-variant/30">
+                <td colspan="2" class="py-2 pl-4 font-body-sm text-body-sm font-semibold text-primary">Subtotal</td>
+                <td class="py-2 pr-4 font-body-md text-body-md font-semibold text-right">NGN ${formatMoney(subtotal)}</td>
+            </tr>
+        `;
+    }
+
+    // ---------- Report history ----------
+    async function loadReportHistory() {
+        const tbody = document.getElementById('financialReportHistoryBody');
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center font-body-md text-body-md text-secondary">Loading report history...</td></tr>`;
+
+        if (!selectedOrganizationId) return;
+
+        try {
+            reportHistory = await apiJson(`/api/cfo/financial-reports/org/${selectedOrganizationId}`);
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center font-body-md text-body-md text-error">${escapeHtml(err.message || 'Failed to load report history.')}</td></tr>`;
+            return;
+        }
+        renderReportHistory();
+    }
+
+    function renderReportHistory() {
+        const tbody = document.getElementById('financialReportHistoryBody');
+        if (!reportHistory.length) {
+            tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center font-body-md text-body-md text-secondary">No generated reports exist for this organization yet.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = reportHistory.map(r => `
+            <tr class="border-b border-outline-variant/20 hover:bg-surface transition-colors">
+                <td class="py-3 pl-4 font-body-md text-body-md text-primary">${escapeHtml(r.reportName)}</td>
+                <td class="py-3 font-body-sm text-body-sm text-secondary">${escapeHtml(reportLabel(r.reportType))}</td>
+                <td class="py-3 font-body-sm text-body-sm text-secondary">${formatDate(r.fromDate)}</td>
+                <td class="py-3 font-body-sm text-body-sm text-secondary">${formatDate(r.toDate)}</td>
+                <td class="py-3 font-body-sm text-body-sm text-secondary">${formatDate(r.reportDate)}</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${statusBadgeClasses(r.status)}">${escapeHtml(r.status || 'DRAFT')}</span></td>
+                <td class="py-3 font-body-sm text-body-sm text-secondary">${escapeHtml(r.generatedBy || '-')}</td>
+                <td class="py-3 pr-4 text-right">
+                    <button type="button" class="view-report-btn font-body-sm text-body-sm font-semibold text-primary hover:underline" data-report-id="${r.id}">View</button>
+                </td>
+            </tr>
+        `).join('');
+
+        tbody.querySelectorAll('.view-report-btn').forEach(btn => {
+            btn.addEventListener('click', () => viewReport(btn.dataset.reportId));
+        });
+    }
+
+    async function viewReport(reportId) {
+        hidePageMessage();
+        try {
+            const report = await apiJson(`/api/cfo/financial-reports/${reportId}`);
+            currentFinancialReport = report;
+            renderResultPanel();
+            document.getElementById('financialReportResultPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (err) {
+            showPageMessage(err.message || 'Failed to load report.', 'error');
+        }
+    }
+
+    // ---------- CSV export ----------
+    function exportFinancialReportCsv() {
+        if (!currentFinancialReport) return;
+        const report = currentFinancialReport;
+        const rows = [];
+        rows.push(['Report ID', 'Report Type', 'Report Name', 'From Date', 'To Date', 'Section', 'Account Code', 'Account Name', 'Amount']
+            .map(csvCell).join(','));
+
+        (report.lines || []).forEach(line => {
+            rows.push([report.id, report.reportType, report.reportName, report.fromDate, report.toDate, line.section, line.accountCode, line.accountName, line.amount]
+                .map(csvCell).join(','));
+        });
+
+        if (report.reportType === 'INCOME_STATEMENT') {
+            rows.push(['', '', '', '', '', 'Total Revenue', '', '', report.totalRevenue].map(csvCell).join(','));
+            rows.push(['', '', '', '', '', 'Total Expenses', '', '', report.totalExpenses].map(csvCell).join(','));
+            rows.push(['', '', '', '', '', 'Net Income', '', '', report.netIncome].map(csvCell).join(','));
+        } else if (report.reportType === 'BALANCE_SHEET') {
+            rows.push(['', '', '', '', '', 'Total Assets', '', '', report.totalAssets].map(csvCell).join(','));
+            rows.push(['', '', '', '', '', 'Total Liabilities', '', '', report.totalLiabilities].map(csvCell).join(','));
+            rows.push(['', '', '', '', '', 'Total Equity', '', '', report.totalEquity].map(csvCell).join(','));
+            rows.push(['', '', '', '', '', 'Net Income', '', '', report.netIncome].map(csvCell).join(','));
+            rows.push(['', '', '', '', '', 'Balance Sheet Variance', '', '', report.balanceSheetVariance].map(csvCell).join(','));
+        }
+
+        const csvContent = rows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `ams_financial_report_${report.reportType}_${selectedOrganizationId}_${report.fromDate}_${report.toDate}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    // ---------- Init ----------
+    document.addEventListener('DOMContentLoaded', async () => {
+        setDateDefaults();
+
+        const hasOrganizations = await loadOrganizations();
+        if (hasOrganizations) {
+            await loadReportHistory();
+        }
+
+        document.getElementById('generateIncomeStatementBtn').addEventListener('click', (e) => generateFinancialReport('INCOME_STATEMENT', e.currentTarget));
+        document.getElementById('generateBalanceSheetBtn').addEventListener('click', (e) => generateFinancialReport('BALANCE_SHEET', e.currentTarget));
+        document.getElementById('exportFinancialReportCsvBtn').addEventListener('click', exportFinancialReportCsv);
+
+        document.getElementById('refreshBtn').addEventListener('click', async () => {
+            hidePageMessage();
+            await loadReportHistory();
+        });
     });
 </script>
 </body>

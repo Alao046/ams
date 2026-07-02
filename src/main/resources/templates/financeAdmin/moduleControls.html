@@ -103,6 +103,15 @@
             display: inline-block;
             vertical-align: middle;
         }
+
+        .skeleton-pulse {
+            animation: skeleton-pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes skeleton-pulse {
+            0%, 100% { opacity: 0.55; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body class="text-on-background font-body-md overflow-hidden bg-background">
@@ -116,7 +125,16 @@
             <div class="flex items-center gap-4">
                 <span class="font-headline-md text-headline-md font-bold text-primary">Module Enablement Control</span>
             </div>
-
+            <div class="flex items-center gap-3">
+                <label class="sr-only" for="organizationSelector">Organization</label>
+                <select id="organizationSelector"
+                        class="min-w-[220px] rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"></select>
+                <button id="refreshBtn" type="button"
+                        class="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm text-primary hover:bg-surface-container-low transition-colors">
+                    <span class="material-symbols-outlined text-lg">refresh</span>
+                    Refresh
+                </button>
+            </div>
         </header>
 
         <main class="flex-1 overflow-y-auto p-outer-padding">
@@ -126,65 +144,76 @@
                     <p class="text-secondary font-body-sm uppercase tracking-wider mt-1">Global System Sub-Framework Setup (US-007)</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
-                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm flex flex-col justify-between group cursor-pointer transition-all hover:bg-surface-container-low/30">
-                        <div>
-                            <div class="flex items-start justify-between mb-4">
-                                <span class="material-symbols-outlined text-4xl text-secondary">image_search</span>
-                                <label class="relative inline-flex items-center cursor-pointer select-none">
-                                    <input type="checkbox" id="module-ocr" checked onchange="toggleModule('ocr', this.checked); event.stopPropagation();" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                </label>
-                            </div>
-                            <h4 class="font-body-md font-bold text-primary mb-1">OCR Invoice Capture</h4>
-                            <p class="text-secondary font-body-sm leading-relaxed">Extract invoice data from scanned documents using automated systems.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-surface-container-high flex items-center">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">Enabled</span>
-                        </div>
-                    </div>
+                <div id="pageMessage" class="hidden rounded-lg border px-4 py-3 text-sm flex items-start justify-between gap-4">
+                    <span id="pageMessageText" class="flex-1"></span>
+                    <button type="button" onclick="clearPageMessage()" class="shrink-0 text-current opacity-70 hover:opacity-100" aria-label="Dismiss message">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                    </button>
+                </div>
 
-                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm flex flex-col justify-between group cursor-pointer transition-all hover:bg-surface-container-low/30">
-                        <div>
-                            <div class="flex items-start justify-between mb-4">
-                                <span class="material-symbols-outlined text-4xl text-secondary">person</span>
-                                <label class="relative inline-flex items-center cursor-pointer select-none">
-                                    <input type="checkbox" id="module-payroll" onchange="toggleModule('payroll', this.checked); event.stopPropagation();" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                </label>
-                            </div>
-                            <h4 class="font-body-md font-bold text-primary mb-1">Advanced Payroll</h4>
-                            <p class="text-secondary font-body-sm leading-relaxed">Enable sub-ledger automated payouts and corporate distribution features.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-surface-container-high flex items-center">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-container text-secondary border border-outline-variant">Disabled</span>
-                        </div>
+                <div id="moduleSummary" class="hidden grid grid-cols-2 md:grid-cols-4 gap-gutter">
+                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
+                        <p class="text-secondary font-body-sm uppercase tracking-wider">Total Modules</p>
+                        <p id="summaryTotal" class="font-currency-display text-currency-display text-primary mt-1">0</p>
                     </div>
-
-                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm flex flex-col justify-between group cursor-pointer transition-all hover:bg-surface-container-low/30">
-                        <div>
-                            <div class="flex items-start justify-between mb-4">
-                                <span class="material-symbols-outlined text-4xl text-secondary">analytics</span>
-                                <label class="relative inline-flex items-center cursor-pointer select-none">
-                                    <input type="checkbox" id="module-analytics" checked onchange="toggleModule('analytics', this.checked); event.stopPropagation();" class="sr-only peer">
-                                    <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                </label>
-                            </div>
-                            <h4 class="font-body-md font-bold text-primary mb-1">Financial Analytics</h4>
-                            <p class="text-secondary font-body-sm leading-relaxed">Access real-time core transaction matrices and engine analysis panels.</p>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-surface-container-high flex items-center">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container text-on-secondary-container border border-outline-variant">Enabled</span>
-                        </div>
+                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
+                        <p class="text-secondary font-body-sm uppercase tracking-wider">Enabled</p>
+                        <p id="summaryEnabled" class="font-currency-display text-currency-display text-primary mt-1">0</p>
+                    </div>
+                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
+                        <p class="text-secondary font-body-sm uppercase tracking-wider">Disabled</p>
+                        <p id="summaryDisabled" class="font-currency-display text-currency-display text-primary mt-1">0</p>
+                    </div>
+                    <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm">
+                        <p class="text-secondary font-body-sm uppercase tracking-wider">Audit-Tracked</p>
+                        <p id="summaryAudited" class="font-currency-display text-currency-display text-primary mt-1">0</p>
                     </div>
                 </div>
+
+                <div class="flex flex-col md:flex-row md:items-center gap-3 md:justify-between">
+                    <div class="flex flex-col sm:flex-row gap-3 flex-1">
+                        <div class="relative flex-1 max-w-xs">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-lg">search</span>
+                            <input id="moduleSearchInput" type="search" placeholder="Search by module type..."
+                                   class="w-full rounded-lg border border-outline-variant bg-surface-container-lowest pl-9 pr-3 py-2 font-body-sm text-body-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary/30">
+                        </div>
+                        <select id="moduleStatusFilter"
+                                class="rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary/30">
+                            <option value="ALL">All statuses</option>
+                            <option value="ENABLED">Enabled</option>
+                            <option value="DISABLED">Disabled</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="exportCsvBtn" type="button"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm text-primary hover:bg-surface-container-low transition-colors">
+                            <span class="material-symbols-outlined text-lg">download</span>
+                            Export CSV
+                        </button>
+                        <button id="initializeDefaultsBtn" type="button"
+                                class="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-body-sm text-body-sm text-on-primary hover:opacity-90 transition-opacity">
+                            <span class="material-symbols-outlined text-lg">bolt</span>
+                            Initialize Defaults
+                        </button>
+                    </div>
+                </div>
+
+                <div id="moduleLoadingSkeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                    <div class="skeleton-pulse bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding h-48"></div>
+                    <div class="skeleton-pulse bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding h-48"></div>
+                    <div class="skeleton-pulse bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding h-48"></div>
+                </div>
+
+                <div id="moduleControlsGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter"></div>
+
+                <div id="moduleEmptyState" class="hidden p-6 bg-surface-container-low rounded-lg border border-surface-container-high text-center text-secondary font-body-sm"></div>
 
                 <div class="p-4 bg-surface-container-low rounded-lg border border-surface-container-high">
                     <div class="flex gap-3">
                         <span class="material-symbols-outlined text-primary">verified_user</span>
                         <div>
                             <h4 class="font-body-sm font-bold text-primary">Global Scope Configuration</h4>
-                            <p class="text-[12px] text-secondary leading-relaxed mt-1">Disabling specific frameworks dynamically updates target paths and menu items visibility matrix across roles.</p>
+                            <p class="text-[12px] text-secondary leading-relaxed mt-1">Module changes are recorded for audit and security review and are visible to the Auditor as configuration-change events.</p>
                         </div>
                     </div>
                 </div>
@@ -193,13 +222,736 @@
     </div>
 </div>
 
+<!-- Toggle Confirmation Modal -->
+<div id="moduleToggleModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
+    <div class="bg-surface-container-lowest rounded-xl shadow-lg w-full max-w-md p-card-padding">
+        <div class="flex items-start justify-between mb-4">
+            <h3 class="font-headline-sm text-headline-sm text-primary">Confirm Module Change</h3>
+            <button type="button" onclick="closeToggleModal()" class="text-secondary hover:text-primary" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <div id="toggleModalError" class="hidden mb-4 rounded-lg border border-error bg-error-container text-on-error-container px-3 py-2 text-sm"></div>
+
+        <div class="space-y-3 mb-4">
+            <div class="flex justify-between font-body-sm text-body-sm">
+                <span class="text-secondary">Module</span>
+                <span id="toggleModalModuleName" class="font-bold text-primary">-</span>
+            </div>
+            <div class="flex justify-between font-body-sm text-body-sm">
+                <span class="text-secondary">Current status</span>
+                <span id="toggleModalCurrentStatus" class="text-primary">-</span>
+            </div>
+            <div class="flex justify-between font-body-sm text-body-sm">
+                <span class="text-secondary">New status</span>
+                <span id="toggleModalNextStatus" class="text-primary">-</span>
+            </div>
+        </div>
+
+        <div id="toggleModalCoreWarning" class="hidden mb-3 rounded-lg border border-error/40 bg-error-container/60 px-3 py-2 text-[12px] text-on-error-container leading-relaxed">
+            This module supports the Stage 2 control and reporting flow. Disabling it can block reporting or audit review until it is re-enabled.
+        </div>
+        <div id="toggleModalGlWarning" class="hidden mb-3 rounded-lg border border-error/40 bg-error-container/60 px-3 py-2 text-[12px] text-on-error-container leading-relaxed">
+            The backend blocks disabling General Ledger when posted GL entries exist. If blocked, the conflict message will be shown here.
+        </div>
+
+        <div class="mb-4">
+            <label for="toggleReasonInput" class="block font-body-sm text-body-sm font-bold text-primary mb-1">
+                Reason <span id="toggleReasonRequiredNote" class="hidden text-error font-normal">(required to disable)</span>
+            </label>
+            <textarea id="toggleReasonInput" rows="3"
+                      class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 font-body-sm text-body-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      placeholder="Explain why this module is being toggled..."></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3">
+            <button id="toggleCancelBtn" type="button"
+                    class="rounded-lg border border-outline-variant px-4 py-2 font-body-sm text-body-sm text-primary hover:bg-surface-container-low transition-colors">
+                Cancel
+            </button>
+            <button id="toggleConfirmBtn" type="button"
+                    class="rounded-lg bg-primary px-4 py-2 font-body-sm text-body-sm text-on-primary hover:opacity-90 transition-opacity disabled:opacity-50">
+                Confirm
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="moduleSettingsModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4">
+    <div class="bg-surface-container-lowest rounded-xl shadow-lg w-full max-w-lg p-card-padding max-h-[90vh] overflow-y-auto">
+        <div class="flex items-start justify-between mb-4">
+            <div>
+                <h3 class="font-headline-sm text-headline-sm text-primary">Module Settings</h3>
+                <p id="settingsModalModuleName" class="text-secondary font-body-sm mt-0.5">-</p>
+            </div>
+            <button type="button" onclick="closeSettingsModal()" class="text-secondary hover:text-primary" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+
+        <form id="settingsForm">
+            <div id="settingsModalError" class="hidden mb-4 rounded-lg border border-error bg-error-container text-on-error-container px-3 py-2 text-sm"></div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <label class="flex items-center gap-2 font-body-sm text-body-sm text-primary">
+                    <input id="settingsEnabled" type="checkbox" class="rounded border-outline-variant">
+                    Enabled
+                </label>
+                <label class="flex items-center gap-2 font-body-sm text-body-sm text-primary">
+                    <input id="settingsAllowUserConfig" type="checkbox" class="rounded border-outline-variant">
+                    Allow user configuration
+                </label>
+                <label class="flex items-center gap-2 font-body-sm text-body-sm text-primary">
+                    <input id="settingsRequiresApproval" type="checkbox" class="rounded border-outline-variant">
+                    Requires approval
+                </label>
+                <label class="flex items-center gap-2 font-body-sm text-body-sm text-primary">
+                    <input id="settingsAuditTrail" type="checkbox" class="rounded border-outline-variant">
+                    Enable audit trail
+                </label>
+                <label class="flex items-center gap-2 font-body-sm text-body-sm text-primary">
+                    <input id="settingsNotifications" type="checkbox" class="rounded border-outline-variant">
+                    Enable notifications
+                </label>
+            </div>
+
+            <div class="mb-4">
+                <label for="settingsMaxLimit" class="block font-body-sm text-body-sm font-bold text-primary mb-1">Max transaction amount limit</label>
+                <input id="settingsMaxLimit" type="number" min="1" step="1" placeholder="Leave blank for no limit"
+                       class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 font-body-sm text-body-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary/30">
+            </div>
+
+            <div class="mb-4">
+                <label for="settingsConfigJson" class="block font-body-sm text-body-sm font-bold text-primary mb-1">Configuration JSON</label>
+                <textarea id="settingsConfigJson" rows="3" placeholder='Leave blank, or valid JSON e.g. {"mvp":"stage2"}'
+                          class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 font-body-sm text-body-sm text-primary font-mono focus:outline-none focus:ring-2 focus:ring-primary/30"></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="settingsNotes" class="block font-body-sm text-body-sm font-bold text-primary mb-1">Notes</label>
+                <textarea id="settingsNotes" rows="3" maxlength="500" placeholder="Optional notes (max 500 characters)"
+                          class="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 font-body-sm text-body-sm text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button id="settingsCancelBtn" type="button"
+                        class="rounded-lg border border-outline-variant px-4 py-2 font-body-sm text-body-sm text-primary hover:bg-surface-container-low transition-colors">
+                    Cancel
+                </button>
+                <button id="settingsSaveBtn" type="submit"
+                        class="rounded-lg bg-primary px-4 py-2 font-body-sm text-body-sm text-on-primary hover:opacity-90 transition-opacity disabled:opacity-50">
+                    Save Settings
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const CURRENT_USER = /*[[${userName}]]*/ 'system';
+</script>
+
 <script>
-    function toggleModule(moduleId, currentState) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/financeAdmin/moduleControls/toggle/${moduleId}`;
-        document.body.appendChild(form);
-        form.submit();
+    const ORG_STORAGE_KEY = 'ams.selectedOrganizationId';
+    let organizations = [];
+    let selectedOrganizationId = null;
+    let modules = [];
+    let isRequestActive = false;
+    let currentMessageType = null;
+    let currentSettingsModuleId = null;
+
+    let pendingToggle = {
+        moduleId: null,
+        moduleType: null,
+        currentEnabled: null,
+        nextEnabled: null
+    };
+
+    const MODULE_META = {
+        GENERAL_LEDGER: { label: 'General Ledger', icon: 'account_balance' },
+        REPORTING: { label: 'Reporting', icon: 'analytics' },
+        AUDIT: { label: 'Audit', icon: 'gavel' },
+        APPROVALS: { label: 'Approvals', icon: 'fact_check' },
+        BANKING: { label: 'Banking', icon: 'account_balance_wallet' },
+        FIXED_ASSETS: { label: 'Fixed Assets', icon: 'domain' },
+        BUDGETING: { label: 'Budgeting', icon: 'monitoring' },
+        PAYROLL: { label: 'Payroll', icon: 'payments' },
+        ACCOUNTS_PAYABLE: { label: 'Accounts Payable', icon: 'receipt_long' },
+        ACCOUNTS_RECEIVABLE: { label: 'Accounts Receivable', icon: 'request_quote' }
+    };
+
+    const CORE_MODULES = ['GENERAL_LEDGER', 'REPORTING', 'AUDIT'];
+    const STAGE2_DISABLED_MODULES = ['BANKING', 'FIXED_ASSETS', 'BUDGETING', 'PAYROLL', 'ACCOUNTS_PAYABLE', 'ACCOUNTS_RECEIVABLE'];
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    async function init() {
+        wireStaticEvents();
+        await loadOrganizations();
+    }
+
+    function wireStaticEvents() {
+        document.getElementById('organizationSelector').addEventListener('change', onOrganizationChange);
+        document.getElementById('refreshBtn').addEventListener('click', () => loadModules());
+        document.getElementById('initializeDefaultsBtn').addEventListener('click', onInitializeDefaults);
+        document.getElementById('moduleSearchInput').addEventListener('input', renderFilteredModules);
+        document.getElementById('moduleStatusFilter').addEventListener('change', renderFilteredModules);
+        document.getElementById('exportCsvBtn').addEventListener('click', exportModulesCsv);
+
+        document.getElementById('moduleControlsGrid').addEventListener('click', onGridClick);
+
+        document.getElementById('toggleCancelBtn').addEventListener('click', closeToggleModal);
+        document.getElementById('toggleConfirmBtn').addEventListener('click', confirmToggle);
+        document.getElementById('toggleReasonInput').addEventListener('input', validateToggleForm);
+
+        document.getElementById('settingsCancelBtn').addEventListener('click', closeSettingsModal);
+        document.getElementById('settingsForm').addEventListener('submit', onSettingsSubmit);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (!document.getElementById('moduleToggleModal').classList.contains('hidden')) closeToggleModal();
+            if (!document.getElementById('moduleSettingsModal').classList.contains('hidden')) closeSettingsModal();
+        });
+    }
+
+    // ---------- API helper ----------
+
+    function flattenFieldErrors(fieldErrors) {
+        if (!fieldErrors) return null;
+        if (Array.isArray(fieldErrors)) {
+            return fieldErrors.map(fe => fe.message || `${fe.field}: ${fe.defaultMessage || ''}`).join(' ');
+        }
+        if (typeof fieldErrors === 'object') {
+            return Object.entries(fieldErrors).map(([field, msg]) => `${field}: ${msg}`).join(' ');
+        }
+        return null;
+    }
+
+    async function apiJson(url, options = {}) {
+        const response = await fetch(url, {
+            headers: options.body ? { 'Content-Type': 'application/json', ...(options.headers || {}) } : (options.headers || {}),
+            ...options
+        });
+        const text = await response.text();
+        let payload = null;
+        if (text) {
+            try {
+                payload = JSON.parse(text);
+            } catch (parseError) {
+                if (!response.ok) {
+                    throw new Error(text || `Request failed with status ${response.status}`);
+                }
+                throw new Error('Unexpected non-JSON response from server.');
+            }
+        }
+        if (!response.ok) {
+            const message = payload?.message || payload?.error || payload?.detail || flattenFieldErrors(payload?.fieldErrors) || `Request failed with status ${response.status}`;
+            throw new Error(message);
+        }
+        return payload;
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatDateTime(value) {
+        if (!value) return '-';
+        const date = new Date(value);
+        return isNaN(date.getTime()) ? '-' : date.toLocaleString();
+    }
+
+    function titleCase(value) {
+        return String(value || '')
+            .toLowerCase()
+            .split('_')
+            .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+    }
+
+    function getModuleMeta(moduleType) {
+        return MODULE_META[moduleType] || { label: titleCase(moduleType), icon: 'extension' };
+    }
+
+    // ---------- Organization context ----------
+
+    async function loadOrganizations() {
+        setModulesLoading(true);
+        try {
+            organizations = await apiJson('/api/organizations') || [];
+        } catch (err) {
+            organizations = [];
+            showPageMessage('error', err.message);
+        }
+
+        populateOrganizationSelector();
+
+        if (!organizations.length) {
+            showNoOrganizationState();
+            return;
+        }
+
+        setControlsDisabled(false);
+        resolveSelectedOrganization();
+        await loadModules();
+    }
+
+    function populateOrganizationSelector() {
+        const select = document.getElementById('organizationSelector');
+        select.innerHTML = '';
+        organizations.forEach(org => {
+            const opt = document.createElement('option');
+            opt.value = org.id;
+            opt.textContent = org.name;
+            select.appendChild(opt);
+        });
+    }
+
+    function resolveSelectedOrganization() {
+        const stored = sessionStorage.getItem(ORG_STORAGE_KEY);
+        const storedValid = stored && organizations.some(o => String(o.id) === String(stored));
+        if (storedValid) {
+            selectedOrganizationId = String(stored);
+        } else {
+            const firstActive = organizations.find(o => o.active) || organizations[0];
+            selectedOrganizationId = String(firstActive.id);
+            sessionStorage.setItem(ORG_STORAGE_KEY, selectedOrganizationId);
+        }
+        document.getElementById('organizationSelector').value = selectedOrganizationId;
+    }
+
+    function onOrganizationChange(e) {
+        selectedOrganizationId = e.target.value;
+        sessionStorage.setItem(ORG_STORAGE_KEY, selectedOrganizationId);
+        clearPageMessage();
+        loadModules();
+    }
+
+    function showNoOrganizationState() {
+        document.getElementById('moduleSummary').classList.add('hidden');
+        document.getElementById('moduleControlsGrid').classList.add('hidden');
+        document.getElementById('moduleLoadingSkeleton').classList.add('hidden');
+        const emptyState = document.getElementById('moduleEmptyState');
+        emptyState.textContent = 'No organization found. Create an organization before configuring modules.';
+        emptyState.classList.remove('hidden');
+        setControlsDisabled(true);
+    }
+
+    function setControlsDisabled(disabled) {
+        ['initializeDefaultsBtn', 'moduleSearchInput', 'moduleStatusFilter', 'exportCsvBtn', 'refreshBtn'].forEach(id => {
+            document.getElementById(id).disabled = disabled;
+        });
+    }
+
+    // ---------- Module loading & rendering ----------
+
+    async function loadModules() {
+        if (!selectedOrganizationId) return;
+        setModulesLoading(true);
+        try {
+            modules = await apiJson(`/api/financeAdmin/module-controls/org/${selectedOrganizationId}`) || [];
+        } catch (err) {
+            modules = [];
+            showPageMessage('error', err.message);
+        }
+        setModulesLoading(false);
+        document.getElementById('moduleSummary').classList.remove('hidden');
+        renderSummary();
+        renderFilteredModules();
+    }
+
+    function setModulesLoading(isLoading) {
+        const skeleton = document.getElementById('moduleLoadingSkeleton');
+        const grid = document.getElementById('moduleControlsGrid');
+        const emptyState = document.getElementById('moduleEmptyState');
+        if (isLoading) {
+            skeleton.classList.remove('hidden');
+            grid.classList.add('hidden');
+            emptyState.classList.add('hidden');
+        } else {
+            skeleton.classList.add('hidden');
+        }
+    }
+
+    function renderSummary() {
+        const total = modules.length;
+        const enabled = modules.filter(m => m.enabled).length;
+        const disabled = total - enabled;
+        const audited = modules.filter(m => m.enableAuditTrail).length;
+        document.getElementById('summaryTotal').textContent = total;
+        document.getElementById('summaryEnabled').textContent = enabled;
+        document.getElementById('summaryDisabled').textContent = disabled;
+        document.getElementById('summaryAudited').textContent = audited;
+    }
+
+    function getFilteredModules() {
+        const search = document.getElementById('moduleSearchInput').value.trim().toLowerCase();
+        const status = document.getElementById('moduleStatusFilter').value;
+        return modules.filter(m => {
+            const moduleType = String(m.moduleType || '');
+            const meta = getModuleMeta(moduleType);
+            const matchesSearch = !search || moduleType.toLowerCase().includes(search) || meta.label.toLowerCase().includes(search);
+            const matchesStatus = status === 'ALL' || (status === 'ENABLED' && m.enabled) || (status === 'DISABLED' && !m.enabled);
+            return matchesSearch && matchesStatus;
+        });
+    }
+
+    function renderFilteredModules() {
+        renderModuleGrid(getFilteredModules());
+    }
+
+    function renderModuleGrid(list) {
+        const grid = document.getElementById('moduleControlsGrid');
+        const emptyState = document.getElementById('moduleEmptyState');
+
+        if (!list.length) {
+            grid.innerHTML = '';
+            grid.classList.add('hidden');
+            emptyState.textContent = modules.length === 0
+                ? 'No module controls exist for this organization. Initialize defaults to create the Stage 2 module baseline.'
+                : 'No modules match your search or filter.';
+            emptyState.classList.remove('hidden');
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        grid.classList.remove('hidden');
+        grid.innerHTML = list.map(renderModuleCard).join('');
+    }
+
+    function renderModuleCard(module) {
+        const meta = getModuleMeta(module.moduleType);
+        const showStage2Badge = STAGE2_DISABLED_MODULES.includes(module.moduleType) && !module.enabled;
+        const notes = module.notes ? escapeHtml(module.notes) : 'No notes recorded.';
+        const limit = (module.maxTransactionAmountLimit === null || module.maxTransactionAmountLimit === undefined)
+            ? 'No limit set'
+            : Number(module.maxTransactionAmountLimit).toLocaleString('en-NG');
+
+        return `
+        <div class="bg-surface-container-lowest border border-surface-container-highest rounded-xl p-card-padding shadow-sm flex flex-col justify-between transition-all hover:bg-surface-container-low/30">
+            <div>
+                <div class="flex items-start justify-between mb-4">
+                    <span class="material-symbols-outlined text-4xl text-secondary">${meta.icon}</span>
+                    <label class="relative inline-flex items-center cursor-pointer select-none">
+                        <input type="checkbox" class="module-toggle-input sr-only peer"
+                               data-module-id="${module.id}"
+                               data-module-type="${escapeHtml(module.moduleType)}"
+                               data-current-enabled="${!!module.enabled}"
+                               ${module.enabled ? 'checked' : ''}>
+                        <div class="w-11 h-6 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+                <h4 class="font-body-md font-bold text-primary mb-1">${escapeHtml(meta.label)}</h4>
+                <p class="text-secondary font-body-sm leading-relaxed">${notes}</p>
+
+                <div class="mt-4 flex flex-wrap gap-1.5">
+                    ${module.enableAuditTrail ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface-container text-secondary border border-outline-variant">Audit Trail On</span>' : ''}
+                    ${module.requiresApproval ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface-container text-secondary border border-outline-variant">Requires Approval</span>' : ''}
+                    ${module.allowUserConfiguration ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-surface-container text-secondary border border-outline-variant">User Configurable</span>' : ''}
+                    ${showStage2Badge ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-error-container text-on-error-container border border-outline-variant">Disabled for this MVP stage</span>' : ''}
+                </div>
+
+                <div class="mt-3 font-label-md text-label-md text-on-tertiary-container">
+                    Limit: ${escapeHtml(String(limit))} &middot; Updated ${formatDateTime(module.updatedAt)}
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-surface-container-high flex items-center justify-between gap-2">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border border-outline-variant ${module.enabled ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container text-secondary'}">
+                    ${module.enabled ? 'Enabled' : 'Disabled'}
+                </span>
+                <button type="button" class="edit-settings-btn font-label-md text-label-md text-primary underline underline-offset-2" data-module-id="${module.id}">
+                    Edit Settings
+                </button>
+            </div>
+        </div>`;
+    }
+
+    function onGridClick(e) {
+        const toggleInput = e.target.closest('.module-toggle-input');
+        if (toggleInput) {
+            e.preventDefault();
+            openToggleModal(toggleInput);
+            return;
+        }
+        const editBtn = e.target.closest('.edit-settings-btn');
+        if (editBtn) {
+            openSettingsModal(editBtn.dataset.moduleId);
+        }
+    }
+
+    // ---------- Initialize defaults ----------
+
+    async function onInitializeDefaults() {
+        if (isRequestActive || !selectedOrganizationId) return;
+        isRequestActive = true;
+        const btn = document.getElementById('initializeDefaultsBtn');
+        const originalLabel = btn.innerHTML;
+        btn.disabled = true;
+        btn.textContent = 'Initializing...';
+        try {
+            const response = await apiJson(`/api/financeAdmin/module-controls/org/${selectedOrganizationId}/defaults`, {
+                method: 'POST'
+            });
+            modules = response?.modules || [];
+            document.getElementById('moduleSummary').classList.remove('hidden');
+            renderSummary();
+            renderFilteredModules();
+            showPageMessage('success', 'Default module controls initialized. Configuration changes are recorded for audit and security review.');
+        } catch (err) {
+            showPageMessage('error', err.message);
+        } finally {
+            isRequestActive = false;
+            btn.disabled = false;
+            btn.innerHTML = originalLabel;
+        }
+    }
+
+    // ---------- Toggle modal ----------
+
+    function openToggleModal(inputEl) {
+        const moduleId = inputEl.dataset.moduleId;
+        const moduleType = inputEl.dataset.moduleType;
+        const currentEnabled = inputEl.dataset.currentEnabled === 'true';
+        const module = modules.find(m => String(m.id) === String(moduleId));
+        const effectiveEnabled = module ? !!module.enabled : currentEnabled;
+
+        pendingToggle = {
+            moduleId,
+            moduleType,
+            currentEnabled: effectiveEnabled,
+            nextEnabled: !effectiveEnabled
+        };
+
+        const meta = getModuleMeta(moduleType);
+        document.getElementById('toggleModalModuleName').textContent = meta.label;
+        document.getElementById('toggleModalCurrentStatus').textContent = effectiveEnabled ? 'Enabled' : 'Disabled';
+        document.getElementById('toggleModalNextStatus').textContent = pendingToggle.nextEnabled ? 'Enabled' : 'Disabled';
+        document.getElementById('toggleReasonInput').value = '';
+        document.getElementById('toggleModalError').classList.add('hidden');
+
+        const isCore = CORE_MODULES.includes(moduleType);
+        const isDisabling = pendingToggle.nextEnabled === false;
+        document.getElementById('toggleModalCoreWarning').classList.toggle('hidden', !(isCore && isDisabling));
+        document.getElementById('toggleModalGlWarning').classList.toggle('hidden', !(moduleType === 'GENERAL_LEDGER' && isDisabling));
+        document.getElementById('toggleReasonRequiredNote').classList.toggle('hidden', !isDisabling);
+
+        document.getElementById('moduleToggleModal').classList.remove('hidden');
+        validateToggleForm();
+    }
+
+    function validateToggleForm() {
+        const reasonRequired = pendingToggle.nextEnabled === false;
+        const reasonValue = document.getElementById('toggleReasonInput').value.trim();
+        document.getElementById('toggleConfirmBtn').disabled = reasonRequired && !reasonValue;
+    }
+
+    function closeToggleModal() {
+        document.getElementById('moduleToggleModal').classList.add('hidden');
+        document.getElementById('toggleReasonInput').value = '';
+        document.getElementById('toggleModalError').classList.add('hidden');
+        pendingToggle = { moduleId: null, moduleType: null, currentEnabled: null, nextEnabled: null };
+    }
+
+    async function confirmToggle() {
+        if (isRequestActive) return;
+        const reason = document.getElementById('toggleReasonInput').value.trim();
+        if (pendingToggle.nextEnabled === false && !reason) {
+            showModalError('toggleModalError', 'A reason is required when disabling a module.');
+            return;
+        }
+
+        isRequestActive = true;
+        const confirmBtn = document.getElementById('toggleConfirmBtn');
+        const originalLabel = confirmBtn.textContent;
+        confirmBtn.disabled = true;
+        confirmBtn.textContent = 'Saving...';
+        document.getElementById('toggleModalError').classList.add('hidden');
+
+        try {
+            await apiJson(`/api/financeAdmin/module-controls/${pendingToggle.moduleId}/toggle`, {
+                method: 'PATCH',
+                body: JSON.stringify({ enabled: pendingToggle.nextEnabled, reason: reason || undefined })
+            });
+            const meta = getModuleMeta(pendingToggle.moduleType);
+            const verb = pendingToggle.nextEnabled ? 'enabled' : 'disabled';
+            closeToggleModal();
+            await loadModules();
+            showPageMessage('success', `${meta.label} module ${verb}. Configuration change recorded for audit and security review.`);
+        } catch (err) {
+            showModalError('toggleModalError', err.message);
+        } finally {
+            isRequestActive = false;
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = originalLabel;
+        }
+    }
+
+    // ---------- Settings modal ----------
+
+    function openSettingsModal(moduleId) {
+        const module = modules.find(m => String(m.id) === String(moduleId));
+        if (!module) return;
+
+        currentSettingsModuleId = module.id;
+        const meta = getModuleMeta(module.moduleType);
+        document.getElementById('settingsModalModuleName').textContent = meta.label;
+        document.getElementById('settingsEnabled').checked = !!module.enabled;
+        document.getElementById('settingsAllowUserConfig').checked = !!module.allowUserConfiguration;
+        document.getElementById('settingsRequiresApproval').checked = !!module.requiresApproval;
+        document.getElementById('settingsAuditTrail').checked = !!module.enableAuditTrail;
+        document.getElementById('settingsNotifications').checked = !!module.enableNotifications;
+        document.getElementById('settingsMaxLimit').value = (module.maxTransactionAmountLimit ?? '') === '' ? '' : module.maxTransactionAmountLimit;
+        document.getElementById('settingsConfigJson').value = module.configurationJson ?? '';
+        document.getElementById('settingsNotes').value = module.notes ?? '';
+        document.getElementById('settingsModalError').classList.add('hidden');
+
+        document.getElementById('moduleSettingsModal').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+        document.getElementById('moduleSettingsModal').classList.add('hidden');
+        document.getElementById('settingsForm').reset();
+        document.getElementById('settingsModalError').classList.add('hidden');
+        currentSettingsModuleId = null;
+    }
+
+    async function onSettingsSubmit(e) {
+        e.preventDefault();
+        if (isRequestActive || !currentSettingsModuleId) return;
+        document.getElementById('settingsModalError').classList.add('hidden');
+
+        const maxLimitRaw = document.getElementById('settingsMaxLimit').value.trim();
+        let maxLimit = null;
+        if (maxLimitRaw) {
+            if (!/^\d+$/.test(maxLimitRaw) || Number(maxLimitRaw) <= 0) {
+                showModalError('settingsModalError', 'Max transaction amount limit must be blank or a positive integer.');
+                return;
+            }
+            maxLimit = Number(maxLimitRaw);
+        }
+
+        const configJsonRaw = document.getElementById('settingsConfigJson').value.trim();
+        if (configJsonRaw) {
+            try {
+                JSON.parse(configJsonRaw);
+            } catch {
+                showModalError('settingsModalError', 'Configuration JSON must be blank or valid JSON.');
+                return;
+            }
+        }
+
+        const notes = document.getElementById('settingsNotes').value.trim();
+        if (notes.length > 500) {
+            showModalError('settingsModalError', 'Notes must be 500 characters or fewer.');
+            return;
+        }
+
+        const body = {
+            enabled: document.getElementById('settingsEnabled').checked,
+            allowUserConfiguration: document.getElementById('settingsAllowUserConfig').checked,
+            requiresApproval: document.getElementById('settingsRequiresApproval').checked,
+            enableAuditTrail: document.getElementById('settingsAuditTrail').checked,
+            enableNotifications: document.getElementById('settingsNotifications').checked,
+            maxTransactionAmountLimit: maxLimit,
+            configurationJson: configJsonRaw || null,
+            notes: notes || null
+        };
+
+        isRequestActive = true;
+        const saveBtn = document.getElementById('settingsSaveBtn');
+        const originalLabel = saveBtn.textContent;
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        try {
+            await apiJson(`/api/financeAdmin/module-controls/${currentSettingsModuleId}`, {
+                method: 'PUT',
+                body: JSON.stringify(body)
+            });
+            closeSettingsModal();
+            await loadModules();
+            showPageMessage('success', 'Module settings updated and logged.');
+        } catch (err) {
+            showModalError('settingsModalError', err.message);
+        } finally {
+            isRequestActive = false;
+            saveBtn.disabled = false;
+            saveBtn.textContent = originalLabel;
+        }
+    }
+
+    // ---------- Messages ----------
+
+    function showModalError(elId, message) {
+        const el = document.getElementById(elId);
+        el.textContent = message;
+        el.classList.remove('hidden');
+    }
+
+    function showPageMessage(type, text) {
+        const el = document.getElementById('pageMessage');
+        document.getElementById('pageMessageText').textContent = text;
+        el.classList.remove('hidden', 'bg-secondary-container', 'text-on-secondary-container', 'bg-error-container', 'text-on-error-container', 'border-outline-variant', 'border-error');
+        if (type === 'success') {
+            el.classList.add('bg-secondary-container', 'text-on-secondary-container', 'border-outline-variant');
+        } else {
+            el.classList.add('bg-error-container', 'text-on-error-container', 'border-error');
+        }
+        currentMessageType = type;
+    }
+
+    function clearPageMessage() {
+        document.getElementById('pageMessage').classList.add('hidden');
+        currentMessageType = null;
+    }
+
+    // ---------- CSV export ----------
+
+    function csvCell(value) {
+        return `"${String(value ?? '').replace(/"/g, '""')}"`;
+    }
+
+    function exportModulesCsv() {
+        const rows = getFilteredModules();
+        if (!rows.length) {
+            showPageMessage('error', 'No module controls match the current filters to export.');
+            return;
+        }
+
+        const header = ['Module Type', 'Enabled', 'Requires Approval', 'Audit Trail', 'Notifications', 'User Configurable', 'Max Transaction Limit', 'Notes', 'Updated At'];
+        const lines = [header.map(csvCell).join(',')];
+
+        rows.forEach(m => {
+            const meta = getModuleMeta(m.moduleType);
+            lines.push([
+                meta.label,
+                m.enabled ? 'Enabled' : 'Disabled',
+                m.requiresApproval ? 'Yes' : 'No',
+                m.enableAuditTrail ? 'Yes' : 'No',
+                m.enableNotifications ? 'Yes' : 'No',
+                m.allowUserConfiguration ? 'Yes' : 'No',
+                m.maxTransactionAmountLimit ?? '',
+                m.notes ?? '',
+                formatDateTime(m.updatedAt)
+            ].map(csvCell).join(','));
+        });
+
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `module-controls-org-${selectedOrganizationId}-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 </script>
 </body>
