@@ -942,10 +942,13 @@
         card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0px)'; });
     });
 
-    document.getElementById('notifyBtn').addEventListener('click', () => {
-        const dot = document.getElementById('notifyDot');
-        if (dot) dot.style.display = 'none';
-    });
+    const notifyBtn = document.getElementById('notifyBtn');
+    if (notifyBtn) {
+        notifyBtn.addEventListener('click', () => {
+            const dot = document.getElementById('notifyDot');
+            if (dot) dot.style.display = 'none';
+        });
+    }
 
     // Keyboard: ESC closes any open modal
     document.addEventListener('keydown', e => {

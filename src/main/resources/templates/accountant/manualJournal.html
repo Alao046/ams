@@ -90,6 +90,18 @@
 
     </header>
 
+    <!-- Organization selector (required by page JS) -->
+    <section class="px-outer-padding pb-4">
+        <div class="bg-surface-container-lowest p-3 rounded-lg border border-surface-container-highest flex items-center gap-3 max-w-7xl mx-auto">
+            <span class="material-symbols-outlined text-secondary text-[20px]">corporate_fare</span>
+            <label for="orgSelector" class="font-body-sm text-secondary font-semibold">Organization</label>
+            <select id="orgSelector" class="pl-3 pr-8 py-2 bg-white border border-outline-variant rounded-lg font-body-md text-primary focus:ring-1 focus:ring-primary focus:border-primary transition-all min-w-[220px]">
+                <option value="">Loading organizations...</option>
+            </select>
+            <div id="orgSelectorHint" class="text-body-sm text-secondary italic hidden ml-3">No organizations found. Set up an organization first.</div>
+        </div>
+    </section>
+
     <main class="px-outer-padding py-gutter max-w-7xl mx-auto w-full flex flex-col gap-gutter">
         <div id="pageAlert" class="hidden">
             <div id="pageAlertInner" class="flex items-start gap-3 px-4 py-3 rounded-lg border text-body-sm font-semibold">
